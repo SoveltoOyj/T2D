@@ -9,5 +9,7 @@ namespace T2D.Model
 	{
 		public string Id { get; set; }
 		public string Name { get; set; }
-	}
+
+        public double Version { get; set; }
+    }
 }

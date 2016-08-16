@@ -41,11 +41,12 @@ namespace InventoryApi.Controllers.TestControllers
 			dbc.SaveChanges();
 		}
 
-		// Patch api/test/thing/5
-		//[
+        // Patch api/test/thing/5
+  //      [
 		//{"op":"replace", "path":"name",
 		//  "value": "A thing uusin taas paivitetty"
-		//}
+
+  //      }
 		//]
 		[HttpPatch("{id}")]
 		public T2D.Model.Thing Patch(string id, [FromBody]JsonPatchDocument<T2D.Model.Thing> value)
