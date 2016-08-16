@@ -1,5 +1,8 @@
 ﻿Project.json settings from here: https://docs.efproject.net/en/latest/miscellaneous/cli/dotnet.html#targeting-class-library-projects-is-not-supported
 
-
 add-migration NameOfMigration
 update-database
+
+
+Create new database:
+

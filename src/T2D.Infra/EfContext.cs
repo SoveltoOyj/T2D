@@ -10,7 +10,8 @@ namespace T2D.Infra
 	public class EfContext : DbContext
 	{
 		public DbSet<Thing> Things { get; set; }
-
+		public DbSet<Relation> Relations { get; set; }
+		public DbSet<Role> Roles { get; set; }
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=T2D;Trusted_Connection=True;");
