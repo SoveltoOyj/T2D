@@ -19,25 +19,31 @@ namespace T2D.Infra
 			var dbc = new EfContext();
 			//create database, add base data
 
-			//relations
-			dbc.Database.ExecuteSqlCommand("Set identity_insert relations on;");
-			dbc.SaveChanges();
-			foreach(var item in Enum.GetNames(typeof(RelationEnum)))
+			dbc.Database.OpenConnection();
+			try
 			{
-				dbc.Relations.Add(new Relation { Id = (int) Enum.Parse(typeof(RelationEnum), item,false), Name = item });
+				//relations
+				dbc.Database.ExecuteSqlCommand("Set identity_insert relations on;");
+				foreach (var item in Enum.GetNames(typeof(RelationEnum)))
+				{
+					dbc.Relations.Add(new Relation { Id = (int)Enum.Parse(typeof(RelationEnum), item, false), Name = item });
+				}
+				dbc.SaveChanges();
+				dbc.Database.ExecuteSqlCommand("Set identity_insert relations off");
+
+				//roles
+				dbc.Database.ExecuteSqlCommand("Set identity_insert Roles on;");
+				foreach (var item in Enum.GetNames(typeof(RoleEnum)))
+				{
+					dbc.Roles.Add(new Role { Id = (int)Enum.Parse(typeof(RoleEnum), item, false), Name = item });
+				}
+				dbc.SaveChanges();
+				dbc.Database.ExecuteSqlCommand("Set identity_insert Roles off;");
 			}
-			dbc.SaveChanges();
-			dbc.Database.ExecuteSqlCommand("Set identity_insert relations off");
-
-			return;
-
-			//roles
-			foreach (var item in Enum.GetNames(typeof(RoleEnum)))
+			finally
 			{
-				dbc.Roles.Add(new Role { Id = (int)Enum.Parse(typeof(RoleEnum), item, false), Name = item });
+				dbc.Database.CloseConnection();
 			}
-
-			dbc.SaveChanges();
 			Console.WriteLine("\nDone");
 			Console.ReadLine();
 		}
