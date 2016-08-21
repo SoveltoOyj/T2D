@@ -8,7 +8,7 @@ using T2D.Model;
 
 namespace T2D.InventoryBL.Mappers
 {
-	public class ThingMapper : IMapper<Entities.Thing, Model.Thing, long, string>
+	public class ThingMapper : IMapper<Entities.RegularThing, Model.Thing, long, string>
 	{
 
 		public long FromModelId(string id)
@@ -21,7 +21,7 @@ namespace T2D.InventoryBL.Mappers
 			return id.ToString();
 		}
 
-		public Model.Thing EntityToModel(Entities.Thing from)
+		public Model.Thing EntityToModel(Entities.RegularThing from)
 		{
 			return new Model.Thing
 			{
@@ -30,9 +30,9 @@ namespace T2D.InventoryBL.Mappers
 				Version = from.Version,
 			};
 		}
-		public Entities.Thing ModelToEntity(Model.Thing from)
+		public Entities.RegularThing ModelToEntity(Model.Thing from)
 		{
-			return new Entities.Thing
+			return new Entities.RegularThing
 			{
 				Id = this.FromModelId(from.Id),
 				Name = from.Name,
@@ -45,7 +45,7 @@ namespace T2D.InventoryBL.Mappers
 		/// </summary>
 		/// <param name="to">Entity to update. All properties except Id.</param>
 		/// <param name="from">Model where data is from.</param>
-		public Entities.Thing UpdateEntityFromModel(Model.Thing from, Entities.Thing to)
+		public Entities.RegularThing UpdateEntityFromModel(Model.Thing from, Entities.RegularThing to)
 		{
 			to.Name = from.Name;
 			to.Version = from.Version;
