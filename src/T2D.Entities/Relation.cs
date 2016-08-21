@@ -9,9 +9,9 @@ namespace T2D.Entities
 	/// Relation names. Static list.
 	/// ThingRelation will be read only from ThingId1 -> ThingId2, not vice versa.
 	/// </summary>
-	public class Relation
+	public class Relation:IEntity
 	{
-		public int Id { get; set; }
+		public long Id { get; set; }
 		public string Name { get; set; }
 	}
 

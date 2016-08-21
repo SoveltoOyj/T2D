@@ -15,7 +15,7 @@ namespace T2D.Infra
 			var ki = Console.ReadKey();
 			if (ki.Key.ToString().ToLower() != "y") return;
 
-			Console.WriteLine("\nCreating data.....");
+			Console.WriteLine("\nCreating data ...");
 			var dbc = new EfContext();
 			//create database, add base data
 

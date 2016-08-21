@@ -19,7 +19,8 @@
 			"T2D.Model": "1.0.0-*",
 			"Microsoft.EntityFrameworkCore": "1.0.0",
 			"Microsoft.EntityFrameworkCore.Design": "1.0.0-preview2-final",
-			"Microsoft.AspNetCore.Diagnostics": "1.0.0"
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0",
+    "T2D.InventoryBL": "1.0.0-*"
   },
 
   "tools": {
