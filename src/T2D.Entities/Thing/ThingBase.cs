@@ -10,5 +10,11 @@ namespace T2D.Entities
 		public long Id { get; set; }
 		public string Name { get; set; }
 
+		public List<ThingRelation> ThingRelations { get; set; }
+
+		public ThingBase()
+		{
+			ThingRelations = new List<ThingRelation>();
+		}
 	}
 }
