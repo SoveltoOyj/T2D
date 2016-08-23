@@ -50,7 +50,7 @@
       <FileName>C:\Users\AhtiHaukilehto\documents\visual studio 2015\Projects\T2D.Database\src\T2D.Entities\Thing\AliasThing.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="T2D.Entities.IEntity" Collapsed="true">
+  <Interface Name="T2D.Entities.IEntity">
     <Position X="12.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
