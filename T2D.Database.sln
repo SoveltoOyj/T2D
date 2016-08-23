@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{87764519-9FC7-4867-A7C5-B80210F8620B}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		ToDo.txt = ToDo.txt
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "T2D.Entities", "src\T2D.Entities\T2D.Entities.xproj", "{0B56FF91-A9C0-4766-8985-B4E039544567}"

@@ -1,0 +1,8 @@
+IEntities, rakenne
+	Enums
+	Aidot entiteetit, ehkäpä string perusavain
+ Nyt on enemmän enums-tyyppinen
+
+Attributes -entiteetti hierarkinen
+	erikseen "aito" entiteetti vrs relationship
+
