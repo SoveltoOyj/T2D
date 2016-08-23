@@ -48,6 +48,7 @@ namespace T2D.Infra
 				dbc.RegularThings.Add(new RegularThing { Name = "First thing", Version = 123 });
 				dbc.RegularThings.Add(new RegularThing { Name = "Second thing", Version = 1234 });
 				dbc.RegularThings.Add(new RegularThing { Name = "Third thing", Version = 1235 });
+				dbc.ArchetypeThings.Add(new ArchetypeThing { Name = "Fourth Thing" });
 				dbc.SaveChanges();
 			}
 			finally
