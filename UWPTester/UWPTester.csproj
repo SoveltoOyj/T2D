@@ -95,6 +95,9 @@
     <Compile Include="..\src\T2D.Model\IModel.cs">
       <Link>Model\IModel.cs</Link>
     </Compile>
+    <Compile Include="..\src\T2D.Model\Role.cs">
+      <Link>Model\Role.cs</Link>
+    </Compile>
     <Compile Include="..\src\T2D.Model\Thing.cs">
       <Link>Model\Thing.cs</Link>
     </Compile>

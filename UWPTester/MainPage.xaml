@@ -9,7 +9,7 @@
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,0,-167,0">
 		<ComboBox x:Name="ModelType" Margin="27,30,0,0" Width="202" />
-		<TextBlock HorizontalAlignment="Left" Margin="27,10,0,0" TextWrapping="Wrap" Text="Select ModelType" VerticalAlignment="Top"/>
+		<TextBlock HorizontalAlignment="Left" Margin="27,10,0,0" TextWrapping="Wrap" Text="Select Thing ModelType" VerticalAlignment="Top"/>
 		<Button x:Name="bGetAll" Content="Get All" HorizontalAlignment="Left" Margin="27,67,0,0" VerticalAlignment="Top" Click="bGetAll_Click"/>
 		<GridView x:Name="gridView" HorizontalAlignment="Left" Margin="10,365,0,0" VerticalAlignment="Top" Width="507" Height="162"/>
 		<Button x:Name="bGetOne" Content="Get One" HorizontalAlignment="Left" Margin="96,104,0,0" VerticalAlignment="Top" Click="bGetOne_Click"/>

@@ -39,39 +39,6 @@ namespace UWPTester
 
 		}
 
-		private async void bGetAll_Click(object sender, RoutedEventArgs e)
-		{
-			await HandleResponse(await client.GetAsync(ModelType.SelectedValue.ToString()));
-		}
-
-		private async void bGetOne_Click(object sender, RoutedEventArgs e)
-		{
-			int id;
-			if (!int.TryParse(txtInOut.Text, out id)) id = 1;
-
-			await HandleResponse(await client.GetAsync($"{ModelType.SelectedValue.ToString()}/{id}"));
-		}
-
-		private void bGetOneInput_Click(object sender, RoutedEventArgs e)
-		{
-			txtInOut.Text = "3";
-		}
-
-		private void bPostInp_Click(object sender, RoutedEventArgs e)
-		{
-			txtInOut.Text=
-@"{
-  ""name"":""uusi thing"",
-  ""version"":776
-}";
-		}
-
-		private async void bPost_Click(object sender, RoutedEventArgs e)
-		{
-			var content = new StringContent(txtInOut.Text, new System.Text.UTF8Encoding(), "application/json");
-			await HandleResponse(await client.PostAsync($"{ModelType.SelectedValue.ToString()}", content));
-		}
-
 		private async Task<bool> HandleResponse(HttpResponseMessage resp)
 		{
 			string result = null;
@@ -82,7 +49,8 @@ namespace UWPTester
 			}
 			else
 			{
-				txtInOut.Text = "error";
+				result = await resp.Content.ReadAsStringAsync();
+				txtInOut.Text = result;
 				return false;
 			}
 			var obj = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
@@ -90,53 +58,83 @@ namespace UWPTester
 			return true;
 		}
 
+		private async void bGetAll_Click(object sender, RoutedEventArgs e)
+		{
+			await HandleResponse(await client.GetAsync(ModelType.SelectedValue.ToString()));
+		}
+
+		private async void bGetOne_Click(object sender, RoutedEventArgs e)
+		{
+			await HandleResponse(await client.GetAsync($"{ModelType.SelectedValue.ToString()}/id/{txtInOut.Text}"));
+		}
+
+		private void bGetOneInput_Click(object sender, RoutedEventArgs e)
+		{
+			txtInOut.Text = "?cu=sovelto.fi/inventory&us=ThingNb2";
+		}
+
+		private void bPostInp_Click(object sender, RoutedEventArgs e)
+		{
+			txtInOut.Text =
+@"{
+id: {
+  creatorUri: ""sovelto.fi/inventory"",
+  uniqueString: ""ThingNb jokin muu""
+},
+height: 124.5,
+width: 43
+}";
+		}
+
+		private async void bPost_Click(object sender, RoutedEventArgs e)
+		{
+			var content = new StringContent(txtInOut.Text, new System.Text.UTF8Encoding(), "application/json");
+			await HandleResponse(await client.PostAsync($"{ModelType.SelectedValue.ToString()}", content));
+		}
+
+	
 		private void bPatchInp_Click(object sender, RoutedEventArgs e)
 		{
 			txtInOut.Text =
-@"3 (tämä on päivitettävän thing:n id, päivitetään vain osa propertyistä)
+@"?cu=sovelto.fi/inventory&us=ThingNb2  // tämä on päivitettävän thing:n id, päivitetään vain osa propertyistä
 
 [
     {""op"":""replace"",
-	  ""path"":""name"",
-	  ""value"": ""nimi päivitetään""
+	  ""path"":""height"",
+	  ""value"": ""123""
 		},
 	{""op"":""replace"",
-	  ""path"":""version"",
-	  ""value"": 123 
+	  ""path"":""width"",
+	  ""value"": 321 
 	}
 ]";
 		}
 
 		private async void bPatch_Click(object sender, RoutedEventArgs e)
 		{
-			int id;
-			if (!int.TryParse(txtInOut.Text.Substring(0, txtInOut.Text.IndexOf(" ")), out id))
-				id = 1;
+			string id = txtInOut.Text.Substring(0, txtInOut.Text.IndexOf("  //"));
 
 			string s = txtInOut.Text.Substring(txtInOut.Text.IndexOf("["));
 			var msg = new HttpRequestMessage(new HttpMethod("PATCH"), $"{ModelType.SelectedValue.ToString()}/{id}");
 			msg.Content = new StringContent(s, new System.Text.UTF8Encoding(), "application/json");
-	
-			await HandleResponse(await client.SendAsync (msg));
 
+			await HandleResponse(await client.SendAsync(msg));
 		}
 
 		private void bPutInp_Click(object sender, RoutedEventArgs e)
 		{
 			txtInOut.Text =
-			@"3 (tämä on päivitettävän thing:n id, päivitetään kaikki propertyt)
+			@"?cu=sovelto.fi/inventory&us=ThingNb2  // tämä on päivitettävän thing:n id, päivitetään kaikki propertyt)
 
 {
-  ""name"":""uusi name"",
-  ""version"":776
+  ""width"":9988,
+  ""height"":776
 }";
 		}
 
 		private async void bPut_Click(object sender, RoutedEventArgs e)
 		{
-			int id;
-			if (!int.TryParse(txtInOut.Text.Substring(0, txtInOut.Text.IndexOf(" ")), out id))
-				id = 1;
+			string id = txtInOut.Text.Substring(0, txtInOut.Text.IndexOf("  //"));
 
 			string s = txtInOut.Text.Substring(txtInOut.Text.IndexOf("{"));
 			var content = new StringContent(s, new System.Text.UTF8Encoding(), "application/json");
@@ -146,15 +144,12 @@ namespace UWPTester
 
 		private void bDelInp_Click(object sender, RoutedEventArgs e)
 		{
-			txtInOut.Text = "3";
+			txtInOut.Text = "?cu=sovelto.fi/inventory&us=ThingNb2";
 		}
 
 		private async void bDel_Click(object sender, RoutedEventArgs e)
 		{
-			int id;
-			if (!int.TryParse(txtInOut.Text, out id)) id = 1;
-
-			await HandleResponse(await client.DeleteAsync($"{ModelType.SelectedValue.ToString()}/{id}"));
+			await HandleResponse(await client.DeleteAsync($"{ModelType.SelectedValue.ToString()}/{txtInOut.Text}"));
 
 		}
 	}
