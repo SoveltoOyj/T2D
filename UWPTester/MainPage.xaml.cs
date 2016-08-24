@@ -34,6 +34,10 @@ namespace UWPTester
 			ModelType.Items.Add("Thing");
 			ModelType.SelectedIndex = 0;
 
+			this.InitializeComponent();
+			ModelType2.Items.Add("Role");
+			ModelType2.SelectedIndex = 0;
+
 			client = new HttpClient();
 			client.BaseAddress = new Uri(serviceUrl);
 
@@ -42,21 +46,22 @@ namespace UWPTester
 		private async Task<bool> HandleResponse(HttpResponseMessage resp)
 		{
 			string result = null;
+			result = await resp.Content.ReadAsStringAsync();
 			if (resp.IsSuccessStatusCode)
 			{
-				result = await resp.Content.ReadAsStringAsync();
 				txtInOut.Text = result;
 			}
 			else
 			{
-				result = await resp.Content.ReadAsStringAsync();
-				txtInOut.Text = result;
+				txtInOut.Text = "Error: " + result;
 				return false;
 			}
 			var obj = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
 			gridView.ItemsSource = obj;
 			return true;
 		}
+
+		#region ThingModel
 
 		private async void bGetAll_Click(object sender, RoutedEventArgs e)
 		{
@@ -152,5 +157,90 @@ width: 43
 			await HandleResponse(await client.DeleteAsync($"{ModelType.SelectedValue.ToString()}/{txtInOut.Text}"));
 
 		}
+		#endregion
+
+		#region id Model
+
+		private async void bGetAll2_Click(object sender, RoutedEventArgs e)
+		{
+			await HandleResponse(await client.GetAsync(ModelType2.SelectedValue.ToString()));
+		}
+
+		private void bGetOneInput2_Click(object sender, RoutedEventArgs e)
+		{
+			txtInOut.Text = "2";
+		}
+
+		private async void bGetOne2_Click(object sender, RoutedEventArgs e)
+		{
+			await HandleResponse(await client.GetAsync($"{ModelType2.SelectedValue.ToString()}/{txtInOut.Text}"));
+		}
+
+		private void bPostInp2_Click(object sender, RoutedEventArgs e)
+		{
+			txtInOut.Text = "{name: \"uusi\"}";
+		}
+
+		private async void bPost2_Click(object sender, RoutedEventArgs e)
+		{
+			var content = new StringContent(txtInOut.Text, new System.Text.UTF8Encoding(), "application/json");
+			await HandleResponse(await client.PostAsync($"{ModelType2.SelectedValue.ToString()}", content));
+		}
+
+		private void bPatchInp2_Click(object sender, RoutedEventArgs e)
+		{
+			txtInOut.Text =
+@"2  // tämä on päivitettävän ID, vain halutut kentät päivitetään
+[
+    {""op"":""replace"",
+	  ""path"":""name"",
+	  ""value"": ""uusi arvo""
+		}
+]";
+		}
+
+		private async void bPatch2_Click(object sender, RoutedEventArgs e)
+		{
+			string id = txtInOut.Text.Substring(0, txtInOut.Text.IndexOf("  //"));
+
+			string s = txtInOut.Text.Substring(txtInOut.Text.IndexOf("["));
+
+			var msg = new HttpRequestMessage(new HttpMethod("PATCH"), $"{ModelType2.SelectedValue.ToString()}/{id}");
+			msg.Content = new StringContent(s, new System.Text.UTF8Encoding(), "application/json");
+
+			await HandleResponse(await client.SendAsync(msg));
+		}
+
+		private void bPutInp2_Click(object sender, RoutedEventArgs e)
+		{
+			txtInOut.Text =
+@"2  // tämä on päivitettävän modelin id, päivitetään kaikki propertyt)
+
+{
+  ""name"":""päivitetty arvo""
+}";
+		}
+
+		private async void bPut2_Click(object sender, RoutedEventArgs e)
+		{
+			string id = txtInOut.Text.Substring(0, txtInOut.Text.IndexOf("  //"));
+
+			string s = txtInOut.Text.Substring(txtInOut.Text.IndexOf("{"));
+			var content = new StringContent(s, new System.Text.UTF8Encoding(), "application/json");
+			await HandleResponse(await client.PutAsync($"{ModelType2.SelectedValue.ToString()}/{id}", content));
+
+		}
+
+		private void bDelInp2_Click(object sender, RoutedEventArgs e)
+		{
+			txtInOut.Text = "2  // tämä on deletoitavan modelin id";
+		}
+
+		private async void bDel2_Click(object sender, RoutedEventArgs e)
+		{
+			string id = txtInOut.Text.Substring(0, txtInOut.Text.IndexOf("  //"));
+			await HandleResponse(await client.DeleteAsync($"{ModelType2.SelectedValue.ToString()}/{id}"));
+		}
 	}
+	#endregion
 }

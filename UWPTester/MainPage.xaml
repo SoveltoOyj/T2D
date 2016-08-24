@@ -7,13 +7,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,0,-167,0">
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,0,-622,67">
 		<ComboBox x:Name="ModelType" Margin="27,30,0,0" Width="202" />
 		<TextBlock HorizontalAlignment="Left" Margin="27,10,0,0" TextWrapping="Wrap" Text="Select Thing ModelType" VerticalAlignment="Top"/>
 		<Button x:Name="bGetAll" Content="Get All" HorizontalAlignment="Left" Margin="27,67,0,0" VerticalAlignment="Top" Click="bGetAll_Click"/>
-		<GridView x:Name="gridView" HorizontalAlignment="Left" Margin="10,365,0,0" VerticalAlignment="Top" Width="507" Height="162"/>
+		<GridView x:Name="gridView" HorizontalAlignment="Left" Margin="10,355,0,0" VerticalAlignment="Top" Width="948" Height="162"/>
 		<Button x:Name="bGetOne" Content="Get One" HorizontalAlignment="Left" Margin="96,104,0,0" VerticalAlignment="Top" Click="bGetOne_Click"/>
-		<TextBox x:Name="txtInOut" HorizontalAlignment="Left" Margin="27,141,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Height="190" Width="490" AcceptsReturn="True"/>
+		<TextBox x:Name="txtInOut" HorizontalAlignment="Left" Margin="27,141,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Height="190" Width="931" AcceptsReturn="True"/>
 		<Button x:Name="bGetOneInput" Content="Input Ex." HorizontalAlignment="Left" Margin="96,67,0,0" VerticalAlignment="Top" Width="75" Click="bGetOneInput_Click"/>
 		<Button x:Name="bPostInp" Content="Inp." HorizontalAlignment="Left" Margin="176,67,0,0" VerticalAlignment="Top" Click="bPostInp_Click"/>
 		<Button x:Name="bPost" Content="Post" HorizontalAlignment="Left" Margin="176,104,0,0" VerticalAlignment="Top" Click="bPost_Click"/>
@@ -23,5 +23,18 @@
 		<Button x:Name="bPut" Content="Put" HorizontalAlignment="Left" Margin="304,104,0,0" VerticalAlignment="Top" Click="bPut_Click"/>
 		<Button x:Name="bDelInp" Content="inp" HorizontalAlignment="Left" Margin="392,67,0,0" VerticalAlignment="Top" Click="bDelInp_Click"/>
 		<Button x:Name="bDel" Content="Delete" HorizontalAlignment="Left" Margin="392,104,0,0" VerticalAlignment="Top" Click="bDel_Click"/>
+		<ComboBox x:Name="ModelType2" Margin="491,30,0,0" Width="202" />
+		<TextBlock HorizontalAlignment="Left" Margin="491,5,0,0" TextWrapping="Wrap" Text="Select ModelType" VerticalAlignment="Top"/>
+		<Button x:Name="bGetAll2" Content="Get All" HorizontalAlignment="Left" Margin="488,67,0,0" VerticalAlignment="Top" Click="bGetAll2_Click" />
+		<Button x:Name="bGetOne2" Content="Get One" HorizontalAlignment="Left" Margin="557,104,0,0" VerticalAlignment="Top" Click="bGetOne2_Click" />
+		<Button x:Name="bGetOneInput2" Content="Input Ex." HorizontalAlignment="Left" Margin="557,67,0,0" VerticalAlignment="Top" Width="75" Click="bGetOneInput2_Click"/>
+		<Button x:Name="bPostInp2" Content="Inp." HorizontalAlignment="Left" Margin="637,67,0,0" VerticalAlignment="Top" Click="bPostInp2_Click" />
+		<Button x:Name="bPost2" Content="Post" HorizontalAlignment="Left" Margin="637,104,0,0" VerticalAlignment="Top" Click="bPost2_Click" />
+		<Button x:Name="bPatchInp2" Content="Inp." HorizontalAlignment="Left" Margin="690,67,0,0" VerticalAlignment="Top" Click="bPatchInp2_Click" />
+		<Button x:Name="bPatch2" Content="Patch" HorizontalAlignment="Left" Margin="690,104,0,0" VerticalAlignment="Top" Click="bPatch2_Click" />
+		<Button x:Name="bPutInp2" Content="Inp" HorizontalAlignment="Left" Margin="765,67,0,0" VerticalAlignment="Top" Click="bPutInp2_Click" />
+		<Button x:Name="bPut2" Content="Put" HorizontalAlignment="Left" Margin="765,104,0,0" VerticalAlignment="Top" Click="bPut2_Click" />
+		<Button x:Name="bDelInp2" Content="inp" HorizontalAlignment="Left" Margin="853,67,0,0" VerticalAlignment="Top" Click="bDelInp2_Click" />
+		<Button x:Name="bDel2" Content="Delete" HorizontalAlignment="Left" Margin="853,104,0,0" VerticalAlignment="Top" Click="bDel2_Click" />
 	</Grid>
 </Page>
