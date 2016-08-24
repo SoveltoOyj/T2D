@@ -22,7 +22,7 @@ namespace InventoryApi.Controllers.TestControllers
 
 		// GET api/test/{model}
 		[HttpGet()]
-		public IEnumerable<TThingModel> Get()
+		public virtual IEnumerable<TThingModel> Get()
 		{
 			List<TThingModel> ret = new List<TThingModel>();
 			foreach (var item in dbc.Set<TThingEntity>())
@@ -36,7 +36,7 @@ namespace InventoryApi.Controllers.TestControllers
 		// GET api/test/{model}?cu=creatorUri&us=uniqueString
 		// f.ex. http://localhost:27122/api/test/thing/id?cu=sovelto.fi/inventory&us=ThingNb2
 		[HttpGet("id")]
-		public TThingModel Get(string cu, string us)
+		public virtual TThingModel Get(string cu, string us)
 		{
 			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
 			return  _mapper.EntityToModel(dbc.Set<TThingEntity>().FirstOrDefault(t => t.Id_CreatorUri==key.CreatorUri && t.Id_UniqueString== key.UniqueString ));
@@ -54,7 +54,7 @@ namespace InventoryApi.Controllers.TestControllers
 		//	width: 43
 		//	}
 		[HttpPost]
-		public TThingModel Post([FromBody]TThingModel value)
+		public virtual TThingModel Post([FromBody]TThingModel value)
 		{
 			var newEntity = new TThingEntity();
 			_mapper.UpdateEntityFromModel(value, newEntity,true);
@@ -75,7 +75,7 @@ namespace InventoryApi.Controllers.TestControllers
 		//	}
 		//]
 		[HttpPatch()]
-		public TThingModel Patch(string cu, string us, [FromBody]JsonPatchDocument<TThingModel> value)
+		public virtual TThingModel Patch(string cu, string us, [FromBody]JsonPatchDocument<TThingModel> value)
 		{
 			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
 
@@ -101,7 +101,7 @@ namespace InventoryApi.Controllers.TestControllers
 		//  width: 43
 		// }
 	[HttpPut()]
-		public TThingModel Put(string cu, string us, [FromBody]TThingModel value)
+		public virtual TThingModel Put(string cu, string us, [FromBody]TThingModel value)
 		{
 			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
 			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Id_CreatorUri == key.CreatorUri && t.Id_UniqueString == key.UniqueString);
@@ -114,7 +114,7 @@ namespace InventoryApi.Controllers.TestControllers
 
 		// DELETE api/test/{model}/?cu=creatorUri&us=uniqueString
 		[HttpDelete()]
-		public void Delete(string cu, string us)
+		public virtual void Delete(string cu, string us)
 		{
 			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
 			TThingEntity t = new TThingEntity { Id_CreatorUri = key.CreatorUri, Id_UniqueString = key.UniqueString };

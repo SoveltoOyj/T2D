@@ -28,7 +28,7 @@ namespace InventoryApi.Controllers.TestControllers
 
 		// GET api/test/{model}
 		[HttpGet]
-		public IEnumerable<TModel> Get()
+		public virtual IEnumerable<TModel> Get()
 		{
 			List<TModel> ret = new List<TModel>();
 			foreach (var item in dbc.Set<TEntity>())
@@ -41,7 +41,7 @@ namespace InventoryApi.Controllers.TestControllers
 
 		// GET api/test/{model}/{id}
 		[HttpGet("{id}")]
-		public TModel Get(string id)
+		public virtual TModel Get(string id)
 		{
 			return  _mapper.EntityToModel(dbc.Set<TEntity>().FirstOrDefault(t => t.Id == _mapper.FromModelId(id)));
 		}
@@ -49,7 +49,7 @@ namespace InventoryApi.Controllers.TestControllers
 		// POST api/test/{model}
 		// add a new Entity
 		[HttpPost]
-		public TModel Post([FromBody]TModel value)
+		public virtual TModel Post([FromBody]TModel value)
 		{
 			var newEntity = new TEntity();
 			_mapper.UpdateEntityFromModel(value, newEntity);
@@ -63,7 +63,7 @@ namespace InventoryApi.Controllers.TestControllers
 		//	{"op":"replace", "path":"name", "value": "a new value"}
 		//]
 		[HttpPatch("{id}")]
-		public TModel Patch(string id, [FromBody]JsonPatchDocument<TModel> value)
+		public virtual TModel Patch(string id, [FromBody]JsonPatchDocument<TModel> value)
 		{
 			long localId = _mapper.FromModelId(id);
 			TEntity current = dbc.Set<TEntity>().FirstOrDefault(t => t.Id == localId);
@@ -82,7 +82,7 @@ namespace InventoryApi.Controllers.TestControllers
 		// PUT api/test/{model}/{id}
 		// update whole entity
 		[HttpPut("{id}")]
-		public TModel Put(string id, [FromBody]TModel value)
+		public virtual TModel Put(string id, [FromBody]TModel value)
 		{
 			long localId = _mapper.FromModelId(id);
 			TEntity current = dbc.Set<TEntity>().FirstOrDefault(t => t.Id == localId);
@@ -96,7 +96,7 @@ namespace InventoryApi.Controllers.TestControllers
 
 		// DELETE api/test/{model}/{id}
 		[HttpDelete("{id}")]
-		public void Delete(string id)
+		public virtual void Delete(string id)
 		{
 			long localId = _mapper.FromModelId(id);
 			TEntity t = new TEntity{ Id = localId };

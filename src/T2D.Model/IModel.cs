@@ -5,9 +5,7 @@ using System.Text;
 
 namespace T2D.Model
 {
-	public interface IBaseModel
-	{
-	}
+
 
 	public struct ThingId
 	{
@@ -31,6 +29,10 @@ namespace T2D.Model
 		}
 	}
 
+	public interface IBaseModel
+	{
+	}
+
 	public interface IThingModel:IBaseModel
 	{
 		ThingId Id { get; set; }
@@ -41,6 +43,10 @@ namespace T2D.Model
 		string Id { get; set; }
 	}
 
+	public interface IEnumModel : IModel
+	{
+		string Name { get; set; }
+	}
 
 
 }
