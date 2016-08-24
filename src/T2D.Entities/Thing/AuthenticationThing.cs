@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace T2D.Entities
 {
-    public class AuthenticationThing:ThingBase
+    public class AuthenticationThing:BaseThing
     {
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace InventoryApi.Extensions
 {
-    public class WebApiExceptionFilterAttribute : ExceptionFilterAttribute
+	public class WebApiExceptionFilterAttribute : ExceptionFilterAttribute
 	{
 		public override void OnException(ExceptionContext context)
 		{

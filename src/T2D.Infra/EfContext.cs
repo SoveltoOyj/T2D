@@ -10,7 +10,7 @@ namespace T2D.Infra
 {
 	public class EfContext : DbContext
 	{
-		public DbSet<ThingBase> Things { get; set; }
+		public DbSet<BaseThing> Things { get; set; }
 		public DbSet<AliasThing> AliasThings { get; set; }
 		public DbSet<GenericThing> GenericThings { get; set; }
 		public DbSet<AuthenticationThing> AuthenticationThings { get; set; }
@@ -30,14 +30,14 @@ namespace T2D.Infra
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<ThingBase>()
-					.Property(p => p.Name)
-					.HasMaxLength(50)
+			modelBuilder.Entity<BaseThing>()
+					.HasKey( t   =>  new { t.Id_CreatorUri, t.Id_UniqueString })
 					;
+
 			modelBuilder.Entity<ThingRelation>()
 					.HasOne(tr => tr.Thing1)
 					.WithMany(t => t.ThingRelations)
-					.HasForeignKey(tr => tr.Thing1Id)
+					.HasForeignKey(tr => new { tr.Thing1_Id_CreatorUri, tr.Thing1_Id_UniqueString })
 					.OnDelete(DeleteBehavior.Cascade)
 					;
 
@@ -48,11 +48,23 @@ namespace T2D.Infra
 				;
 
 			modelBuilder.Entity<ThingRelation>()
-					.Property(tr => tr.Thing1Id)
-					.IsRequired();
+					.Property(tr => tr.Thing1_Id_CreatorUri)
+					.IsRequired()
+					;
 			modelBuilder.Entity<ThingRelation>()
-					.Property(tr => tr.Thing2Id)
-					.IsRequired();
+					.Property(tr => tr.Thing1_Id_UniqueString)
+					.IsRequired()
+					;
+
+			modelBuilder.Entity<ThingRelation>()
+					.Property(tr => tr.Thing2_Id_CreatorUri)
+					.IsRequired()
+					;
+			modelBuilder.Entity<ThingRelation>()
+					.Property(tr => tr.Thing2_Id_UniqueString)
+					.IsRequired()
+					;
+
 
 		}
 

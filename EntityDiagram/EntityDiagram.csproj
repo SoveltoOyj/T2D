@@ -67,14 +67,14 @@
     <Compile Include="..\src\T2D.Entities\Thing\AuthenticationThing.cs">
       <Link>AuthenticationThing.cs</Link>
     </Compile>
+    <Compile Include="..\src\T2D.Entities\Thing\BaseThing.cs">
+      <Link>BaseThing.cs</Link>
+    </Compile>
     <Compile Include="..\src\T2D.Entities\Thing\GenericThing.cs">
       <Link>GenericThing.cs</Link>
     </Compile>
     <Compile Include="..\src\T2D.Entities\Thing\RegularThing.cs">
       <Link>RegularThing.cs</Link>
-    </Compile>
-    <Compile Include="..\src\T2D.Entities\Thing\ThingBase.cs">
-      <Link>ThingBase.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -7,11 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 namespace T2D.Model
 {
-	public class Thing:IModel
+	public class Thing:IThingModel
 	{
-		public string Id { get; set; }
-		public string Name { get; set; }
-		public double Version { get; set; }
+		public ThingId Id { get; set; }
+
+		public float Height { get; set; }
+		public float Width { get; set; }
 
 		public override string ToString()
 		{

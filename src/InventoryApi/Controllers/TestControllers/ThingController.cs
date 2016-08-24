@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.JsonPatch;
 namespace InventoryApi.Controllers.TestControllers
 {
 	[Route("api/test/[controller]")]
-	public class ThingController : CrudBaseController<T2D.Entities.RegularThing, T2D.Model.Thing>
+	public class ThingController : CrudThingController<T2D.Entities.RegularThing, T2D.Model.Thing>
 	{
 		public ThingController():base(new ThingMapper())
 		{

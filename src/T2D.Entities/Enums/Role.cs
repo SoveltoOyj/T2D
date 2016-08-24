@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace T2D.Entities
 {
-	public class Role:IEntity
+	public class Role:IEnumEntity
 	{
 		public long Id { get; set; }
 		public string Name { get; set; }

@@ -9,10 +9,16 @@ using Microsoft.AspNetCore.JsonPatch;
 
 namespace InventoryApi.Controllers.TestControllers
 {
+	/// <summary>
+	/// This crud-controller requires Model with string ID and Entity with long Id
+	/// </summary>
+	/// <typeparam name="TEntity"></typeparam>
+	/// <typeparam name="TModel"></typeparam>
 	public class CrudBaseController<TEntity,TModel> : ApiBaseController
 		where TEntity: class,T2D.Entities.IEntity, new()
 		where TModel: class, T2D.Model.IModel
 	{
+
 		protected T2D.InventoryBL.IMapper<TEntity, TModel, long, string> _mapper;
 		public CrudBaseController(T2D.InventoryBL.IMapper<TEntity, TModel, long, string> mapper):base()
 		{

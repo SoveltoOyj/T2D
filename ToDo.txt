@@ -1,8 +1,15 @@
-IEntities, rakenne
-	Enums
-	Aidot entiteetit, ehk‰p‰ string perusavain
- Nyt on enemm‰n enums-tyyppinen
+Pikaohje - kannan tekeminen:
+* katso/tarkista T2D.Infra/EfContect.cs/OnConfiguring -metodista connectionString. Mik‰li mahdollista, el‰ muuta sit‰ (me ei viel‰ k‰ytet‰ konfigurointia, KISS)
+  jos suinkin mahdollista tee sql:‰‰n t2D/Salainen -login-tunnus. Kantaa ei tarvitse tehd‰
+* Aja T2D.Infra -projekti (esim. laittamalla se ensin StartUp -projektiksi ja ajamalla se) 
 
-Attributes -entiteetti hierarkinen
-	erikseen "aito" entiteetti vrs relationship
+
+
+
+
+http://localhost:27122/api/test/thing
+
+// just one thing
+http://localhost:27122/api/test/thing/id?cu=sovelto.fi/inventory&us=ThingNb2
+
 

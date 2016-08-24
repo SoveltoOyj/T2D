@@ -5,16 +5,17 @@ using System.Threading.Tasks;
 
 namespace T2D.Entities
 {
-	public class ThingBase:IEntity
+	public class BaseThing:IThingEntity
 	{
-		public long Id { get; set; }
-		public string Name { get; set; }
-
+		public string Id_CreatorUri { get; set; }
+		public string Id_UniqueString { get; set; }
 		public List<ThingRelation> ThingRelations { get; set; }
 
-		public ThingBase()
+		public BaseThing()
 		{
 			ThingRelations = new List<ThingRelation>();
 		}
+
+
 	}
 }

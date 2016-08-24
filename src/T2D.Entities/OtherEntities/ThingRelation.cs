@@ -9,16 +9,18 @@ namespace T2D.Entities
 	{
 		public long Id { get; set; }
 
-		public string Name { get; set; }
-
-		public long Thing1Id { get; set; }
-		public ThingBase Thing1 { get; set; }
-
-		public long Thing2Id { get; set; }
-		public bool Thing2IsLocal { get; set; }
+		public string Thing1_Id_CreatorUri { get; set; }
+		public string Thing1_Id_UniqueString { get; set; }
+		public BaseThing Thing1 { get; set; }
 
 		public long RelationId { get; set; }
 		public Relation Relation { get; set; }
+
+		public string Thing2_Id_CreatorUri { get; set; }
+		public string Thing2_Id_UniqueString { get; set; }
+
+		public bool Thing2IsLocal { get; set; }
+
 
 	}
 }

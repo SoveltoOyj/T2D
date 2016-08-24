@@ -45,10 +45,9 @@ namespace T2D.Infra
 				dbc.Database.ExecuteSqlCommand("Set identity_insert Roles off;");
 
 				//things
-				dbc.RegularThings.Add(new RegularThing { Name = "First thing", Version = 123 });
-				dbc.RegularThings.Add(new RegularThing { Name = "Second thing", Version = 1234 });
-				dbc.RegularThings.Add(new RegularThing { Name = "Third thing", Version = 1235 });
-				dbc.ArchetypeThings.Add(new ArchetypeThing { Name = "Fourth Thing" });
+				dbc.RegularThings.Add(new RegularThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ThingNb1", Heightmm=123000, Widthmm=432000  });
+				dbc.RegularThings.Add(new RegularThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ThingNb2", Heightmm = 124500, Widthmm = 43000 });
+				dbc.RegularThings.Add(new RegularThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ThingNb3", Heightmm = 123000, Widthmm = 4322000 });
 				dbc.SaveChanges();
 			}
 			finally
