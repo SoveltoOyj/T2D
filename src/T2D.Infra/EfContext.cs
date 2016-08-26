@@ -19,7 +19,7 @@ namespace T2D.Infra
 		public DbSet<ArchivedThing> ArchivedThings { get; set; }
 
 		public DbSet<ThingRelation> ThingRelations { get; set; }
-		public DbSet<ThingRoleMemeber> ThingRoleMembers { get; set; }
+		public DbSet<ThingRoleMember> ThingRoleMembers { get; set; }
 
 		public DbSet<Relation> Relations { get; set; }
 		public DbSet<Role> Roles { get; set; }

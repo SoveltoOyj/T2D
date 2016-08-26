@@ -53,7 +53,7 @@ namespace T2D.Infra
 				dbc.SaveChanges();
 
 				//ThingRoleMember
-				dbc.ThingRoleMembers.Add(new ThingRoleMemeber { Member_ThingId_CreatorUri = "sovelto.fi/inventory", Member_ThingId_UniqueString = "ThingNb1", ThingId_CreatorUri = "sovelto.fi/inventory", ThingId_UniqueString = "ThingNb2", ThingRoleId = 1 });
+				dbc.ThingRoleMembers.Add(new ThingRoleMember { Member_ThingId_CreatorUri = "sovelto.fi/inventory", Member_ThingId_UniqueString = "ThingNb1", ThingId_CreatorUri = "sovelto.fi/inventory", ThingId_UniqueString = "ThingNb2", ThingRoleId = 1 });
 				dbc.SaveChanges();
 
 				//ThingRelation

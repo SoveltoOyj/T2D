@@ -11,7 +11,7 @@ namespace T2D.Infra
 	{
 		public static void SetDbMapping(ModelBuilder modelBuilder)
 		{
-			var tbl = modelBuilder.Entity<ThingRoleMemeber>();
+			var tbl = modelBuilder.Entity<ThingRoleMember>();
 
 			tbl.HasOne(e => e.Thing)
 				.WithMany(t => t.ThingRoleMembers)
