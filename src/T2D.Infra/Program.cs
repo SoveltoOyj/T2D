@@ -13,7 +13,11 @@ namespace T2D.Infra
 		{
 			Console.WriteLine("Create new T2D database (existing db will be deleted), press Y");
 			var ki = Console.ReadKey();
-			if (ki.Key.ToString().ToLower() != "y") return;
+			if (ki.Key.ToString().ToLower() != "y")
+			{
+				PrintData();
+				return;
+			}
 
 			Console.WriteLine("\nCreating database ...");
 			var dbc = new EfContext();
@@ -65,8 +69,49 @@ namespace T2D.Infra
 			{
 				dbc.Database.CloseConnection();
 			}
-			Console.WriteLine("\nDone, Press enter.");
+
+
+			Console.WriteLine("\nDone, Press enter to print some of the data.");
 			Console.ReadLine();
+			PrintData();
+		}
+
+
+		private static void PrintData()
+		{
+			using (var dbc = new EfContext())
+			{
+				Console.WriteLine("ArchetypeThings, version 1");
+				foreach (var item in dbc.ArchetypeThings)
+				{
+					Console.WriteLine($"  {item.Id_UniqueString}");
+				}
+
+				Console.WriteLine("\nArchetypeThings, version 2");
+				foreach (var item in dbc.Things.OfType<ArchetypeThing>())
+				{
+					Console.WriteLine($"  {item.Id_UniqueString}");
+				}
+
+				Console.WriteLine("\nEager Loading");
+				foreach (var item in dbc.Things.Include(e=>e.ThingRelations)
+					)
+				{
+					Console.WriteLine($"  {item.Id_UniqueString}");
+					foreach (var tr in item.ThingRelations)
+					{
+						Console.WriteLine($"      Relation to: {tr.Thing2_Id_CreatorUri}/{tr.Thing2_Id_UniqueString}");
+					}
+					Console.WriteLine();
+				}
+
+
+
+
+
+			}
+
+
 		}
 	}
 
