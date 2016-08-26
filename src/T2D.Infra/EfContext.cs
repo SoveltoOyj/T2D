@@ -30,41 +30,8 @@ namespace T2D.Infra
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<BaseThing>()
-					.HasKey( t   =>  new { t.Id_CreatorUri, t.Id_UniqueString })
-					;
-
-			modelBuilder.Entity<ThingRelation>()
-					.HasOne(tr => tr.Thing1)
-					.WithMany(t => t.ThingRelations)
-					.HasForeignKey(tr => new { tr.Thing1_Id_CreatorUri, tr.Thing1_Id_UniqueString })
-					.OnDelete(DeleteBehavior.Cascade)
-					;
-
-			modelBuilder.Entity<ThingRelation>()
-				.HasOne(tr => tr.Relation)
-				.WithMany()
-				.HasForeignKey(tr=>tr.RelationId)
-				;
-
-			modelBuilder.Entity<ThingRelation>()
-					.Property(tr => tr.Thing1_Id_CreatorUri)
-					.IsRequired()
-					;
-			modelBuilder.Entity<ThingRelation>()
-					.Property(tr => tr.Thing1_Id_UniqueString)
-					.IsRequired()
-					;
-
-			modelBuilder.Entity<ThingRelation>()
-					.Property(tr => tr.Thing2_Id_CreatorUri)
-					.IsRequired()
-					;
-			modelBuilder.Entity<ThingRelation>()
-					.Property(tr => tr.Thing2_Id_UniqueString)
-					.IsRequired()
-					;
-
+			BaseThingDb.SetDbMapping(modelBuilder);
+			ThingRelationDb.SetDbMapping(modelBuilder);
 
 		}
 
