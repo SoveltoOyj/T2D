@@ -9,10 +9,14 @@ namespace T2D.Model
 
 	public struct ThingId
 	{
-		public string CreatorUri { get; set; }
+		public Uri CreatorUri { get; set; }
 		public string UniqueString { get; set; }
 
-		public static ThingId Create(string creatorUri, string uniqueString)
+		public static ThingId Create(string creatorUriStr, string uniqueString)
+		{
+			return new ThingId { CreatorUri = new Uri(creatorUriStr, UriKind.Relative), UniqueString = uniqueString };
+		}
+		public static ThingId Create(Uri creatorUri, string uniqueString)
 		{
 			return new ThingId { CreatorUri = creatorUri, UniqueString = uniqueString };
 		}
