@@ -7,18 +7,14 @@ using T2D.Entities;
 
 namespace T2D.Infra
 {
-	public static class BaseThingDb
+	public static class RoleDb
 	{
 		public static void SetDbMapping(ModelBuilder modelBuilder)
 		{
-			var tbl = modelBuilder.Entity<BaseThing>();
+			var tbl = modelBuilder.Entity<Role>();
 
-			tbl.HasKey(t => new { t.Id_CreatorUri, t.Id_UniqueString })
-					;
-
-			modelBuilder.Entity<GenericThing>()
-				.Property(e => e.Modified)
-				.ForSqlServerHasColumnType("DateTime")
+			tbl.Property(e => e.Name)
+				.ForSqlServerHasColumnType("nvarchar(256)")
 				;
 
 

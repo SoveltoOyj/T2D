@@ -44,12 +44,23 @@ namespace T2D.Infra
 				dbc.SaveChanges();
 				dbc.Database.ExecuteSqlCommand("Set identity_insert Roles off;");
 
+				//Archetypthings
+				dbc.ArchetypeThings.Add(new ArchetypeThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ArcNb1", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13) });
 				//things
-				dbc.RegularThings.Add(new RegularThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ThingNb1", Heightmm=123000, Widthmm=432000  });
-				dbc.RegularThings.Add(new RegularThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ThingNb2", Heightmm = 124500, Widthmm = 43000 });
-				dbc.RegularThings.Add(new RegularThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ThingNb3", Heightmm = 123000, Widthmm = 4322000 });
+				dbc.RegularThings.Add(new RegularThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ThingNb1", Heightmm = 123000, Widthmm = 432000, Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13) });
+				dbc.RegularThings.Add(new RegularThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ThingNb2", Heightmm = 124500, Widthmm = 43000, Modified = new DateTime(2015, 8, 23), Published = new DateTime(2015, 4, 8) });
+				dbc.RegularThings.Add(new RegularThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ThingNb3", Heightmm = 123000, Widthmm = 4322000, Modified = new DateTime(2016, 1, 23), Published = new DateTime(2016, 2, 4), ArchetypeThingId_CreatorUri="sovelto.fi/inventory", ArchetypeThingId_UniqueString= "ArcNb1" });
+				dbc.SaveChanges();
+
+				//ThingRoleMember
+				dbc.ThingRoleMembers.Add(new ThingRoleMemeber { Member_ThingId_CreatorUri = "sovelto.fi/inventory", Member_ThingId_UniqueString = "ThingNb1", ThingId_CreatorUri = "sovelto.fi/inventory", ThingId_UniqueString = "ThingNb2", ThingRoleId = 1 });
+				dbc.SaveChanges();
+
+				//ThingRelation
+				dbc.ThingRelations.Add(new ThingRelation { Thing1_Id_CreatorUri = "sovelto.fi/inventory", Thing1_Id_UniqueString = "ThingNb1", Thing2_Id_CreatorUri = "example.fi/inventory", Thing2_Id_UniqueString = "123", RelationId = 1 });
 				dbc.SaveChanges();
 			}
+
 			finally
 			{
 				dbc.Database.CloseConnection();

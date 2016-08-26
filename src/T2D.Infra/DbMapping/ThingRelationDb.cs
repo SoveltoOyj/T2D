@@ -11,8 +11,9 @@ namespace T2D.Infra
 	{
 		public static void SetDbMapping(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<ThingRelation>()
-				.HasOne(e => e.Thing1)
+			var tbl = modelBuilder.Entity<ThingRelation>();
+
+			tbl.HasOne(e => e.Thing1)
 				.WithMany(t => t.ThingRelations)
 				.HasForeignKey(e => new
 				{
@@ -22,29 +23,24 @@ namespace T2D.Infra
 				.OnDelete(DeleteBehavior.Cascade)
 				;
 
-			modelBuilder.Entity<ThingRelation>()
-				.HasOne(e => e.Relation)
+			tbl.HasOne(e => e.Relation)
 				.WithMany()
 				.HasForeignKey(e => e.RelationId)
 				;
 
-			modelBuilder.Entity<ThingRelation>()
-					.Property(e => e.Thing1_Id_CreatorUri)
+			tbl.Property(e => e.Thing1_Id_CreatorUri)
 					.IsRequired()
 					;
 
-			modelBuilder.Entity<ThingRelation>()
-					.Property(e => e.Thing1_Id_UniqueString)
+			tbl.Property(e => e.Thing1_Id_UniqueString)
 					.IsRequired()
 					;
 
-			modelBuilder.Entity<ThingRelation>()
-					.Property(e => e.Thing2_Id_CreatorUri)
+			tbl.Property(e => e.Thing2_Id_CreatorUri)
 					.IsRequired()
 					;
 
-			modelBuilder.Entity<ThingRelation>()
-				.Property(e => e.Thing2_Id_UniqueString)
+			tbl.Property(e => e.Thing2_Id_UniqueString)
 				.IsRequired()
 				;
 
