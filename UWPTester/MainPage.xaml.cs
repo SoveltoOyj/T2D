@@ -25,7 +25,9 @@ namespace UWPTester
 	public sealed partial class MainPage : Page
 	{
 
-		string serviceUrl = "http://localhost:27122/api/test/";
+		//string serviceUrl = "http://localhost:27122/api/test/";
+		string serviceUrl = "http://localhost:5000/api/test/";
+		
 		HttpClient client;
 
 		public MainPage()
