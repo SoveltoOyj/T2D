@@ -37,7 +37,7 @@ namespace T2D.InventoryBL.Mappers
 		{
 			return new Entities.RegularThing
 			{
-				Id_CreatorUri = from.Id.CreatorUri,
+				Id_CreatorUri = from.Id.CreatorUri.ToString(),
 				Id_UniqueString=from.Id.UniqueString,
 				Widthmm = (long)(from.Width * 1000f),
 				Heightmm = (long)(from.Height* 1000f),
@@ -60,7 +60,7 @@ namespace T2D.InventoryBL.Mappers
 		{
 			if (updateAlsoId)
 			{
-				to.Id_CreatorUri = from.Id.CreatorUri;
+				to.Id_CreatorUri = from.Id.CreatorUri.ToString();
 				to.Id_UniqueString = from.Id.UniqueString;
 			}
 			UpdateEntityFromModel(from, to);
