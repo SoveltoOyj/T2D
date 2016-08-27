@@ -25,45 +25,6 @@ namespace InventoryApi.Controllers.TestControllers
 		}
 
 
-		// GET api/test/{model}
-		[HttpGet("search")]
-		public virtual IEnumerable Search(int page = 0, int pageSize = 10, string orderBy = "Id", string select = "Id, Width", string where="")
-		{
-			List<TThingModel> ret = new List<TThingModel>();
-			PaginationHeader ph = new PaginationHeader();
-
-			string orderByStr = "";
-			foreach (var item in orderBy.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-			{
-				if (orderByStr.Length > 0)
-					orderByStr += ", ";
-				orderByStr += _mapper.ModelToEntityPropertyName(item);
-			}
-			var query = dbc.Set<TThingEntity>().AsQueryable();
-			query = query.FromSql($"select * from Things ");
-
-			ph.TotalCount = query.LongCount();
-			ph.CurrentPage = page;
-			ph.PageSize = pageSize;
-			ph.MorePages = ((page + 1) * pageSize) < ph.TotalCount;
-
-			query = dbc.Set<TThingEntity>().AsQueryable();
-			query = dbc.Set<TThingEntity>()
-				.AsQueryable()
-				.FromSql($"select * from Things t WHERE [t].[Discriminator] IN (N'ArchivedThing', N'RegularThing') order by {orderByStr} offset {page * pageSize} rows fetch next {pageSize} rows only")
-				;
-			query.OrderBy(t=>t.Id_CreatorUri);
-			foreach (var item in query)
-			{
-				ret.Add(_mapper.EntityToModel(item));
-			}
-
-			this.Response.Headers.Add("X-Pagination", ph.ToString());
-				return ret;
-
-		}
-
-
 		[HttpGet()]
 		public virtual IEnumerable<TThingModel> Get(int page = 0, int pageSize = 10)
 		{

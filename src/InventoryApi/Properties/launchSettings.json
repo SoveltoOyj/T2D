@@ -19,7 +19,7 @@
     "InventoryApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5000/api/test/thing/search",
+      "launchUrl": "http://localhost:5000/api/test/thing/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
