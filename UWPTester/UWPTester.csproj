@@ -92,6 +92,9 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\src\T2D.Entities\Helpers\StringHelpers.cs">
+      <Link>StringHelpers.cs</Link>
+    </Compile>
     <Compile Include="..\src\T2D.Model\IModel.cs">
       <Link>Model\IModel.cs</Link>
     </Compile>

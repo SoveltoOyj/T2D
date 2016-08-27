@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using T2D.Helpers;
 
 namespace T2D.Entities
 {
@@ -20,6 +21,10 @@ namespace T2D.Entities
 		public string Thing2_Id_UniqueString { get; set; }
 
 		public bool Thing2IsLocal { get; set; }
+		public override string ToString()
+		{
+			return this.ToJson();
+		}
 
 
 	}

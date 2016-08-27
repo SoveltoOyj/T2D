@@ -49,6 +49,9 @@
     <Compile Include="..\src\T2D.Entities\Enums\Role.cs">
       <Link>Role.cs</Link>
     </Compile>
+    <Compile Include="..\src\T2D.Entities\Helpers\StringHelpers.cs">
+      <Link>StringHelpers.cs</Link>
+    </Compile>
     <Compile Include="..\src\T2D.Entities\IEntity.cs">
       <Link>IEntity.cs</Link>
     </Compile>

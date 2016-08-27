@@ -12,6 +12,8 @@ namespace T2D.InventoryBL
 		TKeyEntity FromModelId(TKeyModel id);
 		TEntity ModelToEntity(TModel from);
 		TEntity UpdateEntityFromModel(TModel from, TEntity to);
+		string ModelToEntityPropertyName(string from);
+		string EntityToModelPropertyName(string from);
 	}
 
 	/// <summary>

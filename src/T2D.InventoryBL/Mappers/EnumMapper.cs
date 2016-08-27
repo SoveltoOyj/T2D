@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using T2D.Entities;
+using T2D.Helpers;
 using T2D.Model;
 
 namespace T2D.InventoryBL.Mappers
@@ -16,6 +17,7 @@ namespace T2D.InventoryBL.Mappers
 			return new TEnumModel { Id = FromEntityId(from.Id), Name = from.Name } ;
 		}
 
+	
 		public string FromEntityId(long id)
 		{
 			return id.ToString();
@@ -32,6 +34,15 @@ namespace T2D.InventoryBL.Mappers
 		public TEnumEntity ModelToEntity(TEnumModel from)
 		{
 			return new TEnumEntity { Id = FromModelId(from.Id), Name = from.Name };
+		}
+
+		public string ModelToEntityPropertyName(string from)
+		{
+			return from.TestEquality("Id", "Name");
+		}
+		public string EntityToModelPropertyName(string from)
+		{
+			return from.TestEquality("id", "name");
 		}
 
 		public TEnumEntity UpdateEntityFromModel(TEnumModel from, TEnumEntity to)

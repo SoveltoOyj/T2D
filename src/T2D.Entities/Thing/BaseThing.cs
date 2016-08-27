@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using T2D.Helpers;
 
 namespace T2D.Entities
 {
@@ -16,6 +17,10 @@ namespace T2D.Entities
 			ThingRelations = new List<ThingRelation>();
 		}
 
+		public override string ToString()
+		{
+			return this.ToJson();
+		}
 
 	}
 }

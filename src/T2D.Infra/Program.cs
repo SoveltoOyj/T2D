@@ -99,7 +99,7 @@ namespace T2D.Infra
 					Console.WriteLine($"  {item.Id_UniqueString}");
 					foreach (var tr in item.ThingRelations)
 					{
-						Console.WriteLine($"      Relation to: {tr.Thing2_Id_CreatorUri}/{tr.Thing2_Id_UniqueString} Relation:{tr.Relation.Name}");
+						Console.WriteLine($"      Relation to: {tr.Thing2_Id_CreatorUri}/{tr.Thing2_Id_UniqueString} Relation:{tr.Relation}");
 					}
 					Console.WriteLine();
 				}

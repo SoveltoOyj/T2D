@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using T2D.Entities;
+using T2D.Helpers;
 using T2D.Model;
 
 namespace T2D.InventoryBL.Mappers
@@ -66,6 +67,34 @@ namespace T2D.InventoryBL.Mappers
 			UpdateEntityFromModel(from, to);
 			return to;
 		}
+
+		public string ModelToEntityPropertyName(string from)
+		{
+			string ret;
+			ret = from.TestEquality("Height");
+			if (ret != null) return "Heightmm";
+
+			ret = from.TestEquality("Width");
+			if (ret != null) return "Widthtmm";
+
+			ret = from.TestEquality("id");
+			if (ret != null) return "Id_CreatorUri, Id_UniqueString";
+			return null;
+		}
+		public string EntityToModelPropertyName(string from)
+		{
+			string ret;
+			ret = from.TestEquality("Heightmm");
+			if (ret != null) return "height";
+
+			ret = from.TestEquality("Widthmm");
+			if (ret != null) return "widthtmm";
+
+			ret = from.TestEquality("id");
+			if (ret != null) return "Id_CreatorUri, Id_UniqueString";
+			return null;
+		}
+
 	}
 }
 

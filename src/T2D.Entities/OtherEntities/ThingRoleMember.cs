@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using T2D.Helpers;
 
 namespace T2D.Entities
 {
@@ -19,6 +20,10 @@ namespace T2D.Entities
 		public string Member_ThingId_CreatorUri { get; set; }
 		public string Member_ThingId_UniqueString { get; set; }
 		public GenericThing Member { get; set; }
+		public override string ToString()
+		{
+			return this.ToJson();
+		}
 
 
 	}
