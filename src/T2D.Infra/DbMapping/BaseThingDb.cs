@@ -20,6 +20,10 @@ namespace T2D.Infra
 				.Property(e => e.Modified)
 				.ForSqlServerHasColumnType("DateTime")
 				;
+			modelBuilder.Entity<GenericThing>()
+				.Property(e => e.Published)
+				.ForSqlServerHasColumnType("DateTime")
+				;
 
 
 		}

@@ -10,5 +10,9 @@ namespace T2D.Entities
 		//height and width are stored in millimeters (just an example)
 		public long Heightmm { get; set; }
 		public long Widthmm { get; set; }
+		public bool Logging { get; set; }
+		public bool IsLocalOnly { get; set; }
+
+
 	}
 }

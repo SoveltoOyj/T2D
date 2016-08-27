@@ -20,6 +20,8 @@ namespace T2D.Entities
 		string Id_CreatorUri { get; set;}
 
 		string Id_UniqueString { get; set; } 
+
+		string Title { get; set; }
 	}
 	public interface IEntity : IBaseEntity
 	{
