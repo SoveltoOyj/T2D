@@ -39,24 +39,28 @@ namespace InventoryApi.Controllers.TestControllers
 					orderByStr += ", ";
 				orderByStr += _mapper.ModelToEntityPropertyName(item);
 			}
-			Expression<Func<TThingEntity, object>> qq = t => new { t.Id_CreatorUri, t.Id_UniqueString };
-			var query = dbc.Set<TThingEntity>().OrderBy(t => new { t.Id_CreatorUri, t.Id_UniqueString });
-			//			var query = dbc.Set<TThingEntity>().AsQueryable().OrderByStr(orderByStr);
+			var query = dbc.Set<TThingEntity>().AsQueryable();
+			query = query.FromSql($"select * from Things ");
 
-			ph.TotalCount = query.Count();
+			ph.TotalCount = query.LongCount();
 			ph.CurrentPage = page;
 			ph.PageSize = pageSize;
 			ph.MorePages = ((page + 1) * pageSize) < ph.TotalCount;
 
-			//query = query.FromSql($"select * from Things order by {orderByStr}");
+			query = dbc.Set<TThingEntity>().AsQueryable();
+			query = dbc.Set<TThingEntity>()
+				.AsQueryable()
+				.FromSql($"select * from Things t WHERE [t].[Discriminator] IN (N'ArchivedThing', N'RegularThing') order by {orderByStr} offset {page * pageSize} rows fetch next {pageSize} rows only")
+				;
 			query.OrderBy(t=>t.Id_CreatorUri);
-			foreach (var item in query.Skip(page * pageSize).Take(pageSize))
+			foreach (var item in query)
 			{
 				ret.Add(_mapper.EntityToModel(item));
 			}
 
 			this.Response.Headers.Add("X-Pagination", ph.ToString());
-			return ret;
+				return ret;
+
 		}
 
 

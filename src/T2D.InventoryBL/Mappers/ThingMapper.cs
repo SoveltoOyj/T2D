@@ -75,7 +75,7 @@ namespace T2D.InventoryBL.Mappers
 			if (ret != null) return "Heightmm";
 
 			ret = from.TestEquality("Width");
-			if (ret != null) return "Widthtmm";
+			if (ret != null) return "Widthmm";
 
 			ret = from.TestEquality("id");
 			if (ret != null) return "Id_CreatorUri, Id_UniqueString";
@@ -88,7 +88,7 @@ namespace T2D.InventoryBL.Mappers
 			if (ret != null) return "height";
 
 			ret = from.TestEquality("Widthmm");
-			if (ret != null) return "widthtmm";
+			if (ret != null) return "widthmm";
 
 			ret = from.TestEquality("id");
 			if (ret != null) return "Id_CreatorUri, Id_UniqueString";
