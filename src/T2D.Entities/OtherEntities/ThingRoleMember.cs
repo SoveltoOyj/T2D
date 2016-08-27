@@ -12,14 +12,14 @@ namespace T2D.Entities
 
 		public string ThingId_CreatorUri { get; set; }
 		public string ThingId_UniqueString { get; set; }
-		public GenericThing Thing { get; set; }
+		public BaseThing Thing { get; set; }
 
 		public long ThingRoleId { get; set; }
 		//public ThingRole ThingRole { get; set; }
 
 		public string Member_ThingId_CreatorUri { get; set; }
 		public string Member_ThingId_UniqueString { get; set; }
-		public GenericThing Member { get; set; }
+		public BaseThing Member { get; set; }
 		public override string ToString()
 		{
 			return this.ToJson();
