@@ -7,13 +7,17 @@ namespace T2D.Model
 {
 
 
-	public struct ThingId
+	public class ThingId
 	{
 		public Uri CreatorUri { get; set; }
 		public string UniqueString { get; set; }
 
 		public static ThingId Create(string creatorUriStr, string uniqueString)
 		{
+			if (string.IsNullOrWhiteSpace(creatorUriStr))
+			{
+				return new ThingId { CreatorUri = null, UniqueString = uniqueString };
+			}
 			return new ThingId { CreatorUri = new Uri(creatorUriStr, UriKind.Relative), UniqueString = uniqueString };
 		}
 		public static ThingId Create(Uri creatorUri, string uniqueString)
@@ -40,6 +44,7 @@ namespace T2D.Model
 	public interface IThingModel:IBaseModel
 	{
 		ThingId Id { get; set; }
+		string Title { get; set; }
 	}
 
 	public interface IModel : IBaseModel

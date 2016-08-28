@@ -27,5 +27,6 @@ namespace T2D.Entities
 		ContainedBy,
 		Inherits,
 		Orginates,
+		Belongings,
 	}	;
 }

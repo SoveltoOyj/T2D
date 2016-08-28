@@ -63,8 +63,7 @@ namespace InventoryApi.Controllers.TestControllers
 		//		creatorUri: "sovelto.fi/inventory",
 		//		uniqueString: "ThingNb jokin muu"
 		//	},
-		//	height: 124.5,
-		//	width: 43
+		//	Location_GPS: "124.5"
 		//	}
 		[HttpPost]
 		public virtual TThingModel Post([FromBody]TThingModel value)
