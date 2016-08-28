@@ -190,6 +190,7 @@ namespace T2D.Infra
 				string s1 = "Id_CreatorUri";
 				string s2 = "Id_UniqueString";
 				var q2 = dbc.Things; //tähän sitten Express:llä order by, sen mä taidankin osata tehdä, katso Search-kommentilla olevaa versiota
+														 // tämän mukaan olen tehnyt (nyt on poistettu) http://stackoverflow.com/questions/36298868/how-to-dynamically-order-by-certain-entity-properties-in-entityframework-7-core
 				foreach (var item in q1)
 				{
 					Console.WriteLine($"{item.Id_CreatorUri}/{item.Id_UniqueString} - {item.Title}");
