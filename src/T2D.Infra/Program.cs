@@ -55,7 +55,8 @@ namespace T2D.Infra
 				//things
 				dbc.RegularThings.Add(new RegularThing
 				{
-					Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "T1",
+					Id_CreatorUri = "sovelto.fi/inventory",
+					Id_UniqueString = "T1",
 					Title = "MySuitcase",
 					Created = new DateTime(2015, 3, 1),
 					IsLocalOnly = true,
@@ -65,11 +66,13 @@ namespace T2D.Infra
 					StatusId = 1,
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
-					CreatorThingId_CreatorUri= "sovelto.fi/inventory",CreatorThingId_UniqueString = "T0",
+					CreatorThingId_CreatorUri = "sovelto.fi/inventory",
+					CreatorThingId_UniqueString = "T0",
 				});
-				dbc.RegularThings.Add(new RegularThing 
+				dbc.RegularThings.Add(new RegularThing
 				{
-					Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "T2",
+					Id_CreatorUri = "sovelto.fi/inventory",
+					Id_UniqueString = "T2",
 					Title = "A Container",
 					Created = new DateTime(2015, 3, 1),
 					IsLocalOnly = true,
@@ -82,9 +85,10 @@ namespace T2D.Infra
 					Published = new DateTime(2012, 4, 13)
 				});
 
-				dbc.RegularThings.Add(new RegularThing 
+				dbc.RegularThings.Add(new RegularThing
 				{
-					Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ThingNb3",
+					Id_CreatorUri = "sovelto.fi/inventory",
+					Id_UniqueString = "ThingNb3",
 					Title = "A Thing",
 					Created = new DateTime(2016, 3, 1),
 					IsLocalOnly = true,
@@ -95,7 +99,8 @@ namespace T2D.Infra
 					StatusId = 1,
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
-					PartedThingId_CreatorUri = "sovelto.fi/inventory", PartedThingId_UniqueString = "T2",
+					PartedThingId_CreatorUri = "sovelto.fi/inventory",
+					PartedThingId_UniqueString = "T2",
 				});
 				dbc.SaveChanges();
 
@@ -171,6 +176,33 @@ namespace T2D.Infra
 					}
 					Console.WriteLine();
 				}
+
+
+				Console.WriteLine("\n\nDynamic LINQ tehtävä Timpalle");
+				Console.WriteLine("Tässä staattisella LINQ:lla");
+				var q1 = dbc.Things.OrderBy(t => t.Id_CreatorUri).ThenBy(t=>t.Id_UniqueString);
+				foreach (var item in q1)
+				{
+					Console.WriteLine($"{item.Id_CreatorUri}/{item.Id_UniqueString} - {item.Title}");
+				}
+
+				Console.WriteLine("\nja sitten Dyn.linq");
+				string s1 = "Id_CreatorUri";
+				string s2 = "Id_UniqueString";
+				var q2 = dbc.Things; //tähän sitten Express:llä order by, sen mä taidankin osata tehdä, katso Search-kommentilla olevaa versiota
+				foreach (var item in q1)
+				{
+					Console.WriteLine($"{item.Id_CreatorUri}/{item.Id_UniqueString} - {item.Title}");
+				}
+
+				Console.WriteLine("\nja sitten Dyn.linq hieman haastavampi");
+				var q3 = dbc.Things.Select(t=>new { t.Id_CreatorUri, t.Id_UniqueString }); //tämä dyn linq:llä, timppa1
+				foreach (var item in q3)
+				{
+					Console.WriteLine($"{item.Id_CreatorUri}/{item.Id_UniqueString}");
+				}
+
+
 			}
 		}
 	}
