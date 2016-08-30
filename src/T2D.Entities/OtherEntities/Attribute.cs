@@ -12,8 +12,8 @@ namespace T2D.Entities
         public string Name { get; set; }
         public int Type { get; set; }
         public string Pattern { get; set; }
-        public long MinValue { get; set; }
-        public long MaxValue { get; set; }
+        public long? MinValue { get; set; }
+        public long? MaxValue { get; set; }
 
         public override string ToString()
         {

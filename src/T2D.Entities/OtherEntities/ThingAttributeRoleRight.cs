@@ -14,8 +14,9 @@ namespace T2D.Entities
     public string ThingAttributeRoleId_CreatorUri { get; set; }
     public string ThingAttributeRoleId_UniqueString { get; set; }
    // public BaseThing Thing { get; set; }
-    public long ThinAttribute_AttributeId { get; set; }
-   // public Attribute Attribute { get; set; }
+    public long ThingAttribute_AttributeId { get; set; }
+    // public Attribute Attribute { get; set; }
+    public long ThingRole_RoleId { get; set; }
     public override string ToString()
     {
       return this.ToJson();
