@@ -6,7 +6,7 @@ using T2D.Helpers;
 
 namespace T2D.Entities
 {
-    public class ThingRoleMember
+    public class ThingRoleMember:IEntity
     {
 		public long Id { get; set; }
 
@@ -15,7 +15,7 @@ namespace T2D.Entities
 		public BaseThing Thing { get; set; }
 
 		public long ThingRoleId { get; set; }
-		//public ThingRole ThingRole { get; set; }
+		public ThingRole ThingRole { get; set; }
 
 		public string Member_ThingId_CreatorUri { get; set; }
 		public string Member_ThingId_UniqueString { get; set; }

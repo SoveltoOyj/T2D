@@ -63,7 +63,6 @@ namespace T2D.Infra
 					LocationTypeId = 1,
 					Logging = true,
 					PreferredLocation_Id = 1,
-					StatusId = 1,
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
 					CreatorThingId_CreatorUri = "sovelto.fi/inventory",
@@ -80,7 +79,6 @@ namespace T2D.Infra
 					Location_GPS = "123",
 					Logging = true,
 					PreferredLocation_Id = 1,
-					StatusId = 1,
 					Modified = new DateTime(2014, 3, 3),
 					Published = new DateTime(2012, 4, 13)
 				});
@@ -96,7 +94,6 @@ namespace T2D.Infra
 					Location_GPS = "12443",
 					Logging = true,
 					PreferredLocation_Id = 1,
-					StatusId = 1,
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
 					PartedThingId_CreatorUri = "sovelto.fi/inventory",
