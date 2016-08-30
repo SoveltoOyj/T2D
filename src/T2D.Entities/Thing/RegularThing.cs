@@ -20,11 +20,6 @@ namespace T2D.Entities
 		public string PreferredLocation_GPS { get; set; }
 		public string PreferredLocation_StreetAddress { get; set; }
 		public long? PreferredLocation_Id { get; set; }
-		public long StatusId { get; set; }
-		public long? ActionRegistryId { get; set; }
-		public long? ActionRequestQueuqId { get; set; }
-		public long? ServiceRegistryId { get; set; }
-		public long? ServiceRequestQueuqId { get; set; }
 
 
 	}
