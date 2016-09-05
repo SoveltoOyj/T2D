@@ -15,7 +15,7 @@ namespace T2D.Entities
     public BaseThing Thing { get; set; }
     public bool Logging { get; set; }
 
-    public long ThingRoleId { get; set; }
+    public long RoleId { get; set; }
     public Role Role { get; set; }
 
   }
