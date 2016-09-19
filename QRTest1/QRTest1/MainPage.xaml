@@ -1,0 +1,70 @@
+﻿<Page
+    x:Class="QRTest1.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:QRTest1"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Button Name="buttonScanDefault" Grid.Row="0" Click="HandleBarcodeButtonClick">Scan QR code</Button>
+            <StackPanel Grid.Row="1">
+                <TextBlock>ID</TextBlock>
+                <TextBox IsReadOnly="True" Name="txtID"></TextBox>
+            </StackPanel>
+            <StackPanel Grid.Row="2">
+                <TextBlock>Name</TextBlock>
+                <TextBox IsReadOnly="True" Name="txtName"></TextBox>
+            </StackPanel>
+            <StackPanel Grid.Row="3">
+                <TextBlock>Description</TextBlock>
+                <TextBox IsReadOnly="True" Name="txtDescription"></TextBox>
+            </StackPanel>
+           
+        </Grid>
+
+        <Grid Name="customOverlay" Visibility="Collapsed">
+            <!-- 
+            This UIElement (Grid) is what we'll actually use for our custom overlay 
+            We can even wire up the button events from our mainpage still.
+            -->
+            <Grid Background="Transparent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Background="Black" Grid.Row="1" Grid.Column="0" Name="buttonCancel">Cancel</Button>
+                <Button Background="Black" Grid.Row="1" Grid.Column="1" Name="buttonFlash">Torch</Button>
+
+            </Grid>
+        </Grid>
+    </Grid>
+    <!--<StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<Button x:Name="button" Content="Button" HorizontalAlignment="Left" Height="40" Margin="10" VerticalAlignment="Top" Width="175" Click="button_Click"/>
+		<Button x:Name="button1" Content="Button" HorizontalAlignment="Left" Height="40" Margin="10" VerticalAlignment="Top" Width="175" Click="button1_Click"/>
+		<Image Name="captureImage"  HorizontalAlignment="Center"   Height="300"  VerticalAlignment="Top"  Width="300"/>
+		<Button x:Name="button2" Content="Button" HorizontalAlignment="Left" Height="40" Margin="10" VerticalAlignment="Top" Width="175" Click="button2_Click"/>
+        <Border BorderThickness="3" BorderBrush="Red">
+            <TextBlock  x:Name="tbData" HorizontalAlignment="Left" Height="54" Margin="10,0,0,0" TextWrapping="Wrap" 
+                        Text="Binding ScannedText" Width="340"/>
+        </Border>
+        <Button x:Name="bSave" Content="Save" HorizontalAlignment="Left" Height="40" Margin="3" VerticalAlignment="Top" Width="175" Click="saveBtn_Click"/>
+        <Button x:Name="bScan" Content="Scan" HorizontalAlignment="Left" Height="30" Margin="3" VerticalAlignment="Top" Width="175" Click="HandleBarcodeButtonClick"/>
+
+	</StackPanel>-->
+</Page>
