@@ -15,12 +15,17 @@ namespace T2D.Entities
     public long AttributeId { get; set; }
     public Attribute Attribute { get; set; }
     public bool Logging { get; set; }
-
-    public override string ToString()
+		public List<ThingAttributeRoleRight> ThingAttributeRoleRights { get; set; }
+		public List<ThingAttributeRoleSessionAccess> ThingAttributeRoleSessionAccesses { get; set; }
+		public override string ToString()
     {
       return this.ToJson();
     }
-
+		public ThingAttribute()
+		{
+			ThingAttributeRoleRights = new List<ThingAttributeRoleRight>();
+			ThingAttributeRoleSessionAccesses = new List<ThingAttributeRoleSessionAccess>();
+		}
 
   }
 }

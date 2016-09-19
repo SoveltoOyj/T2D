@@ -9,18 +9,23 @@ namespace T2D.Entities
     public class ThingAttributeRoleRight:IEntity
     {
     public long Id { get; set; }
-    //viitaus siis sekä ThingAttribute- että ThingRole-luokkiin
-    //pitääkö nämä luokat myös instantioida?
-    public string ThingAttributeRoleId_CreatorUri { get; set; }
-    public string ThingAttributeRoleId_UniqueString { get; set; }
-   // public BaseThing Thing { get; set; }
-    public long ThingAttribute_AttributeId { get; set; }
-    // public Attribute Attribute { get; set; }
-    public long ThingRole_RoleId { get; set; }
-    public override string ToString()
+    public long ThingAttributeId { get; set; }
+    public ThingAttribute ThingAttribute { get; set; }
+    public long ThingRoleId { get; set; }
+		public ThingRole ThingRole { get; set; }
+		public RightEnum Rights { get; set; }
+		public override string ToString()
     {
       return this.ToJson();
     }
 
   }
+	[Flags]
+	public enum RightEnum
+	{
+		Create = 1,
+		Read = 2,
+		Update = 4,
+		Delete = 8,
+	}
 }

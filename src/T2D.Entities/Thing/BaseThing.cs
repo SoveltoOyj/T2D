@@ -14,16 +14,20 @@ namespace T2D.Entities
 		public List<ThingRelation> ThingRelations { get; set; }
 		public List<ThingRoleMember> ThingRoleMembers { get; set; }
     public List<ThingRoleMember> MemeberThingRoleMembers { get; set; }
-    public List<ThingRoleMember> ThingRoles { get; set; }
-    public BaseThing()
+    public List<ThingRoleMember> ThingRoleMemebers { get; set; }
+		public List<ThingRole> ThingRoles { get; set; }
+		public List<ThingAttribute> ThingAttributes { get; set; }
+
+		public BaseThing()
 		{
 			ThingRoleMembers = new List<ThingRoleMember>();
 			MemeberThingRoleMembers = new List<ThingRoleMember>();
       ThingRelations = new List<ThingRelation>();
- //     ThingRoles = new List<ThingRole>();
-    }
+			ThingRoleMembers = new List<ThingRoleMember>();
+			ThingRoles = new List<ThingRole>();
+		}
 
-    public override string ToString()
+		public override string ToString()
 		{
 			return this.ToJson();
 		}
