@@ -200,6 +200,7 @@ namespace QRTest1
 		{
 			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
 			{
+
 				txtID.Text = text;
 				var dialog = new MessageDialog(text);
 				await dialog.ShowAsync();
