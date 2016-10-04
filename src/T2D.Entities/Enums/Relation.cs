@@ -14,6 +14,7 @@ namespace T2D.Entities
 	{
 		public long Id { get; set; }
 		public string Name { get; set; }
+
 		public override string ToString()
 		{
 			return this.ToJson();

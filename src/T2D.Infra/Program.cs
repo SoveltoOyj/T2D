@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,25 +31,14 @@ namespace T2D.Infra
 			dbc.Database.OpenConnection();
 			try
 			{
-				//relations
-				dbc.Database.ExecuteSqlCommand("Set identity_insert relations on;");
-				foreach (var item in Enum.GetNames(typeof(RelationEnum)))
-				{
-					dbc.Relations.Add(new Relation { Id = (int)Enum.Parse(typeof(RelationEnum), item, false), Name = item });
-				}
-				dbc.SaveChanges();
-				dbc.Database.ExecuteSqlCommand("Set identity_insert relations off");
+				//Enums
+				AddEnumData(dbc, dbc.Relations, typeof(RelationEnum));
+				AddEnumData(dbc, dbc.Roles, typeof(RoleEnum));
 
-				//roles
-				dbc.Database.ExecuteSqlCommand("Set identity_insert Roles on;");
-				foreach (var item in Enum.GetNames(typeof(RoleEnum)))
-				{
-					dbc.Roles.Add(new Role { Id = (int)Enum.Parse(typeof(RoleEnum), item, false), Name = item });
-				}
-				dbc.SaveChanges();
-				dbc.Database.ExecuteSqlCommand("Set identity_insert Roles off;");
+				//attributes
+				AddAttributeData(dbc, typeof(AttributeEnum));
 
-				//Archetypthings
+				//Archetypethings
 				dbc.ArchetypeThings.Add(new ArchetypeThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
 				//AuthenticationThings
 				dbc.AuthenticationThings.Add(new AuthenticationThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "T0", Title = "Matti, Facebook", });
@@ -175,33 +165,42 @@ namespace T2D.Infra
 				}
 
 
-				Console.WriteLine("\n\nDynamic LINQ tehtävä Timpalle");
-				Console.WriteLine("Tässä staattisella LINQ:lla");
-				var q1 = dbc.Things.OrderBy(t => t.Id_CreatorUri).ThenBy(t=>t.Id_UniqueString);
-				foreach (var item in q1)
-				{
-					Console.WriteLine($"{item.Id_CreatorUri}/{item.Id_UniqueString} - {item.Title}");
-				}
-
-				Console.WriteLine("\nja sitten Dyn.linq");
-				string s1 = "Id_CreatorUri";
-				string s2 = "Id_UniqueString";
-				var q2 = dbc.Things; //tähän sitten Express:llä order by, sen mä taidankin osata tehdä, katso Search-kommentilla olevaa versiota
-														 // tämän mukaan olen tehnyt (nyt on poistettu) http://stackoverflow.com/questions/36298868/how-to-dynamically-order-by-certain-entity-properties-in-entityframework-7-core
-				foreach (var item in q1)
-				{
-					Console.WriteLine($"{item.Id_CreatorUri}/{item.Id_UniqueString} - {item.Title}");
-				}
-
-				Console.WriteLine("\nja sitten Dyn.linq hieman haastavampi");
-				var q3 = dbc.Things.Select(t=>new { t.Id_CreatorUri, t.Id_UniqueString }); //tämä dyn linq:llä, timppa1
-				foreach (var item in q3)
-				{
-					Console.WriteLine($"{item.Id_CreatorUri}/{item.Id_UniqueString}");
-				}
-
 
 			}
+		}
+
+		private static void AddEnumData<TEntity>(EfContext dbc, DbSet<TEntity> dbSet, Type enumType)
+			where TEntity : class, IEnumEntity, new()
+		{
+			//			T2D.Infra.EfContext dbc = ((IInfrastructure<IServiceProvider>)dbSet).GetService<DbContext>() as T2D.Infra.EfContext;
+
+			var entityType = dbc.Model.FindEntityType(typeof(TEntity));
+			var table = entityType.SqlServer();
+			var tableName = table.Schema + "." + table.TableName;
+
+			dbc.Database.ExecuteSqlCommand($"Set identity_insert {tableName} on;");
+			foreach (var item in Enum.GetNames(enumType))
+			{
+				dbSet.Add(new TEntity { Id = (int)Enum.Parse(enumType, item, false), Name = item });
+			}
+			dbc.SaveChanges();
+			dbc.Database.ExecuteSqlCommand($"Set identity_insert {tableName} off;");
+		}
+
+		private static void AddAttributeData(EfContext dbc, Type enumType)
+		{
+			var entityType = dbc.Model.FindEntityType(typeof(Entities.Attribute));
+			var table = entityType.SqlServer();
+			var tableName = table.Schema + "." + table.TableName;
+
+			dbc.Database.ExecuteSqlCommand($"Set identity_insert {tableName} on;");
+			foreach (var item in Enum.GetNames(enumType))
+			{
+				//ToDo: Add min/max/Pattern and so on...
+				dbc.Attributes.Add(new Entities.Attribute { Id = (int)Enum.Parse(enumType, item, false), Name = item });
+			}
+			dbc.SaveChanges();
+			dbc.Database.ExecuteSqlCommand($"Set identity_insert {tableName} off;");
 		}
 	}
 }

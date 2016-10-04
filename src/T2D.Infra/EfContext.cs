@@ -23,6 +23,8 @@ namespace T2D.Infra
 
 		public DbSet<Relation> Relations { get; set; }
 		public DbSet<Role> Roles { get; set; }
+		public DbSet<Entities.Attribute> Attributes { get; set; }
+
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			//			optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=T2D;Trusted_Connection=True;");

@@ -6,7 +6,6 @@ namespace T2D.Entities
 	{
 	}
 
-
 	// Can't use complex types
 	//public struct ThingId
 	//{

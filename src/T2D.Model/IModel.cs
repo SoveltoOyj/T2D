@@ -49,7 +49,7 @@ namespace T2D.Model
 
 	public interface IModel : IBaseModel
 	{
-		string Id { get; set; }
+		long Id { get; set; }
 	}
 
 	public interface IEnumModel : IModel

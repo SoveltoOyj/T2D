@@ -8,7 +8,7 @@ using T2D.Model;
 
 namespace T2D.InventoryBL.Mappers
 {
-	public class EnumMapper<TEnumEntity, TEnumModel> : IMapper<TEnumEntity, TEnumModel, long, string>
+	public class EnumMapper<TEnumEntity, TEnumModel> : IMapper<TEnumEntity, TEnumModel, long, long>
 		where TEnumEntity : class, IEnumEntity, new()
 		where TEnumModel : class, IEnumModel, new()
 	{
@@ -17,32 +17,19 @@ namespace T2D.InventoryBL.Mappers
 			return new TEnumModel { Id = FromEntityId(from.Id), Name = from.Name } ;
 		}
 
-	
-		public string FromEntityId(long id)
+		public long FromEntityId(long id)
 		{
-			return id.ToString();
+			return id;
 		}
 
-		public long FromModelId(string id)
+		public long FromModelId(long id)
 		{
-			long ret=0;
-			if (!long.TryParse(id, out ret))
-				throw new Exception($"Cant't convert {id} to enum long id");
-			return ret;
+			return id;
 		}
 
 		public TEnumEntity ModelToEntity(TEnumModel from)
 		{
 			return new TEnumEntity { Id = FromModelId(from.Id), Name = from.Name };
-		}
-
-		public string ModelToEntityPropertyName(string from)
-		{
-			return from.TestEquality("Id", "Name");
-		}
-		public string EntityToModelPropertyName(string from)
-		{
-			return from.TestEquality("id", "name");
 		}
 
 		public TEnumEntity UpdateEntityFromModel(TEnumModel from, TEnumEntity to)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.Swagger.Model;
 
 namespace InventoryApi
 {
@@ -29,6 +30,19 @@ namespace InventoryApi
 		{
 			// Add framework services.
 			services.AddMvc();
+
+			services.AddSwaggerGen();
+			services.ConfigureSwaggerGen(options =>
+			{
+				options.SingleApiVersion(new Info
+				{
+					Version = "v1",
+					Title = "T2D Inventory API",
+					Description = "Thing to Data Inventory Api",
+					TermsOfService = "NA",
+					Contact = new Contact() { Name = "T2D Implementation Team", Email = "ahti.haukilehto@sovelto.fi", Url = "https://sovelto.fi" }
+				});
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +55,8 @@ namespace InventoryApi
 				app.UseDeveloperExceptionPage();
 			}
 			app.UseMvc();
+			app.UseSwagger();
+			app.UseSwaggerUi();
 		}
 	}
 }

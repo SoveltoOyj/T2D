@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using T2D.Helpers;
 using System.Linq.Expressions;
 
-namespace InventoryApi.Controllers.TestControllers
+namespace InventoryApi.Controllers.BaseControllers
 {
 	public class CrudThingController<TThingEntity,TThingModel> : ApiBaseController
 		where TThingEntity: class,T2D.Entities.IThingEntity, new()

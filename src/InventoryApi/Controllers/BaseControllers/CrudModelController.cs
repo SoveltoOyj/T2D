@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using InventoryApi.Controllers.BaseControllers;
 using T2D.InventoryBL.Mappers;
 using Microsoft.AspNetCore.JsonPatch;
+using System.Net.Http;
+using System.Net;
 
-namespace InventoryApi.Controllers.TestControllers
+namespace InventoryApi.Controllers.BaseControllers
 {
 	/// <summary>
 	/// This crud-controller requires Model with string ID and Entity with long Id
@@ -19,10 +21,13 @@ namespace InventoryApi.Controllers.TestControllers
 		where TModel: class, T2D.Model.IModel
 	{
 
-		protected T2D.InventoryBL.IMapper<TEntity, TModel, long, string> _mapper;
-		public CrudBaseController(T2D.InventoryBL.IMapper<TEntity, TModel, long, string> mapper):base()
+		protected T2D.InventoryBL.IMapper<TEntity, TModel, long, long> _mapper;
+		protected bool _onlyGet;
+
+		public CrudBaseController( T2D.InventoryBL.IMapper<TEntity, TModel, long, long> mapper, bool onlyGet = true) :base()
 		{
 			_mapper = mapper;
+			_onlyGet = onlyGet;
 		}
 
 
@@ -41,7 +46,7 @@ namespace InventoryApi.Controllers.TestControllers
 
 		// GET api/test/{model}/{id}
 		[HttpGet("{id}")]
-		public virtual TModel Get(string id)
+		public virtual TModel Get(long id)
 		{
 			return  _mapper.EntityToModel(dbc.Set<TEntity>().FirstOrDefault(t => t.Id == _mapper.FromModelId(id)));
 		}
@@ -51,6 +56,8 @@ namespace InventoryApi.Controllers.TestControllers
 		[HttpPost]
 		public virtual TModel Post([FromBody]TModel value)
 		{
+			if (_onlyGet) throw new HttpRequestException("Post is not allowed.");
+
 			var newEntity = new TEntity();
 			_mapper.UpdateEntityFromModel(value, newEntity);
 			dbc.Set<TEntity>().Add(newEntity);
@@ -63,8 +70,10 @@ namespace InventoryApi.Controllers.TestControllers
 		//	{"op":"replace", "path":"name", "value": "a new value"}
 		//]
 		[HttpPatch("{id}")]
-		public virtual TModel Patch(string id, [FromBody]JsonPatchDocument<TModel> value)
+		public virtual TModel Patch(long id, [FromBody]JsonPatchDocument<TModel> value)
 		{
+			if (_onlyGet) throw new HttpRequestException("Patch is not allowed.");
+
 			long localId = _mapper.FromModelId(id);
 			TEntity current = dbc.Set<TEntity>().FirstOrDefault(t => t.Id == localId);
 			if (current == null) throw new Exception($"Entity {id} not Found");
@@ -82,8 +91,10 @@ namespace InventoryApi.Controllers.TestControllers
 		// PUT api/test/{model}/{id}
 		// update whole entity
 		[HttpPut("{id}")]
-		public virtual TModel Put(string id, [FromBody]TModel value)
+		public virtual TModel Put(long id, [FromBody]TModel value)
 		{
+			if (_onlyGet) throw new HttpRequestException("Put is not allowed.");
+
 			long localId = _mapper.FromModelId(id);
 			TEntity current = dbc.Set<TEntity>().FirstOrDefault(t => t.Id == localId);
 			if (current == null)
@@ -96,8 +107,10 @@ namespace InventoryApi.Controllers.TestControllers
 
 		// DELETE api/test/{model}/{id}
 		[HttpDelete("{id}")]
-		public virtual void Delete(string id)
+		public virtual void Delete(long id)
 		{
+			if (_onlyGet) throw new HttpRequestException("Delete is not allowed.");
+
 			long localId = _mapper.FromModelId(id);
 			TEntity t = new TEntity{ Id = localId };
 			dbc.Entry(t).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
