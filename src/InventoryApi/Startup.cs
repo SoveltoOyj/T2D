@@ -40,8 +40,10 @@ namespace InventoryApi
 					Title = "T2D Inventory API",
 					Description = "Thing to Data Inventory Api",
 					TermsOfService = "NA",
-					Contact = new Contact() { Name = "T2D Implementation Team", Email = "ahti.haukilehto@sovelto.fi", Url = "https://sovelto.fi" }
+					Contact = new Contact() { Name = "T2D Implementation Team", Email = "ahti.haukilehto@sovelto.fi", Url = "https://sovelto.fi" },
 				});
+				options.DescribeAllEnumsAsStrings();
+			//	options.IncludeXmlComments(System.IO.Path.Combine( ))
 			});
 		}
 
@@ -57,6 +59,8 @@ namespace InventoryApi
 			app.UseMvc();
 			app.UseSwagger();
 			app.UseSwaggerUi();
+			app.UseDefaultFiles();
+			app.UseStaticFiles();
 		}
 	}
 }

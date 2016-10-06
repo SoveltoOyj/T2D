@@ -13,7 +13,7 @@ namespace InventoryApi.Controllers.MetadataControllers
 	[Route("api/metadata/[controller]")]
 	public class RelationController : CrudBaseController<T2D.Entities.Relation, T2D.Model.Relation>
 	{
-		public RelationController() : base(onlyGet:true, mapper: new EnumMapper<T2D.Entities.Relation, T2D.Model.Relation>())
+		public RelationController() : base(onlyGet:true, mapper: new MetadataEnumMapper<T2D.Entities.Relation, T2D.Model.Relation>())
 		{
 		}
 

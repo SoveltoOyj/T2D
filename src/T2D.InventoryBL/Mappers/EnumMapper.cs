@@ -2,40 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using T2D.Entities;
-using T2D.Helpers;
 using T2D.Model;
 
 namespace T2D.InventoryBL.Mappers
 {
-	public class EnumMapper<TEnumEntity, TEnumModel> : IMapper<TEnumEntity, TEnumModel, long, long>
-		where TEnumEntity : class, IEnumEntity, new()
-		where TEnumModel : class, IEnumModel, new()
+	public class EnumMapper<TEnum, TEntity> : IEnumMapper<TEnum, TEntity>
+	where TEnum : struct, IConvertible
+	where TEntity : class, T2D.Entities.IEnumEntity, new()
 	{
-		public TEnumModel EntityToModel(TEnumEntity from)
+		public TEnum EntityToEnum(TEntity from)
 		{
-			return new TEnumModel { Id = FromEntityId(from.Id), Name = from.Name } ;
+			return (TEnum)Enum.Parse(typeof(TEnum), from.Name, true);
 		}
 
-		public long FromEntityId(long id)
+		public TEnum FromEntityId(int id)
 		{
-			return id;
+			return (TEnum)Enum.ToObject(typeof(TEnum), id);
 		}
 
-		public long FromModelId(long id)
+		public TEntity EnumToEntity(TEnum from)
 		{
-			return id;
-		}
-
-		public TEnumEntity ModelToEntity(TEnumModel from)
-		{
-			return new TEnumEntity { Id = FromModelId(from.Id), Name = from.Name };
-		}
-
-		public TEnumEntity UpdateEntityFromModel(TEnumModel from, TEnumEntity to)
-		{
-			to.Name = from.Name;
-			return to;
+			return new TEntity { Id= from.ToInt32(System.Globalization.CultureInfo.InvariantCulture) , Name=from.ToString()  };
 		}
 	}
 }
