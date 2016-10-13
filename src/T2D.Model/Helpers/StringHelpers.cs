@@ -7,7 +7,6 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-// this helper class is also used in T2D.Model project (copy)
 namespace T2D.Helpers
 {
 	public static class StringHelpers
@@ -22,5 +21,7 @@ namespace T2D.Helpers
 				return Encoding.UTF8.GetString(ms.ToArray());
 			};
 		}
+
 	}
+
 }
