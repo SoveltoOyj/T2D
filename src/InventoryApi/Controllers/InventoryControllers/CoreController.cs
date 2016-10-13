@@ -29,15 +29,15 @@ namespace InventoryApi.Controllers.InventoryControllers
 			var ret = new GetRelationsResponse();
 			ret.RoleThings = new List<GetRelationsResponse.RoleThingsClass> {
 				new GetRelationsResponse.RoleThingsClass {Role= RelationEnum.Belongings.ToString(),
-				ThingIds = new List<ThingId> {
-							new ThingId { CreatorUri = new Uri("inventory1.sovelto.fi", UriKind.Relative), UniqueString = "T1" },
-							new ThingId { CreatorUri = new Uri("inventory1.sovelto.fi", UriKind.Relative), UniqueString = "T2" }
+				ThingIds = new List<string> {
+							"inventory1.sovelto.fi/T1" ,
+							"inventory1.sovelto.fi/T2" 
 						}
 				},
 				new GetRelationsResponse.RoleThingsClass {Role= RelationEnum.RoleIn.ToString(),
-				ThingIds = new List<ThingId> {
-							new ThingId { CreatorUri = new Uri("inventory1.sovelto.fi", UriKind.Relative), UniqueString = "T1" },
-							new ThingId { CreatorUri = new Uri("inventory1.sovelto.fi", UriKind.Relative), UniqueString = "T2" }
+				ThingIds = new List<string> {
+							"inventory1.sovelto.fi/T1",
+							"inventory1.sovelto.fi/T2" 
 						}
 				},
 				};

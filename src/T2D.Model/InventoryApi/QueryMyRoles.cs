@@ -8,7 +8,7 @@ namespace T2D.Model.InventoryApi
 	public class QueryMyRolesRequest
 	{
 		public string Session { get; set; }
-		public ThingId ThingId { get; set; }
+		public string ThingId { get; set; }
 	}
 	public class QueryMyRolesResponse
 	{

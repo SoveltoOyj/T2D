@@ -10,14 +10,14 @@ namespace T2D.Model
 {
 	public class Thing:IThingModel
 	{
-		public ThingId Id { get; set; }
+		public string Id { get; set; }
 		public string Title { get; set; }
 		public DateTime? Created { get; set; }
 		public DateTime? Published { get; set; }
 		public DateTime? Modified { get; set; }
-		public ThingId Creator { get; set; }
-		public ThingId Archetype { get; set; }
-		public ThingId Parted { get; set; }
+		public string Creator { get; set; }
+		public string Archetype { get; set; }
+		public string Parted { get; set; }
 		public string LocationType { get; set; }
 		public DateTime? Location_Timestamp { get; set; }
 		public string Location_GPS { get; set; }

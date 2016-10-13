@@ -8,7 +8,7 @@ namespace T2D.Model.InventoryApi
 {
 	public class AuthenticationRequest
 	{
-		public ThingId Id { get; set; }
+		public string ThingId { get; set; }
 		public AuthenticationType AuthenticationType { get; set; }
 	}
 

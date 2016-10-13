@@ -7,6 +7,7 @@ using AutoMapper;
 using T2D.Entities;
 using T2D.Helpers;
 using T2D.Model;
+using T2D.Model.Helpers;
 
 namespace T2D.InventoryBL.Mappers
 {
@@ -15,21 +16,21 @@ namespace T2D.InventoryBL.Mappers
 	/// </summary>
 	/// 
 
-	public class ThingMapper : IThingMapper<Entities.RegularThing, Model.Thing, ThingId>
+	public class ThingMapper : IThingMapper<Entities.RegularThing, Model.Thing>
 	{
 		static ThingMapper()
 		{
 			AutoMapper.Mapper.Initialize(cfg =>
 			{
 				cfg.CreateMap<T2D.Entities.RegularThing, T2D.Model.Thing>()
-					.ForMember(dest => dest.Id, opt => opt.MapFrom(src => ThingId.Create(src.Id_CreatorUri, src.Id_UniqueString)))
-					.ForMember(dest => dest.Creator, opt => opt.MapFrom(src => ThingId.Create(src.CreatorThingId_CreatorUri, src.CreatorThingId_UniqueString)))
-					.ForMember(dest => dest.Parted, opt => opt.MapFrom(src => ThingId.Create(src.PartedThingId_CreatorUri, src.PartedThingId_UniqueString)))
+					.ForMember(dest => dest.Id, opt => opt.MapFrom(src => ThingIdHelper.Create(src.Id_CreatorUri, src.Id_UniqueString)))
+					.ForMember(dest => dest.Creator, opt => opt.MapFrom(src => ThingIdHelper.Create(src.CreatorThingId_CreatorUri, src.CreatorThingId_UniqueString)))
+					.ForMember(dest => dest.Parted, opt => opt.MapFrom(src => ThingIdHelper.Create(src.PartedThingId_CreatorUri, src.PartedThingId_UniqueString)))
 				;
 
 				cfg.CreateMap<T2D.Model.Thing, T2D.Entities.RegularThing>()
-					.ForMember(dest => dest.Id_CreatorUri, opt => opt.MapFrom(src => src.Id != null? src.Id.CreatorUri:null))
-					.ForMember(dest => dest.Id_UniqueString, opt => opt.MapFrom(src => src.Id != null ? src.Id.UniqueString:null))
+					.ForMember(dest => dest.Id_CreatorUri, opt => opt.MapFrom(src => src.Id != null? ThingIdHelper.GetFQHN(src.Id):null))
+					.ForMember(dest => dest.Id_UniqueString, opt => opt.MapFrom(src => src.Id != null ? ThingIdHelper.GetUniqueString(src.Id):null))
 					//.ForMember(dest => dest.CreatorThingId_CreatorUri, opt => opt.MapFrom(src => src.Creator != null ? src.Creator.CreatorUri:null))
 					//.ForMember(dest => dest.CreatorThingId_UniqueString, opt => opt.MapFrom(src => src.Creator != null ? src.Creator.UniqueString:null))
 					//.ForMember(dest => dest.PartedThingId_CreatorUri, opt => opt.MapFrom(src => src.Parted != null ? src.Parted.CreatorUri:null))
@@ -41,12 +42,12 @@ namespace T2D.InventoryBL.Mappers
 
 
 
-		public ThingId FromModelId(ThingId id)
+		public string FromModelId(string id)
 		{
 			return id;
 		}
 
-		public ThingId FromEntityId(ThingId id)
+		public string FromEntityId(string id)
 		{
 			return id;
 		}
@@ -84,8 +85,8 @@ namespace T2D.InventoryBL.Mappers
 		{
 			if (updateAlsoId)
 			{
-				to.Id_CreatorUri = from.Id.CreatorUri.ToString();
-				to.Id_UniqueString = from.Id.UniqueString;
+				to.Id_CreatorUri = ThingIdHelper.GetFQHN(from.Id);
+				to.Id_UniqueString = ThingIdHelper.GetUniqueString(from.Id);
 			}
 			UpdateEntityFromModel(from, to);
 			return to;

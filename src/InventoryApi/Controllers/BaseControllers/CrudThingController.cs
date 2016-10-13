@@ -18,8 +18,8 @@ namespace InventoryApi.Controllers.BaseControllers
 		where TThingEntity: class,T2D.Entities.IThingEntity, new()
 		where TThingModel: class, T2D.Model.IThingModel
 	{
-		protected T2D.InventoryBL.IThingMapper<TThingEntity, TThingModel, T2D.Model.ThingId> _mapper;
-		public CrudThingController(T2D.InventoryBL.IThingMapper<TThingEntity, TThingModel, T2D.Model.ThingId> mapper):base()
+		protected T2D.InventoryBL.IThingMapper<TThingEntity, TThingModel> _mapper;
+		public CrudThingController(T2D.InventoryBL.IThingMapper<TThingEntity, TThingModel> mapper):base()
 		{
 			_mapper = mapper;
 		}
@@ -49,10 +49,9 @@ namespace InventoryApi.Controllers.BaseControllers
 		// GET api/test/{model}/id?cu=creatorUri&us=uniqueString
 		// f.ex. http://localhost:27122/api/test/thing/id?cu=sovelto.fi/inventory&us=ThingNb2
 		[HttpGet("id")]
-		public virtual TThingModel Get(Uri cu, string us)
+		public virtual TThingModel Get(string cu, string us)
 		{
-			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
-			return  _mapper.EntityToModel(dbc.Set<TThingEntity>().FirstOrDefault(t => t.Id_CreatorUri==key.CreatorUri.ToString() && t.Id_UniqueString== key.UniqueString ));
+			return  _mapper.EntityToModel(dbc.Set<TThingEntity>().FirstOrDefault(t => t.Id_CreatorUri==cu && t.Id_UniqueString== us ));
 		}
 
 		// POST api/test/{model}
@@ -87,12 +86,11 @@ namespace InventoryApi.Controllers.BaseControllers
 		//	}
 		//]
 		[HttpPatch()]
-		public virtual TThingModel Patch(Uri cu, string us, [FromBody]JsonPatchDocument<TThingModel> value)
+		public virtual TThingModel Patch(string cu, string us, [FromBody]JsonPatchDocument<TThingModel> value)
 		{
-			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
 
-			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Id_CreatorUri == key.CreatorUri.ToString() && t.Id_UniqueString == key.UniqueString);
-			if (current == null) throw new Exception($"Thing {key} not Found");
+			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Id_CreatorUri == cu && t.Id_UniqueString == us);
+			if (current == null) throw new Exception($"Thing not Found");
 
 			var updatedModel = _mapper.EntityToModel(current);
 			value.ApplyTo(updatedModel);
@@ -113,11 +111,10 @@ namespace InventoryApi.Controllers.BaseControllers
 		//  width: 43
 		// }
 	[HttpPut()]
-		public virtual TThingModel Put(Uri cu, string us, [FromBody]TThingModel value)
+		public virtual TThingModel Put(string cu, string us, [FromBody]TThingModel value)
 		{
-			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
-			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Id_CreatorUri == key.CreatorUri.ToString() && t.Id_UniqueString == key.UniqueString);
-			if (current == null) throw new Exception($"Thing {key} not Found");
+			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Id_CreatorUri == cu && t.Id_UniqueString == us);
+			if (current == null) throw new Exception($"Thing not Found");
 
 			_mapper.UpdateEntityFromModel(value, current, false);
 			dbc.SaveChanges();
@@ -126,10 +123,9 @@ namespace InventoryApi.Controllers.BaseControllers
 
 		// DELETE api/test/{model}/?cu=creatorUri&us=uniqueString
 		[HttpDelete()]
-		public virtual void Delete(Uri cu, string us)
+		public virtual void Delete(string cu, string us)
 		{
-			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
-			TThingEntity t = new TThingEntity { Id_CreatorUri = key.CreatorUri.ToString(), Id_UniqueString = key.UniqueString };
+			TThingEntity t = new TThingEntity { Id_CreatorUri = cu, Id_UniqueString = us };
 			dbc.Entry(t).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
 			dbc.SaveChanges();
 		}

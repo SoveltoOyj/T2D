@@ -21,7 +21,7 @@ namespace T2D.InventoryBL
 	/// <typeparam name="TEntity"></typeparam>
 	/// <typeparam name="TModel"></typeparam>
 	/// <typeparam name="TKey"></typeparam>
-	public interface IThingMapper<TEntity, TModel, TKey>:IMapper<TEntity, TModel, TKey, TKey>
+	public interface IThingMapper<TEntity, TModel>:IMapper<TEntity, TModel, string, string>
 		where TEntity : class, T2D.Entities.IBaseEntity
 		where TModel : class, T2D.Model.IBaseModel
 	{

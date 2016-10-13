@@ -9,7 +9,7 @@ namespace T2D.Model.InventoryApi
 	public abstract class GetAttributeRelationsBaseRequest
 	{
 		public string Session { get; set; }
-		public ThingId ThingId { get; set; }
+		public string ThingId { get; set; }
 		public string Role { get; set; }
 	}
 	public class GetRelationsRequest : GetAttributeRelationsBaseRequest
@@ -22,7 +22,7 @@ namespace T2D.Model.InventoryApi
 		public class RoleThingsClass
 		{
 			public string Role { get; set; }
-			public List<ThingId> ThingIds { get; set; }
+			public List<string> ThingIds { get; set; }
 		}
 
 
