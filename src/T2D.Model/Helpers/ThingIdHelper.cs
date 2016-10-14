@@ -24,7 +24,7 @@ namespace T2D.Model.Helpers
 			if (string.IsNullOrWhiteSpace(uniqueString))
 				return false;
 
-			return uniqueString.Length < 1024;
+			return uniqueString.Length < 1024;	//ToDo: configuration, Entity will use it also
 		}
 
 		public static string Create(string creatorFQHN, string uniqueString)
