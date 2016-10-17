@@ -17,39 +17,47 @@ namespace T2D.Infra
 				.WithMany(t => t.ThingRoleMembers)
 				.HasForeignKey(e => new
 				{
-					e.ThingId_CreatorUri,
-					e.ThingId_UniqueString
+					e.Creator_ThingId,
+					//e.ThingId_CreatorUri,
+					//e.ThingId_UniqueString
 				})
 				.OnDelete(DeleteBehavior.Cascade)
 				;
 
 
-			tbl.Property(e => e.ThingId_CreatorUri)
+			tbl.Property(e => e.Creator_ThingId)
 					.IsRequired()
 					;
+			//tbl.Property(e => e.ThingId_CreatorUri)
+			//		.IsRequired()
+			//		;
 
-			tbl.Property(e => e.ThingId_UniqueString)
-					.IsRequired()
-					;
+			//tbl.Property(e => e.ThingId_UniqueString)
+			//		.IsRequired()
+			//		;
 
 			tbl.HasOne(e => e.Member)
 				.WithMany(t => t.MemeberThingRoleMembers)
 				.HasForeignKey(e => new
 				{
-					e.Member_ThingId_CreatorUri,
-					e.Member_ThingId_UniqueString
+					e.Member_Creator_ThingId,
+					//e.Member_ThingId_CreatorUri,
+					//e.Member_ThingId_UniqueString
 				})
 				.OnDelete(DeleteBehavior.Restrict)
 				;
 
-
-			tbl.Property(e => e.Member_ThingId_CreatorUri)
+			tbl.Property(e => e.Member_Creator_ThingId)
 					.IsRequired()
 					;
 
-			tbl.Property(e => e.Member_ThingId_UniqueString)
-					.IsRequired()
-					;
+			//tbl.Property(e => e.Member_ThingId_CreatorUri)
+			//		.IsRequired()
+			//		;
+
+			//tbl.Property(e => e.Member_ThingId_UniqueString)
+			//		.IsRequired()
+			//		;
 
 		}
 	}

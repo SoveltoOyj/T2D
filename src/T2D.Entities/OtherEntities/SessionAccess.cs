@@ -8,11 +8,12 @@ namespace T2D.Entities
 {
     public class SessionAccess:IEntity
     {
-    public long Id { get; set; }
-		public long SessionId { get; set; }
+    public string Id { get; set; }
+		public string SessionId { get; set; }
 		public Session Session { get; set; }
-		public string ThingId_CreatorUri { get; set; }
-    public string ThingId_UniqueString { get; set; }
+		public string Creator_ThingId { get; set; }
+		//public string ThingId_CreatorUri { get; set; }
+		//public string ThingId_UniqueString { get; set; }
 		public long RoleId { get; set; }
 		public Role Role { get; set; }
 	}

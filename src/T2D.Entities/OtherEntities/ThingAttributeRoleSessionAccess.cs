@@ -8,10 +8,10 @@ namespace T2D.Entities
 {
     public class ThingAttributeRoleSessionAccess:IEntity
     {
-    public long Id { get; set; }
-		public long SessionId { get; set; }
+    public string Id { get; set; }
+		public string SessionId { get; set; }
 		public Session Session { get; set; }
-		public long ThingAttributeId { get; set; }
+		public string ThingAttributeId { get; set; }
 		public ThingAttribute ThingAttribute { get; set; }
 		public DateTime Timestamp { get; set; }
 

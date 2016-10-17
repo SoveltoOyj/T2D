@@ -15,8 +15,8 @@ namespace T2D.Entities
 
 	public interface IThingEntity:IBaseEntity
 	{
-//		ThingId Id { get; set; }
-		string Id_CreatorUri { get; set;}
+		//string Id { get; set; }
+		string Id_CreatorFQDN { get; set;}
 
 		string Id_UniqueString { get; set; } 
 
@@ -24,7 +24,7 @@ namespace T2D.Entities
 	}
 	public interface IEntity : IBaseEntity
 	{
-		long Id { get; set; }
+		string Id { get; set; }
 	}
 
 	public interface IEnumEntity:IEntity

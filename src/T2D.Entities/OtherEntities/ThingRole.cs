@@ -8,14 +8,15 @@ namespace T2D.Entities
 {
     public class ThingRole:IEntity
     {
-    public long Id { get; set; }
-    
-    public string ThingId_CreatorUri { get; set; }
-    public string ThingId_UniqueString { get; set; }
+    public string Id { get; set; }
+
+		public string Creator_ThingId { get; set; }
+		//public string ThingId_CreatorUri { get; set; }
+		//public string ThingId_UniqueString { get; set; }
     public BaseThing Thing { get; set; }
     public bool Logging { get; set; }
 
-    public long RoleId { get; set; }
+    public string RoleId { get; set; }
     public Role Role { get; set; }
 
   }

@@ -39,13 +39,14 @@ namespace T2D.Infra
 				AddAttributeData(dbc, typeof(AttributeEnum));
 
 				//Archetypethings
-				dbc.ArchetypeThings.Add(new ArchetypeThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
+				dbc.ArchetypeThings.Add(new ArchetypeThing {Id ="10", Id_CreatorFQDN = "sovelto.fi/inventory", Id_UniqueString = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
 				//AuthenticationThings
-				dbc.AuthenticationThings.Add(new AuthenticationThing { Id_CreatorUri = "sovelto.fi/inventory", Id_UniqueString = "T0", Title = "Matti, Facebook", });
+				dbc.AuthenticationThings.Add(new AuthenticationThing {Id="20", Id_CreatorFQDN = "sovelto.fi/inventory", Id_UniqueString = "T0", Title = "Matti, Facebook", });
 				//things
 				dbc.RegularThings.Add(new RegularThing
 				{
-					Id_CreatorUri = "sovelto.fi/inventory",
+					Id ="1",
+					Id_CreatorFQDN = "sovelto.fi/inventory",
 					Id_UniqueString = "T1",
 					Title = "MySuitcase",
 					Created = new DateTime(2015, 3, 1),
@@ -60,7 +61,8 @@ namespace T2D.Infra
 				});
 				dbc.RegularThings.Add(new RegularThing
 				{
-					Id_CreatorUri = "sovelto.fi/inventory",
+					Id = "2",
+					Id_CreatorFQDN = "sovelto.fi/inventory",
 					Id_UniqueString = "T2",
 					Title = "A Container",
 					Created = new DateTime(2015, 3, 1),
@@ -75,7 +77,8 @@ namespace T2D.Infra
 
 				dbc.RegularThings.Add(new RegularThing
 				{
-					Id_CreatorUri = "sovelto.fi/inventory",
+					Id = "3",
+					Id_CreatorFQDN = "sovelto.fi/inventory",
 					Id_UniqueString = "ThingNb3",
 					Title = "A Thing",
 					Created = new DateTime(2016, 3, 1),
@@ -98,26 +101,20 @@ namespace T2D.Infra
 				//ThingRelation
 				dbc.ThingRelations.Add(new ThingRelation
 				{
-					Thing1_Id_CreatorUri = "sovelto.fi/inventory",
-					Thing1_Id_UniqueString = "T0",
-					Thing2_Id_CreatorUri = "example.fi/inventory",
-					Thing2_Id_UniqueString = "T1",
+					Thing1_Id = "1",
+					Thing2_Id = "2",
 					RelationId = (int)RelationEnum.Belongings
 				});
 				dbc.ThingRelations.Add(new ThingRelation
 				{
-					Thing1_Id_CreatorUri = "sovelto.fi/inventory",
-					Thing1_Id_UniqueString = "T0",
-					Thing2_Id_CreatorUri = "example.fi/inventory",
-					Thing2_Id_UniqueString = "T1",
+					Thing1_Id = "1",
+					Thing2_Id = "2",
 					RelationId = (int)RelationEnum.RoleIn
 				});
 				dbc.ThingRelations.Add(new ThingRelation
 				{
-					Thing1_Id_CreatorUri = "sovelto.fi/inventory",
-					Thing1_Id_UniqueString = "T1",
-					Thing2_Id_CreatorUri = "example.fi/inventory",
-					Thing2_Id_UniqueString = "T2",
+					Thing1_Id = "1",
+					Thing2_Id = "2",
 					RelationId = (int)RelationEnum.ContainedBy
 				});
 
@@ -159,7 +156,7 @@ namespace T2D.Infra
 					Console.WriteLine($"  {item.Id_UniqueString}");
 					foreach (var tr in item.ThingRelations)
 					{
-						Console.WriteLine($"      Relation to: {tr.Thing2_Id_CreatorUri}/{tr.Thing2_Id_UniqueString} Relation:{tr.Relation}");
+						Console.WriteLine($"      Relation to: {tr.Thing2_Id}/{tr.Thing2_Id} Relation:{tr.Relation}");
 					}
 					Console.WriteLine();
 				}
@@ -181,7 +178,7 @@ namespace T2D.Infra
 			dbc.Database.ExecuteSqlCommand($"Set identity_insert {tableName} on;");
 			foreach (var item in Enum.GetNames(enumType))
 			{
-				dbSet.Add(new TEntity { Id = (int)Enum.Parse(enumType, item, false), Name = item });
+				dbSet.Add(new TEntity { Id = (string)Enum.Parse(enumType, item, false), Name = item });
 			}
 			dbc.SaveChanges();
 			dbc.Database.ExecuteSqlCommand($"Set identity_insert {tableName} off;");

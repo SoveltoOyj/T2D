@@ -8,10 +8,10 @@ namespace T2D.Entities
 {
     public class ThingAttributeRoleRight:IEntity
     {
-    public long Id { get; set; }
-    public long ThingAttributeId { get; set; }
+    public string Id { get; set; }
+    public string ThingAttributeId { get; set; }
     public ThingAttribute ThingAttribute { get; set; }
-    public long ThingRoleId { get; set; }
+    public string ThingRoleId { get; set; }
 		public ThingRole ThingRole { get; set; }
 		public RightEnum Rights { get; set; }
 		public override string ToString()

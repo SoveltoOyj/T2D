@@ -17,8 +17,7 @@ namespace T2D.Infra
 				.WithMany(t => t.ThingRelations)
 				.HasForeignKey(e => new
 				{
-					e.Thing1_Id_CreatorUri,
-					e.Thing1_Id_UniqueString
+					e.Thing1_Id
 				})
 				.OnDelete(DeleteBehavior.Cascade)
 				;
@@ -28,21 +27,15 @@ namespace T2D.Infra
 				.HasForeignKey(e => e.RelationId)
 				;
 
-			tbl.Property(e => e.Thing1_Id_CreatorUri)
+			tbl.Property(e => e.Thing1_Id)
 					.IsRequired()
 					;
 
-			tbl.Property(e => e.Thing1_Id_UniqueString)
+			tbl.Property(e => e.Thing2_Id)
 					.IsRequired()
 					;
 
-			tbl.Property(e => e.Thing2_Id_CreatorUri)
-					.IsRequired()
-					;
 
-			tbl.Property(e => e.Thing2_Id_UniqueString)
-				.IsRequired()
-				;
 
 		}
 	}

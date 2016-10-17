@@ -8,7 +8,8 @@ namespace T2D.Entities
 {
 	public class BaseThing:IThingEntity
 	{
-		public string Id_CreatorUri { get; set; }
+		public string Id { get; set; }
+		public string Id_CreatorFQDN { get; set; }
 		public string Id_UniqueString { get; set; }
 		public string Title { get; set; }
 		public List<ThingRelation> ThingRelations { get; set; }

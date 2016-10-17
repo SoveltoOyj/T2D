@@ -12,7 +12,7 @@ namespace T2D.Entities
 	/// </summary>
 	public class Relation:IEnumEntity
 	{
-		public long Id { get; set; }
+		public string Id { get; set; }
 		public string Name { get; set; }
 
 		public override string ToString()

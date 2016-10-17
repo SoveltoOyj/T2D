@@ -8,17 +8,19 @@ namespace T2D.Entities
 {
     public class ThingRoleMember:IEntity
     {
-		public long Id { get; set; }
+		public string Id { get; set; }
 
-		public string ThingId_CreatorUri { get; set; }
-		public string ThingId_UniqueString { get; set; }
+		public string Creator_ThingId { get; set; }
+		//public string ThingId_CreatorUri { get; set; }
+		//public string ThingId_UniqueString { get; set; }
 		public BaseThing Thing { get; set; }
 
-		public long ThingRoleId { get; set; }
+		public int ThingRoleId { get; set; }
 		public ThingRole ThingRole { get; set; }
 
-		public string Member_ThingId_CreatorUri { get; set; }
-		public string Member_ThingId_UniqueString { get; set; }
+		public string Member_Creator_ThingId { get; set; }
+		//public string Member_ThingId_CreatorUri { get; set; }
+		//public string Member_ThingId_UniqueString { get; set; }
 		public BaseThing Member { get; set; }
 		public override string ToString()
 		{

@@ -13,7 +13,7 @@ namespace T2D.Infra
 		{
 			var tbl = modelBuilder.Entity<BaseThing>();
 
-			tbl.HasKey(t => new { t.Id_CreatorUri, t.Id_UniqueString })
+			tbl.HasKey(t => new { t.Id})
 					;
 
 			modelBuilder.Entity<GenericThing>()

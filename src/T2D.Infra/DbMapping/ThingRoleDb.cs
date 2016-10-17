@@ -17,8 +17,7 @@ namespace T2D.Infra
 				.WithMany(t => t.ThingRoles)
 				.HasForeignKey(e => new
 				{
-					e.ThingId_CreatorUri,
-					e.ThingId_UniqueString
+					e.Creator_ThingId,
 				})
 				.OnDelete(DeleteBehavior.Cascade)
 				;
