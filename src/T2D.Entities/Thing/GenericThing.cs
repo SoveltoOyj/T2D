@@ -10,13 +10,8 @@ namespace T2D.Entities
 		public DateTime? Created { get; set; }
 		public DateTime? Published { get; set; }
 		public DateTime? Modified { get; set; }
-		public string CreatorThingId_CreatorUri { get; set; }
-		public string CreatorThingId_UniqueString { get; set; }
-		public string ArchetypeThingId_CreatorUri { get; set; }
-		public string ArchetypeThingId_UniqueString { get; set; }
-		public string PartedThingId_CreatorUri { get; set; }
-		public string PartedThingId_UniqueString { get; set; }
-		
-
+		public Guid Creator_ThingId { get; set; }
+		public Guid Archetype_ThingId { get; set; }
+		public Guid Parted_ThingId { get; set; }
 	}
 }

@@ -7,13 +7,22 @@ using T2D.Entities;
 
 namespace T2D.Infra
 {
-  public static class ThingAttributeDb
-  {
-    public static void SetDbMapping(ModelBuilder modelBuilder)
-    {
-      var tbl = modelBuilder.Entity<ThingAttribute>();
+	public static class ThingAttributeDb
+	{
+		public static void SetDbMapping(ModelBuilder modelBuilder)
+		{
+			var tbl = modelBuilder.Entity<ThingAttribute>();
 
+			tbl.HasOne(e => e.Thing)
+				.WithMany(t => t.ThingAttributes)
+				.HasForeignKey(e => e.ThingId)
+				.OnDelete(DeleteBehavior.Cascade)
+				;
 
-    }
-  }
+			tbl.HasOne(e => e.Attribute)
+				.WithMany()
+				.HasForeignKey(e => e.AttributeId)
+				;
+		}
+	}
 }

@@ -15,10 +15,7 @@ namespace T2D.Infra
 
 			tbl.HasOne(e => e.Thing1)
 				.WithMany(t => t.ThingRelations)
-				.HasForeignKey(e => new
-				{
-					e.Thing1_Id
-				})
+				.HasForeignKey(e => e.Thing1_Id)
 				.OnDelete(DeleteBehavior.Cascade)
 				;
 
@@ -34,8 +31,6 @@ namespace T2D.Infra
 			tbl.Property(e => e.Thing2_Id)
 					.IsRequired()
 					;
-
-
 
 		}
 	}

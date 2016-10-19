@@ -14,7 +14,7 @@ namespace T2D.Infra
 			var tbl = modelBuilder.Entity<Role>();
 
 			tbl.Property(e => e.Name)
-				.ForSqlServerHasColumnType("nvarchar(256)")
+				.HasMaxLength(256)
 				;
 
 

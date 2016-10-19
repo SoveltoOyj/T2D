@@ -8,26 +8,20 @@ namespace T2D.Entities
 {
 	public class ThingRelation : IEntity
 	{
-		public string Id { get; set; }
+		public Guid Id { get; set; }
 
-		public string Thing1_Id { get; set; }
-		//public string Thing1_Id_CreatorUri { get; set; }
-		//public string Thing1_Id_UniqueString { get; set; }
+		public Guid Thing1_Id { get; set; }
 		public BaseThing Thing1 { get; set; }
 
 		public int RelationId { get; set; }
 		public Relation Relation { get; set; }
 
-		public string Thing2_Id { get; set; }
-		//public string Thing2_Id_CreatorUri { get; set; }
-		//public string Thing2_Id_UniqueString { get; set; }
+		public Guid Thing2_Id { get; set; }
 
 		public bool Thing2IsLocal { get; set; }
 		public override string ToString()
 		{
 			return this.ToJson();
 		}
-
-
 	}
 }

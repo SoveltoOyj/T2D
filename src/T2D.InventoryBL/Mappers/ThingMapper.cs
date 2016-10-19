@@ -23,14 +23,14 @@ namespace T2D.InventoryBL.Mappers
 			AutoMapper.Mapper.Initialize(cfg =>
 			{
 				cfg.CreateMap<T2D.Entities.RegularThing, T2D.Model.Thing>()
-					.ForMember(dest => dest.Id, opt => opt.MapFrom(src => ThingIdHelper.Create(src.Id_CreatorUri, src.Id_UniqueString)))
+					.ForMember(dest => dest.Id, opt => opt.MapFrom(src => ThingIdHelper.Create(src.Id_CreatorUri, src.UniqueString)))
 					.ForMember(dest => dest.Creator, opt => opt.MapFrom(src => ThingIdHelper.Create(src.CreatorThingId_CreatorUri, src.CreatorThingId_UniqueString)))
 					.ForMember(dest => dest.Parted, opt => opt.MapFrom(src => ThingIdHelper.Create(src.PartedThingId_CreatorUri, src.PartedThingId_UniqueString)))
 				;
 
 				cfg.CreateMap<T2D.Model.Thing, T2D.Entities.RegularThing>()
 					.ForMember(dest => dest.Id_CreatorUri, opt => opt.MapFrom(src => src.Id != null? ThingIdHelper.GetFQHN(src.Id):null))
-					.ForMember(dest => dest.Id_UniqueString, opt => opt.MapFrom(src => src.Id != null ? ThingIdHelper.GetUniqueString(src.Id):null))
+					.ForMember(dest => dest.UniqueString, opt => opt.MapFrom(src => src.Id != null ? ThingIdHelper.GetUniqueString(src.Id):null))
 					//.ForMember(dest => dest.CreatorThingId_CreatorUri, opt => opt.MapFrom(src => src.Creator != null ? src.Creator.CreatorUri:null))
 					//.ForMember(dest => dest.CreatorThingId_UniqueString, opt => opt.MapFrom(src => src.Creator != null ? src.Creator.UniqueString:null))
 					//.ForMember(dest => dest.PartedThingId_CreatorUri, opt => opt.MapFrom(src => src.Parted != null ? src.Parted.CreatorUri:null))
@@ -73,11 +73,11 @@ namespace T2D.InventoryBL.Mappers
 		public Entities.RegularThing UpdateEntityFromModel(Model.Thing from, Entities.RegularThing to)
 		{
 			string save1 = to.Id_CreatorUri;
-			string save2 = to.Id_UniqueString;
+			string save2 = to.UniqueString;
 
 			to = ModelToEntity(from);
 			to.Id_CreatorUri = save1;
-			to.Id_UniqueString = save2;
+			to.UniqueString = save2;
 			return to;
 		}
 
@@ -86,7 +86,7 @@ namespace T2D.InventoryBL.Mappers
 			if (updateAlsoId)
 			{
 				to.Id_CreatorUri = ThingIdHelper.GetFQHN(from.Id);
-				to.Id_UniqueString = ThingIdHelper.GetUniqueString(from.Id);
+				to.UniqueString = ThingIdHelper.GetUniqueString(from.Id);
 			}
 			UpdateEntityFromModel(from, to);
 			return to;

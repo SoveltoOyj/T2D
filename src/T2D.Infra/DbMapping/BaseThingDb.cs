@@ -13,16 +13,22 @@ namespace T2D.Infra
 		{
 			var tbl = modelBuilder.Entity<BaseThing>();
 
-			tbl.HasKey(t => new { t.Id})
-					;
+			tbl.Property(e => e.CreatorFQDN)
+				.HasMaxLength(256)
+				.IsRequired(true)
+				;
+			tbl.Property(e => e.UniqueString)
+				.HasMaxLength(1024)
+				.IsRequired(true)
+				;
 
 			modelBuilder.Entity<GenericThing>()
 				.Property(e => e.Modified)
-				.ForSqlServerHasColumnType("DateTime")
+				.HasColumnType("DateTime")
 				;
 			modelBuilder.Entity<GenericThing>()
 				.Property(e => e.Published)
-				.ForSqlServerHasColumnType("DateTime")
+				.HasColumnType("DateTime")
 				;
 
 
