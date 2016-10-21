@@ -5,7 +5,7 @@ using T2D.Model;
 namespace T2D.InventoryBL
 {
 	public interface IMapper<TEntity, TModel, TKeyEntity, TKeyModel>
-		where TEntity : class, T2D.Entities.IBaseEntity
+		where TEntity : class, T2D.Entities.IEntity
 		where TModel : class, T2D.Model.IBaseModel
 	{
 		TModel EntityToModel(TEntity from);
@@ -22,7 +22,7 @@ namespace T2D.InventoryBL
 	/// <typeparam name="TModel"></typeparam>
 	/// <typeparam name="TKey"></typeparam>
 	public interface IThingMapper<TEntity, TModel>:IMapper<TEntity, TModel, string, string>
-		where TEntity : class, T2D.Entities.IBaseEntity
+		where TEntity : class, T2D.Entities.IThingEntity
 		where TModel : class, T2D.Model.IBaseModel
 	{
 		TEntity UpdateEntityFromModel(TModel from, TEntity to, bool updateAlsoId);

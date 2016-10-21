@@ -8,7 +8,7 @@ namespace T2D.Model
 {
 	public class Attribute : IEnumModel
 	{
-		public long Id { get; set; }
+		public int Id { get; set; }
 		public string Name { get; set; }
 		public string Pattern { get; set; }
 		public string MinValue { get; set; }

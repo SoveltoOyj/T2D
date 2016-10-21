@@ -16,20 +16,21 @@ namespace T2D.InventoryBL.Mappers
 	/// </summary>
 	/// 
 
-	public class ThingMapper : IThingMapper<Entities.RegularThing, Model.Thing>
+//	public class ThingMapper : IThingMapper<Entities.RegularThing, Model.Thing>
+	public class ThingMapper : IThingMapper<Entities.BaseThing, Model.Thing>
 	{
 		static ThingMapper()
 		{
 			AutoMapper.Mapper.Initialize(cfg =>
 			{
 				cfg.CreateMap<T2D.Entities.RegularThing, T2D.Model.Thing>()
-					.ForMember(dest => dest.Id, opt => opt.MapFrom(src => ThingIdHelper.Create(src.Id_CreatorUri, src.UniqueString)))
-					.ForMember(dest => dest.Creator, opt => opt.MapFrom(src => ThingIdHelper.Create(src.CreatorThingId_CreatorUri, src.CreatorThingId_UniqueString)))
-					.ForMember(dest => dest.Parted, opt => opt.MapFrom(src => ThingIdHelper.Create(src.PartedThingId_CreatorUri, src.PartedThingId_UniqueString)))
+					.ForMember(dest => dest.Id, opt => opt.MapFrom(src => ThingIdHelper.Create(src.CreatorFQDN, src.UniqueString, true)))
+					//.ForMember(dest => dest.Creator, opt => opt.MapFrom(src =>  src.Creator==null?"N/A":  ThingIdHelper.Create(src.Creator.CreatorFQDN, src.Creator.UniqueString,true)))
+					//.ForMember(dest => dest.Parted, opt => opt.MapFrom(src => src.Parted==null?"N/A":  ThingIdHelper.Create(src.Parted.CreatorFQDN, src.Parted.UniqueString, true)))
 				;
 
 				cfg.CreateMap<T2D.Model.Thing, T2D.Entities.RegularThing>()
-					.ForMember(dest => dest.Id_CreatorUri, opt => opt.MapFrom(src => src.Id != null? ThingIdHelper.GetFQHN(src.Id):null))
+					.ForMember(dest => dest.CreatorFQDN, opt => opt.MapFrom(src => src.Id != null? ThingIdHelper.GetFQDN(src.Id):null))
 					.ForMember(dest => dest.UniqueString, opt => opt.MapFrom(src => src.Id != null ? ThingIdHelper.GetUniqueString(src.Id):null))
 					//.ForMember(dest => dest.CreatorThingId_CreatorUri, opt => opt.MapFrom(src => src.Creator != null ? src.Creator.CreatorUri:null))
 					//.ForMember(dest => dest.CreatorThingId_UniqueString, opt => opt.MapFrom(src => src.Creator != null ? src.Creator.UniqueString:null))
@@ -52,13 +53,13 @@ namespace T2D.InventoryBL.Mappers
 			return id;
 		}
 
-		public Model.Thing EntityToModel(Entities.RegularThing from)
+		public Model.Thing EntityToModel(Entities.BaseThing from)
 		{
 			Model.Thing ret = new Model.Thing();
 			ret = AutoMapper.Mapper.Map<Model.Thing>(from);
 			return ret;
 		}
-		public Entities.RegularThing ModelToEntity(Model.Thing from)
+		public Entities.BaseThing ModelToEntity(Model.Thing from)
 		{
 			Entities.RegularThing ret = new Entities.RegularThing();
 			ret = AutoMapper.Mapper.Map<Entities.RegularThing>(from);
@@ -70,22 +71,22 @@ namespace T2D.InventoryBL.Mappers
 		/// </summary>
 		/// <param name="to">Entity to update. All properties except Id.</param>
 		/// <param name="from">Model where data is from.</param>
-		public Entities.RegularThing UpdateEntityFromModel(Model.Thing from, Entities.RegularThing to)
+		public Entities.BaseThing UpdateEntityFromModel(Model.Thing from, Entities.BaseThing to)
 		{
-			string save1 = to.Id_CreatorUri;
+			string save1 = to.CreatorFQDN;
 			string save2 = to.UniqueString;
 
 			to = ModelToEntity(from);
-			to.Id_CreatorUri = save1;
+			to.CreatorFQDN = save1;
 			to.UniqueString = save2;
 			return to;
 		}
 
-		public RegularThing UpdateEntityFromModel(Thing from, RegularThing to, bool updateAlsoId)
+		public BaseThing UpdateEntityFromModel(Thing from, BaseThing to, bool updateAlsoId)
 		{
 			if (updateAlsoId)
 			{
-				to.Id_CreatorUri = ThingIdHelper.GetFQHN(from.Id);
+				to.CreatorFQDN = ThingIdHelper.GetFQDN(from.Id);
 				to.UniqueString = ThingIdHelper.GetUniqueString(from.Id);
 			}
 			UpdateEntityFromModel(from, to);

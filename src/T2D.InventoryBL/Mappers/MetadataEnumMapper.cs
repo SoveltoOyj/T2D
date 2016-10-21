@@ -13,7 +13,7 @@ namespace T2D.InventoryBL.Mappers
 	/// </summary>
 	/// <typeparam name="TEnumEntity"></typeparam>
 	/// <typeparam name="TEnumModel"></typeparam>
-	public class MetadataEnumMapper<TEnumEntity, TEnumModel> : IMapper<TEnumEntity, TEnumModel, long, long>
+	public class MetadataEnumMapper<TEnumEntity, TEnumModel> : IMapper<TEnumEntity, TEnumModel, int, int>
 		where TEnumEntity : class, IEnumEntity, new()
 		where TEnumModel : class, IEnumModel, new()
 	{
@@ -22,12 +22,12 @@ namespace T2D.InventoryBL.Mappers
 			return new TEnumModel { Id = FromEntityId(from.Id), Name = from.Name } ;
 		}
 
-		public long FromEntityId(long id)
+		public int FromEntityId(int id)
 		{
 			return id;
 		}
 
-		public long FromModelId(long id)
+		public int FromModelId(int id)
 		{
 			return id;
 		}

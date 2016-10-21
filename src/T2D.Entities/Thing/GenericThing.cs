@@ -10,8 +10,14 @@ namespace T2D.Entities
 		public DateTime? Created { get; set; }
 		public DateTime? Published { get; set; }
 		public DateTime? Modified { get; set; }
+
 		public Guid Creator_ThingId { get; set; }
+		public BaseThing Creator { get; set; }
+
 		public Guid Archetype_ThingId { get; set; }
+		public ArchetypeThing Archetype { get; set; }
+
 		public Guid Parted_ThingId { get; set; }
+		public RegularThing Parted { get; set; }
 	}
 }

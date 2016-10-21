@@ -19,11 +19,12 @@ namespace T2D.Model
 
 	public interface IModel : IBaseModel
 	{
-		long Id { get; set; }
+		Guid Id { get; set; }
 	}
 
-	public interface IEnumModel : IModel
+	public interface IEnumModel : IBaseModel
 	{
+		int Id { get; set; }
 		string Name { get; set; }
 	}
 

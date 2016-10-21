@@ -11,34 +11,34 @@ namespace T2D.Model.Helpers
 	{
 
 		// http://stackoverflow.com/questions/11809631/fully-qualified-domain-name-validation
-		public static bool CheckFQHN(string fqhn)
+		public static bool CheckFQDN(string fqdn, bool allowNull= false)
 		{
-			if (string.IsNullOrWhiteSpace(fqhn))
-				return false;
+			if (string.IsNullOrWhiteSpace(fqdn))
+				return allowNull;
 
-			var match = Regex.Match(fqhn, @"(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(5));
+			var match = Regex.Match(fqdn, @"(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{0,62}[a-zA-Z0-9]\.)+[a-zA-Z]{2,63}$)", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(5));
 			return match.Success;
 		}
-		public static bool CheckUniqueString(string uniqueString)
+		public static bool CheckUniqueString(string uniqueString, bool allowNull = false)
 		{
 			if (string.IsNullOrWhiteSpace(uniqueString))
-				return false;
+				return allowNull;
 
 			return uniqueString.Length < 1024;	//ToDo: configuration, Entity will use it also
 		}
 
-		public static string Create(string creatorFQHN, string uniqueString)
+		public static string Create(string creatorFQDN, string uniqueString, bool allowNull=false)
 		{
-			if (!ThingIdHelper.CheckFQHN(creatorFQHN))
-				throw new ArgumentException("Argument is not FQHN.", "creatorFQHN");
+			if (!ThingIdHelper.CheckFQDN(creatorFQDN, allowNull))
+				throw new ArgumentException("Argument is not FQDN.", "creatorFQDN");
 
-			if (!ThingIdHelper.CheckUniqueString(uniqueString))
+			if (!ThingIdHelper.CheckUniqueString(uniqueString, allowNull))
 				throw new ArgumentException("UniqueString is invalid.", "uniqueString");
 
-			return $"{creatorFQHN}/{uniqueString}";
+			return $"{creatorFQDN}/{uniqueString}";
 		}
 
-		public static string GetFQHN(string thingId)
+		public static string GetFQDN(string thingId)
 		{
 			if (string.IsNullOrWhiteSpace(thingId))
 				throw new ArgumentException("Argument is null or empty.", "thingId");
@@ -47,11 +47,11 @@ namespace T2D.Model.Helpers
 			if (index < 1)
 				throw new ArgumentException("Argument does not contain '/'.", "thingId");
 
-			string fqhn = thingId.Substring(0, index);
-			if (!ThingIdHelper.CheckFQHN(fqhn))
-				throw new ArgumentException("Argument does not contain FQHN.", "thingId");
+			string fqdn = thingId.Substring(0, index);
+			if (!ThingIdHelper.CheckFQDN(fqdn))
+				throw new ArgumentException("Argument does not contain FQDN.", "thingId");
 
-			return fqhn;
+			return fqdn;
 		}
 
 		public static string GetUniqueString(string thingId)

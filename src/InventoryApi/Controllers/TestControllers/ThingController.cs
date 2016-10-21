@@ -11,7 +11,8 @@ using T2D.Model;
 namespace InventoryApi.Controllers.TestControllers
 {
 	[Route("api/test/[controller]")]
-	public class ThingController : CrudThingController<T2D.Entities.RegularThing, T2D.Model.Thing>
+//	public class ThingController : CrudThingController<T2D.Entities.RegularThing, T2D.Model.Thing>
+	public class ThingController : CrudThingController<T2D.Entities.BaseThing, T2D.Model.Thing>
 	{
 		public ThingController():base(new ThingMapper())
 		{
