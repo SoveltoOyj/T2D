@@ -110,19 +110,22 @@ namespace T2D.Infra
 				dbc.ThingRelations.Add(new ThingRelation
 				{
 					Thing1_Id = T1.Id,
-					Thing2_Id = T2.Id,
+					Thing2_Fqdn = T2.Fqdn,
+					Thing2_US = T2.US,
 					RelationId = (int)RelationEnum.Belongings
 				});
 				dbc.ThingRelations.Add(new ThingRelation
 				{
 					Thing1_Id = T1.Id,
-					Thing2_Id = T2.Id,
+					Thing2_Fqdn = T2.Fqdn,
+					Thing2_US = T2.US,
 					RelationId = (int)RelationEnum.RoleIn
 				});
 				dbc.ThingRelations.Add(new ThingRelation
 				{
 					Thing1_Id = T1.Id,
-					Thing2_Id = T2.Id,
+					Thing2_Fqdn = T2.Fqdn,
+					Thing2_US = T2.US,
 					RelationId = (int)RelationEnum.ContainedBy
 				});
 
@@ -164,7 +167,7 @@ namespace T2D.Infra
 					Console.WriteLine($"  {item.US}");
 					foreach (var tr in item.ThingRelations)
 					{
-						Console.WriteLine($"      Relation to: {tr.Thing2_Id} Relation:{tr.Relation}");
+						Console.WriteLine($"      Relation to: {tr.Thing2_Fqdn}/{tr.Thing2_US} Relation:{tr.Relation}");
 					}
 					Console.WriteLine();
 				}

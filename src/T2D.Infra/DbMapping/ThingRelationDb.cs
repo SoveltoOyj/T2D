@@ -24,13 +24,6 @@ namespace T2D.Infra
 				.HasForeignKey(e => e.RelationId)
 				;
 
-			tbl.Property(e => e.Thing1_Id)
-					.IsRequired()
-					;
-
-			tbl.Property(e => e.Thing2_Id)
-					.IsRequired()
-					;
 
 		}
 	}
