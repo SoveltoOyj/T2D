@@ -60,7 +60,9 @@ namespace T2D.Infra
 					PreferredLocation_Id = 1,
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
-					Creator_ThingId = T0.Id,
+					Creator_Fqdn = T0.Fqdn,
+					Creator_US=T0.US
+
 				});
 				dbc.SaveChanges();
 				var T1 = dbc.Things.SingleOrDefault(t => t.Fqdn == fqdn && t.US == "T1");
@@ -95,7 +97,8 @@ namespace T2D.Infra
 					PreferredLocation_Id = 1,
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
-					Parted_ThingId= T2.Id,
+					Parted_Fqdn= T2.Fqdn,
+					Parted_US = T2.US
 				});
 				dbc.SaveChanges();
 
