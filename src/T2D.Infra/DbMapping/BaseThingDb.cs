@@ -13,14 +13,9 @@ namespace T2D.Infra
 		{
 			var tbl = modelBuilder.Entity<BaseThing>();
 
-			tbl.Property(e => e.CreatorFQDN)
-				.HasMaxLength(256)
-				.IsRequired(true)
-				;
-			tbl.Property(e => e.UniqueString)
-				.HasMaxLength(1024)
-				.IsRequired(true)
-				;
+			tbl.
+				HasAlternateKey(e => new { e.Fqdn, e.US })
+				.HasName("UI_Fqdn_UniqueString");
 
 			modelBuilder.Entity<GenericThing>()
 				.Property(e => e.Modified)
@@ -30,7 +25,6 @@ namespace T2D.Infra
 				.Property(e => e.Published)
 				.HasColumnType("DateTime")
 				;
-
 
 		}
 	}

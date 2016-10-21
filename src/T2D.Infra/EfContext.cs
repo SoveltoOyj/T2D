@@ -41,6 +41,8 @@ namespace T2D.Infra
 			ThingRelationDb.SetDbMapping(modelBuilder);
 			ThingRoleMemberDb.SetDbMapping(modelBuilder);
 
+			
+
 		}
 
 

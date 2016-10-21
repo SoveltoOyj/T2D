@@ -28,13 +28,13 @@ namespace InventoryApi.Controllers.InventoryControllers
 		{
 			// mock, AuthenticationThing is created if not exists
 			if (string.IsNullOrWhiteSpace(value.ThingId)) value.ThingId = "inventory1.sovelto.fi/Teemu Testaaja";
-			var T0 = dbc.AuthenticationThings.SingleOrDefault(t => t.CreatorFQDN == ThingIdHelper.GetFQDN(value.ThingId) && t.UniqueString == ThingIdHelper.GetUniqueString(value.ThingId));
+			var T0 = dbc.AuthenticationThings.SingleOrDefault(t => t.Fqdn == ThingIdHelper.GetFQDN(value.ThingId) && t.US == ThingIdHelper.GetUniqueString(value.ThingId));
 			if (T0 == null)
 			{
 				dbc.AuthenticationThings.Add(new T2D.Entities.AuthenticationThing
 				{
-					CreatorFQDN = ThingIdHelper.GetFQDN(value.ThingId),
-					UniqueString = ThingIdHelper.GetUniqueString(value.ThingId),
+					Fqdn = ThingIdHelper.GetFQDN(value.ThingId),
+					US = ThingIdHelper.GetUniqueString(value.ThingId),
 					Title=$"User {ThingIdHelper.GetUniqueString(value.ThingId)}",
 				});
 				dbc.SaveChanges();

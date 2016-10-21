@@ -30,7 +30,7 @@ namespace InventoryApi.Controllers.BaseControllers
 			List<TThingModel> ret = new List<TThingModel>();
 			PaginationHeader ph = new PaginationHeader();
 			//			IQueryable<TThingEntity> query = dbc.Set<TThingEntity>().OrderBy(e=>new { e.CreatorFQDN, e.UniqueString });
-			IQueryable<TThingEntity> query = dbc.Set<TThingEntity>().OrderBy(e => e.CreatorFQDN);
+			IQueryable<TThingEntity> query = dbc.Set<TThingEntity>().OrderBy(e => e.Fqdn);
 
 			ph.TotalCount = query.LongCount();
 			ph.CurrentPage = page;
@@ -51,7 +51,7 @@ namespace InventoryApi.Controllers.BaseControllers
 		[HttpGet("id")]
 		public virtual TThingModel Get(string cu, string us)
 		{
-			return  _mapper.EntityToModel(dbc.Set<TThingEntity>().FirstOrDefault(t => t.CreatorFQDN==cu && t.UniqueString== us ));
+			return  _mapper.EntityToModel(dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn==cu && t.US== us ));
 		}
 
 		// POST api/test/{model}
@@ -89,7 +89,7 @@ namespace InventoryApi.Controllers.BaseControllers
 		public virtual TThingModel Patch(string cu, string us, [FromBody]JsonPatchDocument<TThingModel> value)
 		{
 
-			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.CreatorFQDN == cu && t.UniqueString == us);
+			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn == cu && t.US == us);
 			if (current == null) throw new Exception($"Thing not Found");
 
 			var updatedModel = _mapper.EntityToModel(current);
@@ -113,7 +113,7 @@ namespace InventoryApi.Controllers.BaseControllers
 	[HttpPut()]
 		public virtual TThingModel Put(string cu, string us, [FromBody]TThingModel value)
 		{
-			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.CreatorFQDN == cu && t.UniqueString == us);
+			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn == cu && t.US == us);
 			if (current == null) throw new Exception($"Thing not Found");
 
 			_mapper.UpdateEntityFromModel(value, current, false);
@@ -125,7 +125,7 @@ namespace InventoryApi.Controllers.BaseControllers
 		[HttpDelete()]
 		public virtual void Delete(string cu, string us)
 		{
-			TThingEntity t = new TThingEntity { CreatorFQDN = cu, UniqueString = us };
+			TThingEntity t = new TThingEntity { Fqdn = cu, US = us };
 			dbc.Entry(t).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
 			dbc.SaveChanges();
 		}

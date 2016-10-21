@@ -24,14 +24,14 @@ namespace T2D.InventoryBL.Mappers
 			AutoMapper.Mapper.Initialize(cfg =>
 			{
 				cfg.CreateMap<T2D.Entities.RegularThing, T2D.Model.Thing>()
-					.ForMember(dest => dest.Id, opt => opt.MapFrom(src => ThingIdHelper.Create(src.CreatorFQDN, src.UniqueString, true)))
+					.ForMember(dest => dest.Id, opt => opt.MapFrom(src => ThingIdHelper.Create(src.Fqdn, src.US, true)))
 					//.ForMember(dest => dest.Creator, opt => opt.MapFrom(src =>  src.Creator==null?"N/A":  ThingIdHelper.Create(src.Creator.CreatorFQDN, src.Creator.UniqueString,true)))
 					//.ForMember(dest => dest.Parted, opt => opt.MapFrom(src => src.Parted==null?"N/A":  ThingIdHelper.Create(src.Parted.CreatorFQDN, src.Parted.UniqueString, true)))
 				;
 
 				cfg.CreateMap<T2D.Model.Thing, T2D.Entities.RegularThing>()
-					.ForMember(dest => dest.CreatorFQDN, opt => opt.MapFrom(src => src.Id != null? ThingIdHelper.GetFQDN(src.Id):null))
-					.ForMember(dest => dest.UniqueString, opt => opt.MapFrom(src => src.Id != null ? ThingIdHelper.GetUniqueString(src.Id):null))
+					.ForMember(dest => dest.Fqdn, opt => opt.MapFrom(src => src.Id != null? ThingIdHelper.GetFQDN(src.Id):null))
+					.ForMember(dest => dest.US, opt => opt.MapFrom(src => src.Id != null ? ThingIdHelper.GetUniqueString(src.Id):null))
 					//.ForMember(dest => dest.CreatorThingId_CreatorUri, opt => opt.MapFrom(src => src.Creator != null ? src.Creator.CreatorUri:null))
 					//.ForMember(dest => dest.CreatorThingId_UniqueString, opt => opt.MapFrom(src => src.Creator != null ? src.Creator.UniqueString:null))
 					//.ForMember(dest => dest.PartedThingId_CreatorUri, opt => opt.MapFrom(src => src.Parted != null ? src.Parted.CreatorUri:null))
@@ -73,12 +73,12 @@ namespace T2D.InventoryBL.Mappers
 		/// <param name="from">Model where data is from.</param>
 		public Entities.BaseThing UpdateEntityFromModel(Model.Thing from, Entities.BaseThing to)
 		{
-			string save1 = to.CreatorFQDN;
-			string save2 = to.UniqueString;
+			string save1 = to.Fqdn;
+			string save2 = to.US;
 
 			to = ModelToEntity(from);
-			to.CreatorFQDN = save1;
-			to.UniqueString = save2;
+			to.Fqdn = save1;
+			to.US = save2;
 			return to;
 		}
 
@@ -86,8 +86,8 @@ namespace T2D.InventoryBL.Mappers
 		{
 			if (updateAlsoId)
 			{
-				to.CreatorFQDN = ThingIdHelper.GetFQDN(from.Id);
-				to.UniqueString = ThingIdHelper.GetUniqueString(from.Id);
+				to.Fqdn = ThingIdHelper.GetFQDN(from.Id);
+				to.US = ThingIdHelper.GetUniqueString(from.Id);
 			}
 			UpdateEntityFromModel(from, to);
 			return to;

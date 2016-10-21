@@ -9,8 +9,8 @@ namespace T2D.Entities
 	public interface IThingEntity:IEntity
 	{
 		Guid Id { get; set; }
-		string CreatorFQDN { get; set; }
-		string UniqueString { get; set; }
+		string Fqdn { get; set; }
+		string US { get; set; }
 
 		string Title { get; set; }
 	}

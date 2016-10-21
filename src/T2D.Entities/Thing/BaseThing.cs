@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using T2D.Helpers;
@@ -9,8 +10,10 @@ namespace T2D.Entities
 	public class BaseThing:IThingEntity
 	{
 		public Guid Id { get; set; }
-		public string CreatorFQDN { get; set; }
-		public string UniqueString { get; set; }
+		[StringLength(256), Required]
+		public string Fqdn { get; set; }
+		[StringLength(1024), Required]
+		public string US { get; set; }
 		public string Title { get; set; }
 		public List<ThingRelation> ThingRelations { get; set; }
 		public List<ThingRoleMember> ThingRoleMembers { get; set; }

@@ -41,17 +41,17 @@ namespace T2D.Infra
 				string fqdn = "inv1.sovelto.fi";
 
 				//Archetypethings
-				dbc.ArchetypeThings.Add(new ArchetypeThing {CreatorFQDN = fqdn, UniqueString = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
+				dbc.ArchetypeThings.Add(new ArchetypeThing {Fqdn = fqdn, US = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
 				//AuthenticationThings
-				dbc.AuthenticationThings.Add(new AuthenticationThing {CreatorFQDN = fqdn, UniqueString = "T0", Title = "Matti, Facebook", });
+				dbc.AuthenticationThings.Add(new AuthenticationThing {Fqdn = fqdn, US = "T0", Title = "Matti, Facebook", });
 				dbc.SaveChanges();
-				var T0 = dbc.AuthenticationThings.SingleOrDefault(t => t.CreatorFQDN == fqdn && t.UniqueString == "T0");
+				var T0 = dbc.AuthenticationThings.SingleOrDefault(t => t.Fqdn == fqdn && t.US == "T0");
 
 				//things
 				dbc.RegularThings.Add(new RegularThing
 				{
-					CreatorFQDN = fqdn,
-					UniqueString = "T1",
+					Fqdn = fqdn,
+					US = "T1",
 					Title = "MySuitcase",
 					Created = new DateTime(2015, 3, 1),
 					IsLocalOnly = true,
@@ -63,12 +63,12 @@ namespace T2D.Infra
 					Creator_ThingId = T0.Id,
 				});
 				dbc.SaveChanges();
-				var T1 = dbc.Things.SingleOrDefault(t => t.CreatorFQDN == fqdn && t.UniqueString == "T1");
+				var T1 = dbc.Things.SingleOrDefault(t => t.Fqdn == fqdn && t.US == "T1");
 
 				dbc.RegularThings.Add(new RegularThing
 				{
-					CreatorFQDN = fqdn,
-					UniqueString = "T2",
+					Fqdn = fqdn,
+					US = "T2",
 					Title = "A Container",
 					Created = new DateTime(2015, 3, 1),
 					IsLocalOnly = true,
@@ -80,12 +80,12 @@ namespace T2D.Infra
 					Published = new DateTime(2012, 4, 13)
 				});
 				dbc.SaveChanges();
-				var T2 = dbc.Things.SingleOrDefault(t => t.CreatorFQDN == fqdn && t.UniqueString == "T2");
+				var T2 = dbc.Things.SingleOrDefault(t => t.Fqdn == fqdn && t.US == "T2");
 
 				dbc.RegularThings.Add(new RegularThing
 				{
-					CreatorFQDN = "inv1.sovelto.fi",
-					UniqueString = "ThingNb3",
+					Fqdn = "inv1.sovelto.fi",
+					US = "ThingNb3",
 					Title = "A Thing",
 					Created = new DateTime(2016, 3, 1),
 					IsLocalOnly = true,
@@ -146,19 +146,19 @@ namespace T2D.Infra
 				Console.WriteLine("ArchetypeThings, version 1");
 				foreach (var item in dbc.ArchetypeThings)
 				{
-					Console.WriteLine($"  {item.UniqueString}");
+					Console.WriteLine($"  {item.US}");
 				}
 
 				Console.WriteLine("\nArchetypeThings, version 2");
 				foreach (var item in dbc.Things.OfType<ArchetypeThing>())
 				{
-					Console.WriteLine($"  {item.UniqueString}");
+					Console.WriteLine($"  {item.US}");
 				}
 
 				Console.WriteLine("\nEager Loading");
 				foreach (var item in dbc.Things.Include(e => e.ThingRelations).ThenInclude(e => e.Relation))
 				{
-					Console.WriteLine($"  {item.UniqueString}");
+					Console.WriteLine($"  {item.US}");
 					foreach (var tr in item.ThingRelations)
 					{
 						Console.WriteLine($"      Relation to: {tr.Thing2_Id} Relation:{tr.Relation}");
