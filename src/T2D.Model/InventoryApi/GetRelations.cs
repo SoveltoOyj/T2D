@@ -22,7 +22,13 @@ namespace T2D.Model.InventoryApi
 		public class RoleThingsClass
 		{
 			public string Role { get; set; }
-			public List<string> ThingIds { get; set; }
+			public List<ThingIdTitle> Things { get; set; }
+
+			public class ThingIdTitle
+			{
+				public string ThingId { get; set; }
+				public string Title{ get; set; }
+			}
 		}
 
 

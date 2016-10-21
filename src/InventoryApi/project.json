@@ -40,7 +40,7 @@
   "buildOptions": {
     "emitEntryPoint": true,
     "preserveCompilationContext": true,
-    "xmlDoc": false
+    "xmlDoc": true
   },
 
   "runtimeOptions": {

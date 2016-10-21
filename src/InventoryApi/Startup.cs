@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.Swagger.Model;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace InventoryApi
 {
@@ -28,6 +29,8 @@ namespace InventoryApi
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+
 			// Add framework services.
 			services.AddMvc();
 
@@ -43,7 +46,8 @@ namespace InventoryApi
 					Contact = new Contact() { Name = "T2D Implementation Team", Email = "ahti.haukilehto@sovelto.fi", Url = "https://sovelto.fi" },
 				});
 				options.DescribeAllEnumsAsStrings();
-			//	options.IncludeXmlComments(System.IO.Path.Combine( ))
+				options.IncludeXmlComments(System.IO.Path.Combine(basePath, "InventoryApi.xml"));
+				options.IncludeXmlComments(System.IO.Path.Combine(basePath, "T2D.Model.xml"));
 			});
 		}
 
