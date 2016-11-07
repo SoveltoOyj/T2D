@@ -10,10 +10,10 @@ namespace T2D.Entities
     {
     public Guid Id { get; set; }
 
-		public Guid Creator_ThingId { get; set; }
+	public Guid Creator_ThingId { get; set; }
     public BaseThing Thing { get; set; }
 
-		public bool Logging { get; set; }
+	public bool Logging { get; set; }
 
     public int RoleId { get; set; }
     public Role Role { get; set; }

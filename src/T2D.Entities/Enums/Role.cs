@@ -21,10 +21,17 @@ namespace T2D.Entities
 	{
 		Omnipotent = 1,
 		Anonymous,
-		Owner,
-		Administrator,
-		GroupMember,
-		Holder,
-		ContractingParty,
-	};
+        Owner,
+        Administrator,
+        User,
+        Maintenance,
+        Logistics,
+        Manufacturer,
+        Gatekeeper1,
+        Gatekeeper2,
+        Alias,
+        IoTBot,
+        ArchetypeMember,
+        CurrentVersion,
+    };
 }
