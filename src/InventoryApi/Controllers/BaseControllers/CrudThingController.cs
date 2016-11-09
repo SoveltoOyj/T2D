@@ -18,26 +18,26 @@ namespace InventoryApi.Controllers.BaseControllers
 		where TThingEntity: class,T2D.Entities.IThingEntity, new()
 		where TThingModel: class, T2D.Model.IThingModel
 	{
-		protected T2D.InventoryBL.IThingMapper<TThingEntity, TThingModel, T2D.Model.ThingId> _mapper;
-		public CrudThingController(T2D.InventoryBL.IThingMapper<TThingEntity, TThingModel, T2D.Model.ThingId> mapper):base()
+		protected T2D.InventoryBL.IThingMapper<TThingEntity, TThingModel> _mapper;
+		public CrudThingController(T2D.InventoryBL.IThingMapper<TThingEntity, TThingModel> mapper):base()
 		{
 			_mapper = mapper;
 		}
-
 
 		[HttpGet()]
 		public virtual IEnumerable<TThingModel> Get(int page = 0, int pageSize = 10)
 		{
 			List<TThingModel> ret = new List<TThingModel>();
 			PaginationHeader ph = new PaginationHeader();
-			IQueryable<TThingEntity> query = dbc.Set<TThingEntity>().OrderBy(e=>new { e.Id_CreatorUri, e.Id_UniqueString });
+			//			IQueryable<TThingEntity> query = dbc.Set<TThingEntity>().OrderBy(e=>new { e.CreatorFQDN, e.UniqueString });
+			IQueryable<TThingEntity> query = dbc.Set<TThingEntity>().OrderBy(e => e.Fqdn);
 
 			ph.TotalCount = query.LongCount();
 			ph.CurrentPage = page;
 			ph.PageSize = pageSize;
 			ph.MorePages = ((page + 1) * pageSize) < ph.TotalCount;
 
-			foreach (var item in dbc.Set<TThingEntity>().Skip(page*pageSize).Take(pageSize))
+			foreach (var item in query.Skip(page*pageSize).Take(pageSize))
 			{
 				ret.Add(_mapper.EntityToModel(item));
 			}
@@ -49,10 +49,9 @@ namespace InventoryApi.Controllers.BaseControllers
 		// GET api/test/{model}/id?cu=creatorUri&us=uniqueString
 		// f.ex. http://localhost:27122/api/test/thing/id?cu=sovelto.fi/inventory&us=ThingNb2
 		[HttpGet("id")]
-		public virtual TThingModel Get(Uri cu, string us)
+		public virtual TThingModel Get(string cu, string us)
 		{
-			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
-			return  _mapper.EntityToModel(dbc.Set<TThingEntity>().FirstOrDefault(t => t.Id_CreatorUri==key.CreatorUri.ToString() && t.Id_UniqueString== key.UniqueString ));
+			return  _mapper.EntityToModel(dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn==cu && t.US== us ));
 		}
 
 		// POST api/test/{model}
@@ -87,12 +86,11 @@ namespace InventoryApi.Controllers.BaseControllers
 		//	}
 		//]
 		[HttpPatch()]
-		public virtual TThingModel Patch(Uri cu, string us, [FromBody]JsonPatchDocument<TThingModel> value)
+		public virtual TThingModel Patch(string cu, string us, [FromBody]JsonPatchDocument<TThingModel> value)
 		{
-			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
 
-			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Id_CreatorUri == key.CreatorUri.ToString() && t.Id_UniqueString == key.UniqueString);
-			if (current == null) throw new Exception($"Thing {key} not Found");
+			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn == cu && t.US == us);
+			if (current == null) throw new Exception($"Thing not Found");
 
 			var updatedModel = _mapper.EntityToModel(current);
 			value.ApplyTo(updatedModel);
@@ -113,11 +111,10 @@ namespace InventoryApi.Controllers.BaseControllers
 		//  width: 43
 		// }
 	[HttpPut()]
-		public virtual TThingModel Put(Uri cu, string us, [FromBody]TThingModel value)
+		public virtual TThingModel Put(string cu, string us, [FromBody]TThingModel value)
 		{
-			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
-			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Id_CreatorUri == key.CreatorUri.ToString() && t.Id_UniqueString == key.UniqueString);
-			if (current == null) throw new Exception($"Thing {key} not Found");
+			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn == cu && t.US == us);
+			if (current == null) throw new Exception($"Thing not Found");
 
 			_mapper.UpdateEntityFromModel(value, current, false);
 			dbc.SaveChanges();
@@ -126,10 +123,9 @@ namespace InventoryApi.Controllers.BaseControllers
 
 		// DELETE api/test/{model}/?cu=creatorUri&us=uniqueString
 		[HttpDelete()]
-		public virtual void Delete(Uri cu, string us)
+		public virtual void Delete(string cu, string us)
 		{
-			T2D.Model.ThingId key = T2D.Model.ThingId.Create(cu, us);
-			TThingEntity t = new TThingEntity { Id_CreatorUri = key.CreatorUri.ToString(), Id_UniqueString = key.UniqueString };
+			TThingEntity t = new TThingEntity { Fqdn = cu, US = us };
 			dbc.Entry(t).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
 			dbc.SaveChanges();
 		}

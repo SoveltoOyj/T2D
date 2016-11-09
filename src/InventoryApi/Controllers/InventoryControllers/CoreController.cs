@@ -10,9 +10,17 @@ using T2D.Model.InventoryApi;
 
 namespace InventoryApi.Controllers.InventoryControllers
 {
+	/// <summary>
+	/// Core 1 operations, currently only MOCS
+	/// </summary>
 	[Route("api/inventory/[controller]/[action]")]
 	public class CoreController : ApiBaseController
 	{
+		/// <summary>
+		/// Query my roles by which I can get attributes
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <returns>Available roles. Later propably also rights that role has.</returns>
 		[HttpPost, ActionName("QueryMyRoles")]
 		[Produces(typeof(QueryMyRolesResponse))]
 		public IActionResult QueryMyRoles([FromBody]QueryMyRolesRequest value)
@@ -29,16 +37,26 @@ namespace InventoryApi.Controllers.InventoryControllers
 			var ret = new GetRelationsResponse();
 			ret.RoleThings = new List<GetRelationsResponse.RoleThingsClass> {
 				new GetRelationsResponse.RoleThingsClass {Role= RelationEnum.Belongings.ToString(),
-				ThingIds = new List<ThingId> {
-							new ThingId { CreatorUri = new Uri("inventory1.sovelto.fi", UriKind.Relative), UniqueString = "T1" },
-							new ThingId { CreatorUri = new Uri("inventory1.sovelto.fi", UriKind.Relative), UniqueString = "T2" }
-						}
+				Things=new List<GetRelationsResponse.RoleThingsClass.ThingIdTitle> {
+					new GetRelationsResponse.RoleThingsClass.ThingIdTitle {
+						ThingId = "inventory1.sovelto.fi/T1" ,
+						Title = "My suitcase" },
+					new GetRelationsResponse.RoleThingsClass.ThingIdTitle {
+						ThingId = "inventory1.sovelto.fi/T2" ,
+						Title = "Container"
+					}
+				 }
 				},
 				new GetRelationsResponse.RoleThingsClass {Role= RelationEnum.RoleIn.ToString(),
-				ThingIds = new List<ThingId> {
-							new ThingId { CreatorUri = new Uri("inventory1.sovelto.fi", UriKind.Relative), UniqueString = "T1" },
-							new ThingId { CreatorUri = new Uri("inventory1.sovelto.fi", UriKind.Relative), UniqueString = "T2" }
-						}
+				Things=new List<GetRelationsResponse.RoleThingsClass.ThingIdTitle> {
+					new GetRelationsResponse.RoleThingsClass.ThingIdTitle {
+						ThingId = "inventory1.sovelto.fi/T1" ,
+						Title = "My suitcase" },
+					new GetRelationsResponse.RoleThingsClass.ThingIdTitle {
+						ThingId = "inventory1.sovelto.fi/T2" ,
+						Title = "Container"
+					}
+				 }
 				},
 				};
 			return Ok(ret);

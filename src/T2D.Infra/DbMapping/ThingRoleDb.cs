@@ -15,11 +15,7 @@ namespace T2D.Infra
 
 			tbl.HasOne(e => e.Thing)
 				.WithMany(t => t.ThingRoles)
-				.HasForeignKey(e => new
-				{
-					e.ThingId_CreatorUri,
-					e.ThingId_UniqueString
-				})
+				.HasForeignKey(e => e.Creator_ThingId)
 				.OnDelete(DeleteBehavior.Cascade)
 				;
 
@@ -27,7 +23,6 @@ namespace T2D.Infra
 				.WithMany()
 				.HasForeignKey(e => e.RoleId)
 				;
-
 
 		}
 	}

@@ -8,7 +8,7 @@ namespace T2D.Entities
 {
 	public class Role:IEnumEntity
 	{
-		public long Id { get; set; }
+		public int Id { get; set; }
 		public string Name { get; set; }
 		public override string ToString()
 		{
@@ -21,10 +21,17 @@ namespace T2D.Entities
 	{
 		Omnipotent = 1,
 		Anonymous,
-		Owner,
-		Administrator,
-		GroupMember,
-		Holder,
-		ContractingParty,
-	};
+        Owner,
+        Administrator,
+        User,
+        Maintenance,
+        Logistics,
+        Manufacturer,
+        Gatekeeper1,
+        Gatekeeper2,
+        Alias,
+        IoTBot,
+        ArchetypeMember,
+        CurrentVersion,
+    };
 }

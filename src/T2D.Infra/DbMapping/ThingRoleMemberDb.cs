@@ -15,42 +15,13 @@ namespace T2D.Infra
 
 			tbl.HasOne(e => e.Thing)
 				.WithMany(t => t.ThingRoleMembers)
-				.HasForeignKey(e => new
-				{
-					e.ThingId_CreatorUri,
-					e.ThingId_UniqueString
-				})
+				.HasForeignKey(e => e.ThingId)
 				.OnDelete(DeleteBehavior.Cascade)
 				;
 
-
-			tbl.Property(e => e.ThingId_CreatorUri)
+			tbl.Property(e => e.ThingId)
 					.IsRequired()
 					;
-
-			tbl.Property(e => e.ThingId_UniqueString)
-					.IsRequired()
-					;
-
-			tbl.HasOne(e => e.Member)
-				.WithMany(t => t.MemeberThingRoleMembers)
-				.HasForeignKey(e => new
-				{
-					e.Member_ThingId_CreatorUri,
-					e.Member_ThingId_UniqueString
-				})
-				.OnDelete(DeleteBehavior.Restrict)
-				;
-
-
-			tbl.Property(e => e.Member_ThingId_CreatorUri)
-					.IsRequired()
-					;
-
-			tbl.Property(e => e.Member_ThingId_UniqueString)
-					.IsRequired()
-					;
-
 		}
 	}
 }

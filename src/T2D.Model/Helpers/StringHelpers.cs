@@ -22,14 +22,6 @@ namespace T2D.Helpers
 			};
 		}
 
-		public static string TestEquality(this string aStr, params string[] bStrs)
-		{
-			if (string.IsNullOrWhiteSpace(aStr)) return  bStrs.Any(b=>string.IsNullOrWhiteSpace(b))?"":null;
-			return bStrs.Any(b=>string.Compare(aStr, b, true) == 0)?aStr:null;
-		}
 	}
-
-	
-	
 
 }

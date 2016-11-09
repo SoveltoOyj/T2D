@@ -9,7 +9,7 @@ namespace T2D.Entities
 	public class Attribute : IEnumEntity
 	{
 
-		public long Id { get; set; }
+		public int Id { get; set; }
 		public string Name { get; set; }
 		public string Pattern { get; set; }
 		public string MinValue { get; set; }

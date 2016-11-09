@@ -35,8 +35,13 @@ namespace T2D.Infra
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			BaseThingDb.SetDbMapping(modelBuilder);
+
+			AttributeDb.SetDbMapping(modelBuilder);
+			RoleDb.SetDbMapping(modelBuilder);
 			ThingRelationDb.SetDbMapping(modelBuilder);
 			ThingRoleMemberDb.SetDbMapping(modelBuilder);
+
+			
 
 		}
 

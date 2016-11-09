@@ -11,7 +11,7 @@ using InventoryApi.Controllers.BaseControllers;
 namespace InventoryApi.Controllers.MetadataControllers
 {
 	[Route("api/metadata/[controller]")]
-	public class AttributeController : CrudBaseController<T2D.Entities.Attribute, T2D.Model.Attribute>
+	public class AttributeController : CrudEnumController<T2D.Entities.Attribute, T2D.Model.Attribute>
 	{
 		public AttributeController() : base(onlyGet:true, mapper: new MetadataEnumMapper<T2D.Entities.Attribute, T2D.Model.Attribute>())
 		{

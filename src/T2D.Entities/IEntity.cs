@@ -2,33 +2,22 @@
 
 namespace T2D.Entities
 {
-	public interface IBaseEntity
+	public interface IEntity
 	{
 	}
 
-	// Can't use complex types
-	//public struct ThingId
-	//{
-	//	Uri CreatorUri { get; set; }
-	//	string UniqueString { get; set; }
-	//}
-
-	public interface IThingEntity:IBaseEntity
+	public interface IThingEntity:IEntity
 	{
-//		ThingId Id { get; set; }
-		string Id_CreatorUri { get; set;}
-
-		string Id_UniqueString { get; set; } 
+		Guid Id { get; set; }
+		string Fqdn { get; set; }
+		string US { get; set; }
 
 		string Title { get; set; }
-	}
-	public interface IEntity : IBaseEntity
-	{
-		long Id { get; set; }
 	}
 
 	public interface IEnumEntity:IEntity
 	{
+		int Id { get; set; }
 		string Name { get; set; }
 	}
 }

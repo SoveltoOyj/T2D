@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using T2D.InventoryBL.Mappers;
 using InventoryApi.Controllers.BaseControllers;
 using T2D.Model.InventoryApi;
+using T2D.Model.Helpers;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,16 +27,15 @@ namespace InventoryApi.Controllers.InventoryControllers
 		public IActionResult Post([FromBody]AuthenticationRequest value)
 		{
 			// mock, AuthenticationThing is created if not exists
-			if (value.Id.CreatorUri == null || value.Id.CreatorUri.ToString() == "") value.Id.CreatorUri = new Uri("inventory1.sovelto.fi", UriKind.Relative);
-			if (string.IsNullOrWhiteSpace(value.Id.UniqueString)) value.Id.UniqueString = "Teemu Testaaja";
-			var T0 = dbc.AuthenticationThings.SingleOrDefault(t => t.Id_CreatorUri == value.Id.CreatorUri.ToString() && t.Id_UniqueString == value.Id.UniqueString);
+			if (string.IsNullOrWhiteSpace(value.ThingId)) value.ThingId = "inventory1.sovelto.fi/Teemu Testaaja";
+			var T0 = dbc.AuthenticationThings.SingleOrDefault(t => t.Fqdn == ThingIdHelper.GetFQDN(value.ThingId) && t.US == ThingIdHelper.GetUniqueString(value.ThingId));
 			if (T0 == null)
 			{
 				dbc.AuthenticationThings.Add(new T2D.Entities.AuthenticationThing
 				{
-					Id_CreatorUri = value.Id.CreatorUri.ToString(),
-					Id_UniqueString = value.Id.UniqueString,
-					Title=$"User {value.Id.UniqueString}",
+					Fqdn = ThingIdHelper.GetFQDN(value.ThingId),
+					US = ThingIdHelper.GetUniqueString(value.ThingId),
+					Title=$"User {ThingIdHelper.GetUniqueString(value.ThingId)}",
 				});
 				dbc.SaveChanges();
 			}

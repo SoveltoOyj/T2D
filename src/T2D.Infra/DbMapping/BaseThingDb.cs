@@ -13,18 +13,18 @@ namespace T2D.Infra
 		{
 			var tbl = modelBuilder.Entity<BaseThing>();
 
-			tbl.HasKey(t => new { t.Id_CreatorUri, t.Id_UniqueString })
-					;
+			tbl.
+				HasAlternateKey(e => new { e.Fqdn, e.US })
+				.HasName("UI_Fqdn_UniqueString");
 
 			modelBuilder.Entity<GenericThing>()
 				.Property(e => e.Modified)
-				.ForSqlServerHasColumnType("DateTime")
+				.HasColumnType("DateTime")
 				;
 			modelBuilder.Entity<GenericThing>()
 				.Property(e => e.Published)
-				.ForSqlServerHasColumnType("DateTime")
+				.HasColumnType("DateTime")
 				;
-
 
 		}
 	}
