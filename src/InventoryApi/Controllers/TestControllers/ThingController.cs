@@ -13,8 +13,13 @@ namespace InventoryApi.Controllers.TestControllers
 	[Route("api/test/[controller]")]
 	public class ThingController : CrudThingController<T2D.Entities.BaseThing, T2D.Model.BaseThing>
 	{
-		public ThingController():base()
-		{
-		}
 	}
+
+
+	[Route("api/test/[controller]")]
+	public class RegularThingController : CrudThingController<T2D.Entities.BaseThing, T2D.Model.RegularThing>
+	{
+	}
+
+
 }

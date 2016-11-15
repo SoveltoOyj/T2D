@@ -23,7 +23,6 @@ namespace InventoryApi.Controllers.BaseControllers
 		{
 			List<TThingModel> ret = new List<TThingModel>();
 			T2D.Model.PaginationHeader ph = new T2D.Model.PaginationHeader();
-			//			IQueryable<TThingEntity> query = dbc.Set<TThingEntity>().OrderBy(e=>new { e.CreatorFQDN, e.UniqueString });
 			IQueryable<TThingEntity> query = dbc.Set<TThingEntity>().OrderBy(e => e.Fqdn);
 
 			ph.TotalCount = query.LongCount();
