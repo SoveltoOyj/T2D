@@ -20,16 +20,21 @@ namespace T2D.InventoryBL.Mappers
 				.ForMember(dest => dest.Id, opt => opt.MapFrom(src => ThingIdHelper.Create(src.Fqdn, src.US, true)))
 				;
 			CreateMap<Model.Thing, Entities.IThingEntity>()
+				.ForMember(dest => dest.Id, opt => opt.Ignore())
 				.ForMember(dest => dest.Fqdn, opt => opt.MapFrom(src => src.Id != null ? ThingIdHelper.GetFQDN(src.Id) : null))
 				.ForMember(dest => dest.US, opt => opt.MapFrom(src => src.Id != null ? ThingIdHelper.GetUniqueString(src.Id) : null))
 				;
 
+			CreateMap<Model.Thing, Entities.BaseThing>()
+				.IncludeBase<Model.Thing, Entities.IThingEntity>()
+				.ForMember(dest => dest.Id, opt => opt.Ignore())
+				;
 		}
 	}
 
 
 //	public class ThingMapper : IThingMapper<Entities.RegularThing, Model.Thing>
-	public class ThingMapper : IThingMapper<Entities.BaseThing, Model.Thing>
+	public class ThingMapper : IThingMapper<Entities.IThingEntity, Model.Thing>
 	{
 		private IMapper _mapper;
 		public ThingMapper()
@@ -52,16 +57,16 @@ namespace T2D.InventoryBL.Mappers
 			return id;
 		}
 
-		public Model.Thing EntityToModel(Entities.BaseThing from)
+		public Model.Thing EntityToModel(Entities.IThingEntity from)
 		{
 			Model.Thing ret = new Model.Thing();
 			ret = _mapper.Map<Model.Thing>(from);
 			return ret;
 		}
-		public Entities.BaseThing ModelToEntity(Model.Thing from)
+		public Entities.IThingEntity ModelToEntity(Model.Thing from)
 		{
-			Entities.RegularThing ret = new Entities.RegularThing();
-			ret = _mapper.Map<Entities.RegularThing>(from);
+			var ret = new Entities.BaseThing();
+			ret = _mapper.Map<Entities.BaseThing>(from);
 			return ret;
 		}
 
@@ -70,7 +75,7 @@ namespace T2D.InventoryBL.Mappers
 		/// </summary>
 		/// <param name="to">Entity to update. All properties except Id.</param>
 		/// <param name="from">Model where data is from.</param>
-		public Entities.BaseThing UpdateEntityFromModel(Model.Thing from, Entities.BaseThing to)
+		public Entities.IThingEntity UpdateEntityFromModel(Model.Thing from, Entities.IThingEntity to)
 		{
 			string save1 = to.Fqdn;
 			string save2 = to.US;
@@ -81,14 +86,14 @@ namespace T2D.InventoryBL.Mappers
 			return to;
 		}
 
-		public BaseThing UpdateEntityFromModel(Thing from, BaseThing to, bool updateAlsoId)
+		public Entities.IThingEntity UpdateEntityFromModel(Thing from, Entities.IThingEntity to, bool updateAlsoId)
 		{
 			if (updateAlsoId)
 			{
 				to.Fqdn = ThingIdHelper.GetFQDN(from.Id);
 				to.US = ThingIdHelper.GetUniqueString(from.Id);
 			}
-			UpdateEntityFromModel(from, to);
+			to = UpdateEntityFromModel(from, to);
 			return to;
 		}
 

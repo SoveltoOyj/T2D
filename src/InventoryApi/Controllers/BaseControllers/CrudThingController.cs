@@ -11,6 +11,7 @@ using System.Collections;
 using Microsoft.EntityFrameworkCore;
 using T2D.Helpers;
 using System.Linq.Expressions;
+using T2D.Model.Helpers;
 
 namespace InventoryApi.Controllers.BaseControllers
 {
@@ -18,8 +19,8 @@ namespace InventoryApi.Controllers.BaseControllers
 		where TThingEntity: class,T2D.Entities.IThingEntity, new()
 		where TThingModel: class, T2D.Model.IThingModel
 	{
-		protected T2D.InventoryBL.IThingMapper<TThingEntity, TThingModel> _mapper;
-		public CrudThingController(T2D.InventoryBL.IThingMapper<TThingEntity, TThingModel> mapper):base()
+		protected T2D.InventoryBL.IThingMapper<T2D.Entities.IThingEntity, TThingModel> _mapper;
+		public CrudThingController(T2D.InventoryBL.IThingMapper<T2D.Entities.IThingEntity, TThingModel> mapper):base()
 		{
 			_mapper = mapper;
 		}
@@ -46,35 +47,32 @@ namespace InventoryApi.Controllers.BaseControllers
 			return ret;
 		}
 
-		// GET api/test/{model}/id?cu=creatorUri&us=uniqueString
-		// f.ex. http://localhost:27122/api/test/thing/id?cu=sovelto.fi/inventory&us=ThingNb2
+		// GET api/test/{model}/id?c=creatorUri&u=uniqueString
+		// f.ex. http://localhost:27122/api/test/thing/id?c=sovelto.fi/inventory&u=ThingNb2
 		[HttpGet("id")]
-		public virtual TThingModel Get(string cu, string us)
+		public virtual TThingModel Get([FromQuery] string c, [FromQuery]string u)
 		{
-			return  _mapper.EntityToModel(dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn==cu && t.US== us ));
+			return  _mapper.EntityToModel(Find(c,u));
 		}
 
 		// POST api/test/{model}
 		// add a new Entity
 		// f.ex:
 		// {
-		//	id: {
-		//		creatorUri: "sovelto.fi/inventory",
-		//		uniqueString: "ThingNb jokin muu"
-		//	},
+		//	id: "inventory1.sovelto.fi/ThingNb jokin muu"
 		//	Location_GPS: "124.5"
 		//	}
 		[HttpPost]
 		public virtual TThingModel Post([FromBody]TThingModel value)
 		{
 			var newEntity = new TThingEntity();
-			_mapper.UpdateEntityFromModel(value, newEntity,true);
+			newEntity= (TThingEntity) _mapper.UpdateEntityFromModel(value, newEntity,true);
 			dbc.Set<TThingEntity>().Add(newEntity);
 			dbc.SaveChanges();
 			return _mapper.EntityToModel(newEntity);
 		}
 
-		// Patch api/test/{model}?cu=creatorUri&us=uniqueString
+		// Patch api/test/{model}?c=creatorUri&u=uniqueString
 		//[
 		//  {"op":"replace",
 		//	  "path":"height",
@@ -86,48 +84,62 @@ namespace InventoryApi.Controllers.BaseControllers
 		//	}
 		//]
 		[HttpPatch()]
-		public virtual TThingModel Patch(string cu, string us, [FromBody]JsonPatchDocument<TThingModel> value)
+		public virtual TThingModel Patch([FromQuery] string c, [FromQuery]string u, [FromBody]JsonPatchDocument<TThingModel> value)
 		{
 
-			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn == cu && t.US == us);
+			TThingEntity current = Find(c, u);
 			if (current == null) throw new Exception($"Thing not Found");
 
 			var updatedModel = _mapper.EntityToModel(current);
 			value.ApplyTo(updatedModel);
 
-			_mapper.UpdateEntityFromModel(updatedModel, current, false);
+			current = (TThingEntity) _mapper.UpdateEntityFromModel(updatedModel, current, false);
 
 			dbc.SaveChanges();
 			return updatedModel;
 		}
 
 
-		// PUT api/test/{model}/?cu=creatorUri&us=uniqueString
-		// update whole entity
+		// PUT api/test/{model}
+		// update the whole entity
 		// f.ex:
-		//http://localhost:27122/api/test/thing/?cu=sovelto.fi/inventory&us=ThingNb2
+		//http://localhost:27122/api/test/thing
 		// {
+		//  id:"inv1.sovelto.fi/uusi6"
 		//  height: 124.5,
 		//  width: 43
 		// }
-	[HttpPut()]
-		public virtual TThingModel Put(string cu, string us, [FromBody]TThingModel value)
+		[HttpPut()]
+		public virtual TThingModel Put([FromBody]TThingModel value)
 		{
-			TThingEntity current = dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn == cu && t.US == us);
+			TThingEntity current = Find(value);
 			if (current == null) throw new Exception($"Thing not Found");
 
-			_mapper.UpdateEntityFromModel(value, current, false);
+			current= (TThingEntity) _mapper.UpdateEntityFromModel(value, current, false);
 			dbc.SaveChanges();
 			return _mapper.EntityToModel(current);
 		}
 
-		// DELETE api/test/{model}/?cu=creatorUri&us=uniqueString
+		// DELETE api/test/{model}/?c=creatorUri&u=uniqueString
 		[HttpDelete()]
-		public virtual void Delete(string cu, string us)
+		public virtual void Delete([FromQuery] string c, [FromQuery]string u)
 		{
-			TThingEntity t = new TThingEntity { Fqdn = cu, US = us };
+			var t = Find(c,u);
+			if (t==null) throw new Exception($"Thing not Found");
+
 			dbc.Entry(t).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
 			dbc.SaveChanges();
+		}
+
+
+		private TThingEntity Find(TThingModel value)
+		{
+			if (value == null || value.Id==null) throw new ArgumentNullException("value", "Thing or Thing Id is null.");
+			return Find(ThingIdHelper.GetFQDN(value.Id), ThingIdHelper.GetUniqueString(value.Id));
+		}
+		private TThingEntity Find(string c, string u)
+		{
+			return dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn == c && t.US == u);
 		}
 	}
 }
