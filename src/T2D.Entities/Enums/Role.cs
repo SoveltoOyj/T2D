@@ -15,16 +15,34 @@ namespace T2D.Entities
 			return this.ToJson();
 		}
 
+
 	}
 
 	public enum RoleEnum
 	{
 		Omnipotent = 1,
-		Anonymous,
-		Owner,
-		Administrator,
-		GroupMember,
-		Holder,
-		ContractingParty,
+	 Owner,
+	 Administrator,
+	 GroupMember,
+	 Holder,
+	 ContractingParty,
+	 Lessee,
+	 User,
+	 Maintenance,
+	 Transport,
+	 Storage,
+	 Finder,
+	 Purchaser,
+	 Inspector,
+	 Manufacturer,
+	 Customs,
+	 Bank,
+	 Belongings,
+	 Passanger,
+	 Anonymous,
+	 Alias,
+	 IoTBot,
+	 ArchetypeMember, 
+	 CurrentVersion,
 	};
 }
