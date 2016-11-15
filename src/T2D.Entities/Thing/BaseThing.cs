@@ -22,20 +22,21 @@ namespace T2D.Entities
 		public List<ThingRole> ThingRoles { get; set; }
 		public List<ThingAttribute> ThingAttributes { get; set; }
 
-		public BaseThing()
-		{
-			ThingRelations = new List<ThingRelation>();
-			ThingRoleMembers = new List<ThingRoleMember>();
-			MemeberThingRoleMembers = new List<ThingRoleMember>();
-			ThingRoleMembers = new List<ThingRoleMember>();
-			ThingRoles = new List<ThingRole>();
-			ThingAttributes = new List<ThingAttribute>();
-		}
+        public BaseThing()
+        {
+            ThingRelations = new List<ThingRelation>();
+            ThingRoleMembers = new List<ThingRoleMember>();
+            MemeberThingRoleMembers = new List<ThingRoleMember>();
+            ThingRoleMembers = new List<ThingRoleMember>();
+            ThingRoles = new List<ThingRole>();
+            ThingAttributes = new List<ThingAttribute>();
+            Sessions = new List<Session>();
+        }
 
-		public override string ToString()
-		{
-			return this.ToJson();
-		}
+        public override string ToString()
+        {
+            return this.ToJson();
+        }
 
-	}
+    }
 }

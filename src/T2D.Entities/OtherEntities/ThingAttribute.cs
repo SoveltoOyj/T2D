@@ -10,24 +10,24 @@ namespace T2D.Entities
   {
     public Guid Id { get; set; }
 
-		public Guid ThingId { get; set; }
+	public Guid ThingId { get; set; }
     public BaseThing Thing { get; set; }
 
-		public int AttributeId { get; set; }
+	public int AttributeId { get; set; }
     public Attribute Attribute { get; set; }
 
-		public bool Logging { get; set; }
+	public bool Logging { get; set; }
 
-		public List<ThingAttributeRoleRight> ThingAttributeRoleRights { get; set; }
-		public List<ThingAttributeRoleSessionAccess> ThingAttributeRoleSessionAccesses { get; set; }
-		public override string ToString()
+	public List<ThingAttributeRoleRight> ThingAttributeRoleRights { get; set; }
+	public List<ThingAttributeRoleSessionAccess> ThingAttributeRoleSessionAccesses { get; set; }
+	public override string ToString()
     {
       return this.ToJson();
     }
-		public ThingAttribute()
-		{
+	public ThingAttribute()
+	{
 			ThingAttributeRoleRights = new List<ThingAttributeRoleRight>();
 			ThingAttributeRoleSessionAccesses = new List<ThingAttributeRoleSessionAccess>();
-		}
+	}
   }
 }
