@@ -6,7 +6,12 @@ using T2D.Model;
 
 namespace T2D.InventoryBL.Mappers
 {
-	public class EnumMapper<TEnum, TEntity> : IEnumMapper<TEnum, TEntity>
+	/// <summary>
+	/// Mapper from/to C# enum type to EntityType
+	/// </summary>
+	/// <typeparam name="TEnum"></typeparam>
+	/// <typeparam name="TEntity"></typeparam>
+	public class EnumMapper<TEnum, TEntity> 
 	where TEnum : struct, IConvertible
 	where TEntity : class, T2D.Entities.IEnumEntity, new()
 	{

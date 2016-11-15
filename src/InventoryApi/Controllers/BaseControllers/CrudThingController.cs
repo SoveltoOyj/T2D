@@ -1,35 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using InventoryApi.Controllers.BaseControllers;
 using T2D.InventoryBL.Mappers;
 using Microsoft.AspNetCore.JsonPatch;
-using T2D.Model;
-using System.Collections;
-using Microsoft.EntityFrameworkCore;
-using T2D.Helpers;
-using System.Linq.Expressions;
 using T2D.Model.Helpers;
 
 namespace InventoryApi.Controllers.BaseControllers
 {
 	public class CrudThingController<TThingEntity,TThingModel> : ApiBaseController
-		where TThingEntity: class,T2D.Entities.IThingEntity, new()
-		where TThingModel: class, T2D.Model.IThingModel
+		where TThingEntity: class, T2D.Entities.IThing, new()
+		where TThingModel: class, T2D.Model.IThing, new()
 	{
-		protected T2D.InventoryBL.IThingMapper<T2D.Entities.IThingEntity, TThingModel> _mapper;
-		public CrudThingController(T2D.InventoryBL.IThingMapper<T2D.Entities.IThingEntity, TThingModel> mapper):base()
+		protected ThingMapper<TThingEntity, TThingModel> _mapper;
+		public CrudThingController():base()
 		{
-			_mapper = mapper;
+			_mapper = new ThingMapper<TThingEntity, TThingModel>();
 		}
 
 		[HttpGet()]
 		public virtual IEnumerable<TThingModel> Get(int page = 0, int pageSize = 10)
 		{
 			List<TThingModel> ret = new List<TThingModel>();
-			PaginationHeader ph = new PaginationHeader();
+			T2D.Model.PaginationHeader ph = new T2D.Model.PaginationHeader();
 			//			IQueryable<TThingEntity> query = dbc.Set<TThingEntity>().OrderBy(e=>new { e.CreatorFQDN, e.UniqueString });
 			IQueryable<TThingEntity> query = dbc.Set<TThingEntity>().OrderBy(e => e.Fqdn);
 
@@ -66,7 +59,7 @@ namespace InventoryApi.Controllers.BaseControllers
 		public virtual TThingModel Post([FromBody]TThingModel value)
 		{
 			var newEntity = new TThingEntity();
-			newEntity= (TThingEntity) _mapper.UpdateEntityFromModel(value, newEntity,true);
+			_mapper.UpdateEntityFromModel(value, ref newEntity,true);
 			dbc.Set<TThingEntity>().Add(newEntity);
 			dbc.SaveChanges();
 			return _mapper.EntityToModel(newEntity);
@@ -93,7 +86,7 @@ namespace InventoryApi.Controllers.BaseControllers
 			var updatedModel = _mapper.EntityToModel(current);
 			value.ApplyTo(updatedModel);
 
-			current = (TThingEntity) _mapper.UpdateEntityFromModel(updatedModel, current, false);
+			_mapper.UpdateEntityFromModel(updatedModel, ref current, false);
 
 			dbc.SaveChanges();
 			return updatedModel;
@@ -115,7 +108,7 @@ namespace InventoryApi.Controllers.BaseControllers
 			TThingEntity current = Find(value);
 			if (current == null) throw new Exception($"Thing not Found");
 
-			current= (TThingEntity) _mapper.UpdateEntityFromModel(value, current, false);
+			_mapper.UpdateEntityFromModel(value, ref current, false);
 			dbc.SaveChanges();
 			return _mapper.EntityToModel(current);
 		}

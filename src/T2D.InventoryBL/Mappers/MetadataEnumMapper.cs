@@ -13,7 +13,7 @@ namespace T2D.InventoryBL.Mappers
 	/// </summary>
 	/// <typeparam name="TEnumEntity"></typeparam>
 	/// <typeparam name="TEnumModel"></typeparam>
-	public class MetadataEnumMapper<TEnumEntity, TEnumModel> : IMapper<TEnumEntity, TEnumModel, int, int>
+	public class MetadataEnumMapper<TEnumEntity, TEnumModel> 
 		where TEnumEntity : class, IEnumEntity, new()
 		where TEnumModel : class, IEnumModel, new()
 	{
