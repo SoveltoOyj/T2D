@@ -1,7 +1,6 @@
 ﻿{
   "version": "1.0.0-*",
 	"buildOptions": {
-		"emitEntryPoint": true
 	},
 	"testRunner": "xunit",
 
@@ -12,8 +11,7 @@
 		},
 		"xunit": "2.2.0-beta4-build3444",
 		"dotnet-test-xunit": "2.2.0-preview2-build1029",
-		"Microsoft.AspNet.Hosting": "1.0.0-rc1-final",
-		"Microsoft.AspNet.TestHost": "1.0.0-rc1-final",
+		"Microsoft.AspNetCore.TestHost": "1.0.0",
 		"Microsoft.AspNet.WebApi.Client": "5.2.3",
 		"T2D.Model": "1.0.0-*",
 		"InventoryApi": "1.0.0-*"
