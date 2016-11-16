@@ -21,9 +21,14 @@ namespace T2D.Infra
 		public DbSet<ThingRelation> ThingRelations { get; set; }
 		public DbSet<ThingRoleMember> ThingRoleMembers { get; set; }
 
+		public DbSet<ThingRole> ThingRoles { get; set; }
+
 		public DbSet<Relation> Relations { get; set; }
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<Entities.Attribute> Attributes { get; set; }
+
+		public DbSet<Entities.Session> Sessions { get; set; }
+		public DbSet<Entities.SessionAccess> SessionAccesses { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -35,14 +40,14 @@ namespace T2D.Infra
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			BaseThingDb.SetDbMapping(modelBuilder);
-
 			AttributeDb.SetDbMapping(modelBuilder);
 			RoleDb.SetDbMapping(modelBuilder);
 			ThingRelationDb.SetDbMapping(modelBuilder);
 			ThingRoleMemberDb.SetDbMapping(modelBuilder);
-
-			
-
+			SessionDb.SetDbMapping(modelBuilder);
+			SessionAccessDb.SetDbMapping(modelBuilder);
+			ThingRoleDb.SetDbMapping(modelBuilder);
+			ThingAttributeRoleRightDb.SetDbMapping(modelBuilder);
 		}
 
 

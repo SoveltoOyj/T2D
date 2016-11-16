@@ -43,13 +43,14 @@ namespace T2D.Infra
 				//Archetypethings
 				dbc.ArchetypeThings.Add(new ArchetypeThing {Fqdn = fqdn, US = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
 				//AuthenticationThings
-				dbc.AuthenticationThings.Add(new AuthenticationThing {Fqdn = fqdn, US = "T0", Title = "Matti, Facebook", });
+				var M10 = new AuthenticationThing { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0), Fqdn = fqdn, US = "M100", Title = "Matti, Facebook", };
+				dbc.AuthenticationThings.Add(M10);
 				dbc.SaveChanges();
-				var T0 = dbc.AuthenticationThings.SingleOrDefault(t => t.Fqdn == fqdn && t.US == "T0");
 
 				//things
 				dbc.RegularThings.Add(new RegularThing
 				{
+					Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
 					Fqdn = fqdn,
 					US = "T1",
 					Title = "MySuitcase",
@@ -60,8 +61,8 @@ namespace T2D.Infra
 					PreferredLocation_Id = 1,
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
-					Creator_Fqdn = T0.Fqdn,
-					Creator_US=T0.US
+					Creator_Fqdn = M10.Fqdn,
+					Creator_US=M10.US
 
 				});
 				dbc.SaveChanges();
@@ -69,6 +70,7 @@ namespace T2D.Infra
 
 				dbc.RegularThings.Add(new RegularThing
 				{
+					Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2),
 					Fqdn = fqdn,
 					US = "T2",
 					Title = "A Container",
@@ -103,6 +105,23 @@ namespace T2D.Infra
 				dbc.SaveChanges();
 
 				//ThingRoleMember
+				// add omnipotent role to T0 for T0
+				ThingRole tr = new ThingRole {RoleId=(int)RoleEnum.Omnipotent, ThingId=M10.Id };
+				dbc.ThingRoles.Add(tr);
+				ThingRoleMember trm = new ThingRoleMember { ThingId = M10.Id, ThingRoleId = tr.Id };
+				dbc.ThingRoleMembers.Add(trm);
+
+				//add owner role to T1 for T0
+				tr = new ThingRole { RoleId = (int)RoleEnum.Owner, ThingId = T1.Id };
+				dbc.ThingRoles.Add(tr);
+				trm = new ThingRoleMember { ThingId = M10.Id, ThingRoleId = tr.Id };
+				dbc.ThingRoleMembers.Add(trm);
+
+				//add Belongings role to T2 for T1
+				tr = new ThingRole { RoleId = (int)RoleEnum.Belongings, ThingId = T2.Id };
+				dbc.ThingRoles.Add(tr);
+				trm = new ThingRoleMember { ThingId = T1.Id, ThingRoleId = tr.Id };
+				dbc.ThingRoleMembers.Add(trm);
 
 				dbc.SaveChanges();
 
@@ -131,6 +150,12 @@ namespace T2D.Infra
 
 
 				dbc.SaveChanges();
+
+				// test session data
+				// add session 00000001 for T0, no sessionaccess yet
+				dbc.Sessions.Add(new Session { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1), StartTime = DateTime.UtcNow, EntryPoint_ThingId = M10.Id });
+				dbc.SaveChanges();
+
 			}
 
 			finally

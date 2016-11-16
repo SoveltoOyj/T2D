@@ -26,8 +26,13 @@ namespace T2D.InventoryBL.Mappers
 				.IncludeBase<Entities.IThing, Model.IThing>()
 				;
 
-			CreateMap<Entities.BaseThing, Model.RegularThing>()
+			CreateMap<Entities.RegularThing, Model.RegularThing>()
 				.IncludeBase<Entities.IThing, Model.IThing>()
+				;
+
+			CreateMap<Model.RegularThing, Entities.RegularThing>()
+				.IncludeBase<Model.IThing, Entities.IThing>()
+				.ForMember(dest => dest.Id, opt => opt.Ignore())
 				;
 
 		}

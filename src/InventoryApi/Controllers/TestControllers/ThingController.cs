@@ -17,7 +17,7 @@ namespace InventoryApi.Controllers.TestControllers
 
 
 	[Route("api/test/[controller]")]
-	public class RegularThingController : CrudThingController<T2D.Entities.BaseThing, T2D.Model.RegularThing>
+	public class RegularThingController : CrudThingController<T2D.Entities.RegularThing, T2D.Model.RegularThing>
 	{
 	}
 

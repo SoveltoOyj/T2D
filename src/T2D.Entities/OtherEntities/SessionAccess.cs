@@ -12,8 +12,8 @@ namespace T2D.Entities
 		public Guid SessionId { get; set; }
 		public Session Session { get; set; }
 
-		public string Creator_ThingId { get; set; }
-		public BaseThing Creator { get; set; }
+		public Guid ThingId { get; set; }
+		public BaseThing Thing { get; set; }
 
 		public int RoleId { get; set; }
 		public Role Role { get; set; }
