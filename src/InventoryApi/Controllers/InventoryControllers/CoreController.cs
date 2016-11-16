@@ -4,8 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using T2D.Entities;
+using T2D.Helpers;
+using T2D.InventoryBL;
 using T2D.Model;
 using T2D.Model.Helpers;
 using T2D.Model.InventoryApi;
@@ -29,30 +32,36 @@ namespace InventoryApi.Controllers.InventoryControllers
 		{
 			var session = this.GetSession(value.Session, true);
 
-			var thing = this.Find(value.ThingId) as T2D.Entities.BaseThing;
+			T2D.Entities.BaseThing thing = 
+				this.Find(value.ThingId) 
+				.Include(t=>t.ThingRoles)
+				.FirstOrDefault()
+				;
+
 			if (thing == null)
 				return BadRequest($"Thing '{value.ThingId}' do not exists.");
 
-			// Explicit loading - all ThingRoles for this entity
-			dbc.ThingRoles
-				.Where(tr => tr.ThingId == thing.Id)
-				.Load()
-				;
+			//TODO: check that session has right to 
+			if (!AttributeSecurity.QueryMyRolesRight(thing, session))
+				return BadRequest($"Not enough priviledges to query roles for thing {value.ThingId}.");
+
 
 			// explicit loading - select those thingRoleMembers, where ThingRoleMember is one of things in session
 			// have to use Lists
 			List<Guid> sessionThings = new List<Guid> { session.EntryPoint_ThingId };
 			foreach (var item in session.SessionAccesses)
-			{
-				sessionThings.Add(item.ThingId);
+			{ 
+				if (!sessionThings.Contains(item.ThingId))
+					sessionThings.Add(item.ThingId);
 			}
 			List<Guid> thingRoles = new List<Guid>();
 			thingRoles.AddRange(thing.ThingRoles.Select(tr => tr.Id));
 
-			dbc.ThingRoleMembers
-				.Where(trm => sessionThings.Contains(trm.ThingId) && thingRoles.Contains(trm.ThingRoleId))
-				.Load()
-				;
+			var thingRoleMembers = 
+				dbc.ThingRoleMembers
+					.Where(trm => sessionThings.Contains(trm.ThingId) && thingRoles.Contains(trm.ThingRoleId))
+					.ToList()
+					;
 										
 			var ret = new QueryMyRolesResponse
 			{
@@ -61,7 +70,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 			var roleIds = new List<int>();
 
 			// add roles and add to SessionAccess
-			foreach (var item in thing.ThingRoleMembers)
+			foreach (var item in thingRoleMembers)
 			{
 				if (item.ThingRole != null)
 				{
@@ -89,46 +98,48 @@ namespace InventoryApi.Controllers.InventoryControllers
 		[Produces(typeof(GetRelationsResponse))]
 		public IActionResult GetRelations([FromBody]GetRelationsRequest value)
 		{
-			if (!this.CheckSession(value.Session))
-				return BadRequest("Session is not valid.");
-			var fqdn = ThingIdHelper.GetFQDN(value.ThingId);
-			var us = ThingIdHelper.GetUniqueString(value.ThingId);
-			var ret = new GetRelationsResponse();
+			var session = this.GetSession(value.Session, true);
 
-			if (us == "T1" && value.Role.ToLower() == RoleEnum.Owner.ToString().ToLower())
+			T2D.Entities.BaseThing thing =
+				this.Find(value.ThingId)
+				.Include(t => t.ThingAttributes)
+				.Include(t => t.ThingRelations)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+				return BadRequest($"Thing '{value.ThingId}' do not exists.");
+
+			var role = this.RoleMapper.EnumToEntity(value.Role);
+
+			//TODO: check that session has right to 
+			if (!AttributeSecurity.QueryRelationsRight(thing, session, role))
+				return BadRequest($"Not enough priviledges to query relations for thing {value.ThingId}.");
+
+
+			var ret = new GetRelationsResponse();
+			ret.RelationThings = new List<GetRelationsResponse.RelationsThings>();
+
+			foreach (var group in thing.ThingRelations.GroupBy(tr=>tr.RelationId))
 			{
-				ret.RoleThings = new List<GetRelationsResponse.RoleThingsClass> {
-				new GetRelationsResponse.RoleThingsClass {Role= RelationEnum.ContainedBy.ToString(),
-				Things=new List<GetRelationsResponse.RoleThingsClass.ThingIdTitle> {
-					new GetRelationsResponse.RoleThingsClass.ThingIdTitle {
-						ThingId = "inventory1.sovelto.fi/T2" ,
-						Title = "Container" },
+				var rt = new GetRelationsResponse.RelationsThings
+				{
+					Relation = RelationMapper.FromEntityId(group.Key).ToString(),
+					Things = new List<GetRelationsResponse.RelationsThings.IdTitle>(),
+				};
+				foreach(var th in group)
+				{
+					var thingIdTitle = new GetRelationsResponse.RelationsThings.IdTitle { ThingId = ThingIdHelper.Create(th.Thing2_Fqdn, th.Thing2_US) };
+					//TODO: it should be local in this version
+					if (th.Thing2IsLocal || !th.Thing2IsLocal)
+					{
+						var thing2 = this.Find(th.Thing2_Fqdn, th.Thing2_US);
+						if (thing2 != null)
+							thingIdTitle.Title = thing2.Title;
 					}
-				 }
-				};
-			}
-			else if (value.Role.ToLower() == RoleEnum.Omnipotent.ToString().ToLower() && us != "T1" && us != "T2")
-			{
-				ret.RoleThings = new List<GetRelationsResponse.RoleThingsClass> {
-				new GetRelationsResponse.RoleThingsClass {Role= RelationEnum.Belongings.ToString(),
-				Things=new List<GetRelationsResponse.RoleThingsClass.ThingIdTitle> {
-					new GetRelationsResponse.RoleThingsClass.ThingIdTitle {
-						ThingId = "inventory1.sovelto.fi/T1" ,
-						Title = "My Suitcase" },
+					rt.Things.Add(thingIdTitle);
 				}
-				},
-				new GetRelationsResponse.RoleThingsClass {Role= RelationEnum.RoleIn.ToString(),
-					Things=new List<GetRelationsResponse.RoleThingsClass.ThingIdTitle> {
-					new GetRelationsResponse.RoleThingsClass.ThingIdTitle {
-						ThingId = "inventory1.sovelto.fi/T1" ,
-						Title = "My Suitcase" },
-				}
-				}
-				};
-			}
-			else
-			{
-			
+				ret.RelationThings.Add(rt);
 			}
 			return Ok(ret);
 		}
@@ -137,29 +148,26 @@ namespace InventoryApi.Controllers.InventoryControllers
 		[Produces(typeof(GetAttributeResponse))]
 		public IActionResult GetAttribute([FromBody]GetAttributeRequest value)
 		{
-			if (!this.CheckSession(value.Session))
-				return BadRequest("Session is not valid.");
-			var fqdn = ThingIdHelper.GetFQDN(value.ThingId);
-			var us = ThingIdHelper.GetUniqueString(value.ThingId);
-			GetAttributeResponse ret;
-			if (us == "T2" && value.Role.ToLower() == RoleEnum.Belongings.ToString().ToLower())
+			var session = this.GetSession(value.Session, true);
+
+			T2D.Entities.BaseThing thing =
+				this.Find(value.ThingId)
+				.Include(t => t.ThingAttributes)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+				return BadRequest($"Thing '{value.ThingId}' do not exists.");
+
+			var role = this.RoleMapper.EnumToEntity(value.Role);
+			var attribute = this.AttributeMapper.EnumToEntity(value.Attribute);
+
+			GetAttributeResponse ret = new GetAttributeResponse
 			{
-				 ret = new GetAttributeResponse
-				{
-					Attribute = value.Attribute.ToString(),
-					TimeStamp = DateTime.UtcNow,
-					Value = "{\"jokin\":\"jotakin\", \"jokintoinen\":123}",
-				};
-			}
-			else
-			{
-				 ret = new GetAttributeResponse
-				{
-					Attribute = value.Attribute.ToString(),
-					TimeStamp = DateTime.UtcNow,
-					Value = "{\"jokin\":\"Mock ei tiedä vastausta\"}"
-				};
-			}
+				Attribute = attribute.Name,
+				TimeStamp = DateTime.UtcNow,
+				Value=GetPropertyValue(thing,attribute.Name)
+			};
 			return Ok(ret);
 		}
 
@@ -180,16 +188,12 @@ namespace InventoryApi.Controllers.InventoryControllers
 			if (!Guid.TryParse(sessionId, out guid)) throw new Exception("Session is invalid.");
 
 			//find session from entities
-			Session session = dbc.Sessions.SingleOrDefault(s => s.Id == guid);
-			if (session==null) throw new Exception("Session is invalid.");
-
+			var q = dbc.Sessions.Where(s => s.Id == guid);
 			if (alsoSessionAccess)
-			{
-				dbc.SessionAccesses
-					.Where(s => s.SessionId == session.Id)
-					.Load()
-					;
-			}
+				q = q.Include(s => s.SessionAccesses);
+
+			Session session = q.SingleOrDefault();
+			if (session==null) throw new Exception("Session is invalid.");
 
 			return session;
 		}
@@ -202,11 +206,22 @@ namespace InventoryApi.Controllers.InventoryControllers
 		}
 
 		[NonAction]
-		private T2D.Entities.IThing Find(string thingId)
+		private IQueryable<T2D.Entities.BaseThing> Find(string thingId)
 		{
-			return dbc.Things.FirstOrDefault(t => t.Fqdn == ThingIdHelper.GetFQDN(thingId) && t.US == ThingIdHelper.GetUniqueString(thingId));
+			return dbc.Things.Where(t => t.Fqdn == ThingIdHelper.GetFQDN(thingId) && t.US == ThingIdHelper.GetUniqueString(thingId));
 		}
 
+		[NonAction]
+		public static object GetPropertyValue(object obj, string propertyName)
+		{
+			var prop =  obj.GetType().GetProperties()
+				 .SingleOrDefault(pi => pi.Name == propertyName)
+				 ;
+			if (prop == null) return null;
+
+			return prop.GetValue(obj, null);
+
+		}
 
 	}
 }

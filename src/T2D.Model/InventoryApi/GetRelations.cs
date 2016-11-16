@@ -17,14 +17,14 @@ namespace T2D.Model.InventoryApi
 	}
 	public class GetRelationsResponse
 	{
-		public List<RoleThingsClass> RoleThings { get; set; }
+		public List<RelationsThings> RelationThings { get; set; }
 
-		public class RoleThingsClass
+		public class RelationsThings
 		{
-			public string Role { get; set; }
-			public List<ThingIdTitle> Things { get; set; }
+			public string Relation { get; set; }
+			public List<IdTitle> Things { get; set; }
 
-			public class ThingIdTitle
+			public class IdTitle
 			{
 				public string ThingId { get; set; }
 				public string Title{ get; set; }
