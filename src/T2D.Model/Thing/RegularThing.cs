@@ -10,6 +10,7 @@ namespace T2D.Model
 {
 	public class RegularThing:BaseThing
 	{
+		public string Description { get; set; }
 		public string Archetype { get; set; }
 		public string Parted { get; set; }
 		public string LocationType { get; set; }

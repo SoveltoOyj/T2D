@@ -7,6 +7,7 @@ namespace T2D.Entities
 {
 	public class RegularThing : GenericThing
 	{
+		public string Description { get; set; }
 		public bool Logging { get; set; }
 		public bool IsLocalOnly { get; set; }
 		public long LocationTypeId { get; set; }

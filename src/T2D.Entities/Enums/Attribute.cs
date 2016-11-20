@@ -27,6 +27,7 @@ namespace T2D.Entities
 		Fqdn,
 		US,
 		Title,
+		Description,
 		Created,
 		Published,
 		Modified,
