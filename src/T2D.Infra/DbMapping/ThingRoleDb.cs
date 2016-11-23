@@ -15,7 +15,7 @@ namespace T2D.Infra
 
 			tbl.HasOne(e => e.Thing)
 				.WithMany(t => t.ThingRoles)
-				.HasForeignKey(e => e.Creator_ThingId)
+				.HasForeignKey(e => e.ThingId)
 				.OnDelete(DeleteBehavior.Cascade)
 				;
 

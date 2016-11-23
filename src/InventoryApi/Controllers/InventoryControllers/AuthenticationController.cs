@@ -7,14 +7,12 @@ using T2D.InventoryBL.Mappers;
 using InventoryApi.Controllers.BaseControllers;
 using T2D.Model.InventoryApi;
 using T2D.Model.Helpers;
+using T2D.Entities;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace InventoryApi.Controllers.InventoryControllers
 {
-
-	//https://docs.asp.net/en/latest/mvc/models/formatting.html#content-negotiation
-	//https://wildermuth.com/2016/05/10/Writing-API-Controllers-in-ASP-NET-MVC-6
 
 	[Route("api/inventory/[controller]")]
 	public class AuthenticationController : ApiBaseController
@@ -31,18 +29,28 @@ namespace InventoryApi.Controllers.InventoryControllers
 			var T0 = dbc.AuthenticationThings.SingleOrDefault(t => t.Fqdn == ThingIdHelper.GetFQDN(value.ThingId) && t.US == ThingIdHelper.GetUniqueString(value.ThingId));
 			if (T0 == null)
 			{
-				dbc.AuthenticationThings.Add(new T2D.Entities.AuthenticationThing
+				T0 = new T2D.Entities.AuthenticationThing
 				{
 					Fqdn = ThingIdHelper.GetFQDN(value.ThingId),
 					US = ThingIdHelper.GetUniqueString(value.ThingId),
-					Title=$"User {ThingIdHelper.GetUniqueString(value.ThingId)}",
-				});
+					Title = $"User {ThingIdHelper.GetUniqueString(value.ThingId)}",
+				};
+				dbc.AuthenticationThings.Add(T0);
 				dbc.SaveChanges();
 			}
 
+			//Create SessionEntity
+			var session = new Session
+			{
+				EntryPoint_ThingId = T0.Id,
+				StartTime=DateTime.UtcNow,
+			};
+			dbc.Sessions.Add(session);
+			dbc.SaveChanges();
+
 			var ret = new AuthenticationResponse
 			{
-				Session = Guid.NewGuid().ToString(),
+				Session = session.Id.ToString(),
 			};
 			return Ok(ret);
 		}

@@ -18,15 +18,15 @@ namespace InventoryApi.Controllers.BaseControllers
 	/// <typeparam name="TEnumModel"></typeparam>
 	public class CrudEnumController<TEnumEntity,TEnumModel> : ApiBaseController
 		where TEnumEntity: class,T2D.Entities.IEnumEntity, new()
-		where TEnumModel: class, T2D.Model.IEnumModel
+		where TEnumModel: class, T2D.Model.IEnumModel, new()
 	{
 
-		protected T2D.InventoryBL.IMapper<TEnumEntity, TEnumModel, int, int> _mapper;
+		protected MetadataEnumMapper<TEnumEntity, TEnumModel> _mapper;
 		protected bool _onlyGet;
 
-		public CrudEnumController( T2D.InventoryBL.IMapper<TEnumEntity, TEnumModel, int, int> mapper, bool onlyGet = true) :base()
+		public CrudEnumController(bool onlyGet = true) :base()
 		{
-			_mapper = mapper;
+			_mapper = new MetadataEnumMapper<TEnumEntity, TEnumModel>();
 			_onlyGet = onlyGet;
 		}
 

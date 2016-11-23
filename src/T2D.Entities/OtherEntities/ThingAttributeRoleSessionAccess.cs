@@ -8,7 +8,7 @@ namespace T2D.Entities
 {
     public class ThingAttributeRoleSessionAccess:IEntity
     {
-    public string Id { get; set; }
+    public Guid Id { get; set; }
 		public string SessionId { get; set; }
 		public Session Session { get; set; }
 		public string ThingAttributeId { get; set; }
