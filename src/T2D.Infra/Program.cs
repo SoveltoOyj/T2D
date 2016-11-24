@@ -12,21 +12,37 @@ namespace T2D.Infra
 	{
 		public static void Main(string[] args)
 		{
+			var dbc = new EfContext();
+
 			Console.WriteLine("Create new T2D database (existing db will be deleted), press Y");
 			var ki = Console.ReadKey();
 			if (ki.Key.ToString().ToLower() != "y")
 			{
+				Console.WriteLine("Add extra data, press Y");
+				ki = Console.ReadKey();
+				if (ki.Key.ToString().ToLower() == "y")
+					AddExtraData(dbc);
+
 				PrintData();
 				return;
 			}
 
 			Console.WriteLine("\nCreating database ...");
-			var dbc = new EfContext();
 			//create database, add base data
 
 			dbc.Database.EnsureDeleted();
 			dbc.Database.EnsureCreated();
 
+			AddBasicData(dbc);
+
+
+			Console.WriteLine("\nDone, Press enter to print some of the data.");
+			Console.ReadLine();
+			PrintData();
+		}
+
+		private static void AddBasicData(EfContext dbc)
+		{
 			Console.WriteLine("\nCreating data ...");
 			dbc.Database.OpenConnection();
 			try
@@ -41,7 +57,7 @@ namespace T2D.Infra
 				string fqdn = "inv1.sovelto.fi";
 
 				//Archetypethings
-				dbc.ArchetypeThings.Add(new ArchetypeThing {Fqdn = fqdn, US = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
+				dbc.ArchetypeThings.Add(new ArchetypeThing { Fqdn = fqdn, US = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
 				//AuthenticationThings
 				var M100 = new AuthenticationThing { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0), Fqdn = fqdn, US = "M100", Title = "Matti, Facebook", };
 				dbc.AuthenticationThings.Add(M100);
@@ -62,7 +78,7 @@ namespace T2D.Infra
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
 					Creator_Fqdn = M100.Fqdn,
-					Creator_US=M100.US
+					Creator_US = M100.US
 
 				});
 				dbc.SaveChanges();
@@ -99,7 +115,7 @@ namespace T2D.Infra
 					PreferredLocation_Id = 1,
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
-					Parted_Fqdn= T2.Fqdn,
+					Parted_Fqdn = T2.Fqdn,
 					Parted_US = T2.US
 				});
 				dbc.SaveChanges();
@@ -107,7 +123,7 @@ namespace T2D.Infra
 				//ThingRoleMember
 				byte count = 1;
 				// add omnipotent role to T0 for T0
-				ThingRole tr = new ThingRole { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count), RoleId =(int)RoleEnum.Omnipotent, ThingId=M100.Id };
+				ThingRole tr = new ThingRole { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count), RoleId = (int)RoleEnum.Omnipotent, ThingId = M100.Id };
 				dbc.ThingRoles.Add(tr);
 				ThingRoleMember trm = new ThingRoleMember { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count++), ThingId = M100.Id, ThingRoleId = tr.Id };
 				dbc.ThingRoleMembers.Add(trm);
@@ -170,11 +186,95 @@ namespace T2D.Infra
 			}
 
 
-			Console.WriteLine("\nDone, Press enter to print some of the data.");
-			Console.ReadLine();
-			PrintData();
 		}
 
+		private static void AddExtraData(EfContext dbc)
+		{
+			Console.WriteLine("\nCreating Extra data ...");
+			dbc.Database.OpenConnection();
+			try
+			{
+				//MyCar
+				//MyTV
+				string fqdn = "inv1.sovelto.fi";
+				//AuthenticationThings
+				var M100 = FindByThingId(dbc, fqdn, "M100");
+				if (M100 == null)
+					throw new Exception("Can't find M100");
+
+				//things
+				dbc.RegularThings.Add(new RegularThing
+				{
+					Fqdn = fqdn,
+					US = "S1",
+					Title = "MyCar",
+					Created = new DateTime(2015, 3, 1),
+					IsLocalOnly = true,
+					LocationTypeId = 1,
+					Logging = true,
+					PreferredLocation_Id = 1,
+					Modified = new DateTime(2016, 3, 23),
+					Published = new DateTime(2016, 4, 13),
+					Creator_Fqdn = M100.Fqdn,
+					Creator_US = M100.US
+				});
+				dbc.SaveChanges();
+				var S1 = FindByThingId(dbc,fqdn ,"S1");
+
+				dbc.RegularThings.Add(new RegularThing
+				{
+					Fqdn = fqdn,
+					US = "S2",
+					Title = "MyTV",
+					Created = new DateTime(2015, 3, 1),
+					IsLocalOnly = true,
+					LocationTypeId = 2,
+					Location_GPS = "123",
+					Logging = true,
+					PreferredLocation_Id = 1,
+					Modified = new DateTime(2014, 3, 3),
+					Published = new DateTime(2012, 4, 13)
+				});
+				dbc.SaveChanges();
+				var S2 = FindByThingId(dbc,fqdn ,"S2");
+
+
+				//ThingRoleMember
+
+				//add owner role to S1 and S2 for M100
+				foreach (var thing in new BaseThing[] { S1, S2 })
+				{
+					var tr = new ThingRole { RoleId = (int)RoleEnum.Owner, ThingId = thing.Id };
+					dbc.ThingRoles.Add(tr);
+					var trm = new ThingRoleMember { ThingId = M100.Id, ThingRoleId = tr.Id };
+					dbc.ThingRoleMembers.Add(trm);
+					dbc.SaveChanges();
+				}
+
+				//add relation to S1 and S2 from M100
+				foreach (var thing in new BaseThing[] { S1, S2 })
+				{
+					dbc.ThingRelations.Add(new ThingRelation
+					{
+						Thing1_Id = M100.Id,
+						Thing2_Fqdn = thing.Fqdn,
+						Thing2_US = thing.US,
+						RelationId = (int)RelationEnum.Belongings
+					});
+					dbc.SaveChanges();
+				}
+			}
+
+			finally
+			{
+				dbc.Database.CloseConnection();
+			}
+		}
+
+		private static BaseThing FindByThingId(EfContext dbc, string fqdn, string uniqueString)
+		{
+			return dbc.Things.FirstOrDefault(t => t.Fqdn == fqdn && t.US == uniqueString);
+		}
 
 		private static void PrintData()
 		{
