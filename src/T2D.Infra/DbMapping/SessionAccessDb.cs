@@ -7,17 +7,24 @@ using T2D.Entities;
 
 namespace T2D.Infra
 {
-	public static class ThingRoleMemberDb
+	public static class SessionAccessDb
 	{
 		public static void SetDbMapping(ModelBuilder modelBuilder)
 		{
-			var tbl = modelBuilder.Entity<ThingRoleMember>();
+			var tbl = modelBuilder.Entity<SessionAccess>();
 
 			tbl.HasOne(e => e.Thing)
-				.WithMany(t => t.ThingRoleMembers)
+				.WithMany(t=>t.SessionAccesses)
 				.HasForeignKey(e => e.ThingId)
 				.OnDelete(DeleteBehavior.Restrict)
 				;
+
+			tbl.HasOne(e => e.Session)
+				.WithMany(t => t.SessionAccesses)
+				.HasForeignKey(e => e.SessionId)
+				.OnDelete(DeleteBehavior.Restrict)
+				;
+
 
 			tbl.Property(e => e.ThingId)
 					.IsRequired()

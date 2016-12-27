@@ -7,9 +7,13 @@
   "frameworks": {
     "netstandard1.6": {
       "imports": "dnxcore50"
+    },
+    "netstandard1.4": {
+      "imports": "dnxcore50"
     }
   },
   "buildOptions": {
-    "xmlDoc": true
+    "xmlDoc": true,
+    "nowarn": [ "1591" ]
   }
 }

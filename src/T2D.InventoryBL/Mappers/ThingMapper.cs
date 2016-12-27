@@ -1,98 +1,85 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using T2D.Entities;
-using T2D.Helpers;
-using T2D.Model;
+﻿using AutoMapper;
 using T2D.Model.Helpers;
 
 namespace T2D.InventoryBL.Mappers
 {
-	/// <summary>
-	/// Note: this mapper uses Model.ThingId also for Entity key!
-	/// </summary>
-	/// 
 
-//	public class ThingMapper : IThingMapper<Entities.RegularThing, Model.Thing>
-	public class ThingMapper : IThingMapper<Entities.BaseThing, Model.Thing>
+	public class ThingProfile :Profile
 	{
-		static ThingMapper()
+		public ThingProfile()
 		{
-			AutoMapper.Mapper.Initialize(cfg =>
-			{
-				cfg.CreateMap<T2D.Entities.RegularThing, T2D.Model.Thing>()
-					.ForMember(dest => dest.Id, opt => opt.MapFrom(src => ThingIdHelper.Create(src.Fqdn, src.US, true)))
-					//.ForMember(dest => dest.Creator, opt => opt.MapFrom(src =>  src.Creator==null?"N/A":  ThingIdHelper.Create(src.Creator.CreatorFQDN, src.Creator.UniqueString,true)))
-					//.ForMember(dest => dest.Parted, opt => opt.MapFrom(src => src.Parted==null?"N/A":  ThingIdHelper.Create(src.Parted.CreatorFQDN, src.Parted.UniqueString, true)))
+			CreateMap<Entities.IThing, Model.IThing>()
+				.ForMember(dest => dest.Id, opt => opt.MapFrom(src => ThingIdHelper.Create(src.Fqdn, src.US, true)))
+				;
+			CreateMap<Model.IThing, Entities.IThing>()
+				.ForMember(dest => dest.Id, opt => opt.Ignore())
+				.ForMember(dest => dest.Fqdn, opt => opt.MapFrom(src => src.Id != null ? ThingIdHelper.GetFQDN(src.Id) : null))
+				.ForMember(dest => dest.US, opt => opt.MapFrom(src => src.Id != null ? ThingIdHelper.GetUniqueString(src.Id) : null))
 				;
 
-				cfg.CreateMap<T2D.Model.Thing, T2D.Entities.RegularThing>()
-					.ForMember(dest => dest.Fqdn, opt => opt.MapFrom(src => src.Id != null? ThingIdHelper.GetFQDN(src.Id):null))
-					.ForMember(dest => dest.US, opt => opt.MapFrom(src => src.Id != null ? ThingIdHelper.GetUniqueString(src.Id):null))
-					//.ForMember(dest => dest.CreatorThingId_CreatorUri, opt => opt.MapFrom(src => src.Creator != null ? src.Creator.CreatorUri:null))
-					//.ForMember(dest => dest.CreatorThingId_UniqueString, opt => opt.MapFrom(src => src.Creator != null ? src.Creator.UniqueString:null))
-					//.ForMember(dest => dest.PartedThingId_CreatorUri, opt => opt.MapFrom(src => src.Parted != null ? src.Parted.CreatorUri:null))
-					//.ForMember(dest => dest.PartedThingId_UniqueString, opt => opt.MapFrom(src => src.Parted != null ? src.Parted.UniqueString:null))
+			CreateMap<Model.BaseThing, Entities.BaseThing>()
+				.IncludeBase<Model.IThing, Entities.IThing>()
+				.ForMember(dest => dest.Id, opt => opt.Ignore())
 				;
-			});
+
+			CreateMap<Entities.BaseThing, Model.BaseThing>()
+				.IncludeBase<Entities.IThing, Model.IThing>()
+				;
+
+			CreateMap<Entities.RegularThing, Model.RegularThing>()
+				.IncludeBase<Entities.IThing, Model.IThing>()
+				;
+
+			CreateMap<Model.RegularThing, Entities.RegularThing>()
+				.IncludeBase<Model.IThing, Entities.IThing>()
+				.ForMember(dest => dest.Id, opt => opt.Ignore())
+				;
+
+		}
+	}
+
+
+	public class ThingMapper<TEntity, TModel>
+		where TEntity : class, T2D.Entities.IThing, new()
+		where TModel : class, T2D.Model.IThing, new()
+	{ 
+		private IMapper _mapper;
+		public ThingMapper()
+		{
+			var config = new MapperConfiguration(cfg =>
+				{
+					cfg.AddProfile<ThingProfile>();
+				}
+			);
+			_mapper = config.CreateMapper();
 		}
 
-
-
-
-		public string FromModelId(string id)
+		public TModel EntityToModel(TEntity from)
 		{
-			return id;
-		}
-
-		public string FromEntityId(string id)
-		{
-			return id;
-		}
-
-		public Model.Thing EntityToModel(Entities.BaseThing from)
-		{
-			Model.Thing ret = new Model.Thing();
-			ret = AutoMapper.Mapper.Map<Model.Thing>(from);
+			var ret =  _mapper.Map<TModel>(from);
 			return ret;
 		}
-		public Entities.BaseThing ModelToEntity(Model.Thing from)
+		public TEntity ModelToEntity(TModel from)
 		{
-			Entities.RegularThing ret = new Entities.RegularThing();
-			ret = AutoMapper.Mapper.Map<Entities.RegularThing>(from);
+			var ret = _mapper.Map<TEntity>(from);
 			return ret;
 		}
 
-		/// <summary>
-		/// Updates entity from model. All properties except id.
-		/// </summary>
-		/// <param name="to">Entity to update. All properties except Id.</param>
-		/// <param name="from">Model where data is from.</param>
-		public Entities.BaseThing UpdateEntityFromModel(Model.Thing from, Entities.BaseThing to)
+		public void UpdateEntityFromModel(TModel from, ref TEntity to, bool updateThingId=false)
 		{
-			string save1 = to.Fqdn;
-			string save2 = to.US;
-
-			to = ModelToEntity(from);
-			to.Fqdn = save1;
-			to.US = save2;
-			return to;
-		}
-
-		public BaseThing UpdateEntityFromModel(Thing from, BaseThing to, bool updateAlsoId)
-		{
-			if (updateAlsoId)
+			string fqdn=null, us=null;
+			if (!updateThingId)
 			{
-				to.Fqdn = ThingIdHelper.GetFQDN(from.Id);
-				to.US = ThingIdHelper.GetUniqueString(from.Id);
+				fqdn = to.Fqdn;
+				us = to.US;
 			}
-			UpdateEntityFromModel(from, to);
-			return to;
+			to = ModelToEntity(from);
+			if (!updateThingId)
+			{
+				to.Fqdn = fqdn;
+				to.US = us;
+			}
 		}
-
 	}
 }
 

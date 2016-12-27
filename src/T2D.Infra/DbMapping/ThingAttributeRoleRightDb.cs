@@ -16,13 +16,13 @@ namespace T2D.Infra
             tbl.HasOne(e => e.ThingAttribute)
                 .WithMany(t => t.ThingAttributeRoleRights)
                 .HasForeignKey(e => e.ThingAttributeId)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.Restrict)
                 ;
 
             tbl.HasOne(e => e.ThingRole)
                  .WithMany()
                  .HasForeignKey(e => e.ThingAttributeId)
-                 .OnDelete(DeleteBehavior.Cascade)
+                 .OnDelete(DeleteBehavior.Restrict)
                  ;
 
         }

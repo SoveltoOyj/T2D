@@ -21,28 +21,33 @@ namespace T2D.Infra
 		public DbSet<ThingRelation> ThingRelations { get; set; }
 		public DbSet<ThingRoleMember> ThingRoleMembers { get; set; }
 
+		public DbSet<ThingRole> ThingRoles { get; set; }
+
 		public DbSet<Relation> Relations { get; set; }
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<Entities.Attribute> Attributes { get; set; }
 
+		public DbSet<Entities.Session> Sessions { get; set; }
+		public DbSet<Entities.SessionAccess> SessionAccesses { get; set; }
+
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			//			optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=T2D;Trusted_Connection=True;");
-			optionsBuilder.UseSqlServer(@"Server=.;Database=T2D;Uid=t2d;pwd=Salainen;Trusted_Connection=False;");
+			optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=T2D;Trusted_Connection=True;");
+			//optionsBuilder.UseSqlServer(@"Server=.;Database=T2D;Uid=t2d;pwd=Salainen;Trusted_Connection=False;");
 			//optionsBuilder.UseSqlServer(@"Server=tcp:t2dahti.database.windows.net,1433;Database=t2d;Uid=ahti;pwd=Salainen1!;Persist Security Info = False;; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = False; Connection Timeout = 30;");
 		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			BaseThingDb.SetDbMapping(modelBuilder);
-
 			AttributeDb.SetDbMapping(modelBuilder);
 			RoleDb.SetDbMapping(modelBuilder);
 			ThingRelationDb.SetDbMapping(modelBuilder);
 			ThingRoleMemberDb.SetDbMapping(modelBuilder);
-
-			
-
+			SessionDb.SetDbMapping(modelBuilder);
+			SessionAccessDb.SetDbMapping(modelBuilder);
+			ThingRoleDb.SetDbMapping(modelBuilder);
+			ThingAttributeRoleRightDb.SetDbMapping(modelBuilder);
 		}
 
 
