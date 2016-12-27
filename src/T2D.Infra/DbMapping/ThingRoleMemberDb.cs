@@ -19,9 +19,6 @@ namespace T2D.Infra
 				.OnDelete(DeleteBehavior.Restrict)
 				;
 
-			tbl.Property(e => e.ThingId)
-					.IsRequired()
-					;
 		}
 	}
 }

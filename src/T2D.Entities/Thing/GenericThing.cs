@@ -15,17 +15,17 @@ namespace T2D.Entities
 
 		[StringLength(256)]
 		public string Creator_Fqdn { get; set; }
-		[StringLength(1024)]
+		[StringLength(512)]
 		public string Creator_US { get; set; }
 
 		[StringLength(256)]
 		public string Archetype_Fqdn { get; set; }
-		[StringLength(1024)]
+		[StringLength(512)]
 		public string Archetype_US { get; set; }
 
 		[StringLength(256)]
 		public string Parted_Fqdn { get; set; }
-		[StringLength(1024)]
+		[StringLength(512)]
 		public string Parted_US { get; set; }
 	}
 }

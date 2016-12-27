@@ -13,17 +13,6 @@ namespace T2D.Infra
 		{
 			var tbl = modelBuilder.Entity<ThingRole>();
 
-			tbl.HasOne(e => e.Thing)
-				.WithMany(t => t.ThingRoles)
-				.HasForeignKey(e => e.ThingId)
-				.OnDelete(DeleteBehavior.Cascade)
-				;
-
-			tbl.HasOne(e => e.Role)
-				.WithMany()
-				.HasForeignKey(e => e.RoleId)
-				;
-
 		}
 	}
 }

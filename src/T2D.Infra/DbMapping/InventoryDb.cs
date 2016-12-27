@@ -7,11 +7,16 @@ using T2D.Entities;
 
 namespace T2D.Infra
 {
-	public static class ThingAttributeDb
+	public static class InventoryDb
 	{
 		public static void SetDbMapping(ModelBuilder modelBuilder)
 		{
-			var tbl = modelBuilder.Entity<ThingAttribute>();
+			var tbl = modelBuilder.Entity<Inventory>();
+
+			tbl.
+				HasAlternateKey(e => e.Fqdn)
+				.HasName("UI_Fqdn")
+				;
 
 		}
 	}

@@ -50,11 +50,18 @@ namespace T2D.Infra
 				//Enums
 				AddEnumData(dbc, dbc.Relations, typeof(RelationEnum));
 				AddEnumData(dbc, dbc.Roles, typeof(RoleEnum));
+				AddEnumData(dbc, dbc.LocationTypes, typeof(LocationTypeEnum));
 
 				//attributes
 				AddAttributeData(dbc, typeof(AttributeEnum));
 
 				string fqdn = "inv1.sovelto.fi";
+				//Inventories
+				dbc.Inventories.Add(new Inventory { Fqdn = fqdn, Name = "Sovelto" });
+				dbc.SaveChanges();
+				var I1 = dbc.Inventories.SingleOrDefault(t => t.Fqdn == fqdn);
+
+
 
 				//Archetypethings
 				dbc.ArchetypeThings.Add(new ArchetypeThing { Fqdn = fqdn, US = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
@@ -74,7 +81,7 @@ namespace T2D.Infra
 					IsLocalOnly = true,
 					LocationTypeId = 1,
 					Logging = true,
-					PreferredLocation_Id = 1,
+					Preferred_LocationTypeId = 1,
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
 					Creator_Fqdn = M100.Fqdn,
@@ -93,9 +100,9 @@ namespace T2D.Infra
 					Created = new DateTime(2015, 3, 1),
 					IsLocalOnly = true,
 					LocationTypeId = 2,
-					Location_GPS = "123",
+					Location_Gps = "(123.8, 56.9)",
 					Logging = true,
-					PreferredLocation_Id = 1,
+					Preferred_LocationTypeId = 1,
 					Modified = new DateTime(2014, 3, 3),
 					Published = new DateTime(2012, 4, 13)
 				});
@@ -104,15 +111,15 @@ namespace T2D.Infra
 
 				dbc.RegularThings.Add(new RegularThing
 				{
-					Fqdn = "inv1.sovelto.fi",
+					Fqdn = fqdn,
 					US = "ThingNb3",
 					Title = "A Thing",
 					Created = new DateTime(2016, 3, 1),
 					IsLocalOnly = true,
 					LocationTypeId = 1,
-					Location_GPS = "12443",
+					Location_Gps = "(12.0, 43.9)",
 					Logging = true,
-					PreferredLocation_Id = 1,
+					Preferred_LocationTypeId = 1,
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
 					Parted_Fqdn = T2.Fqdn,
@@ -175,7 +182,11 @@ namespace T2D.Infra
 				count = 1;
 				// test session data
 				// add session 00000001 for T0, no sessionaccess yet
-				dbc.Sessions.Add(new Session { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count), StartTime = DateTime.UtcNow, EntryPoint_ThingId = M100.Id });
+				dbc.Sessions.Add(new Session {
+					Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count),
+					StartTime = DateTime.UtcNow, EntryPoint_ThingId = M100.Id,
+					InventoryId=I1.Id,
+				});
 				dbc.SaveChanges();
 
 			}
@@ -212,7 +223,7 @@ namespace T2D.Infra
 					IsLocalOnly = true,
 					LocationTypeId = 1,
 					Logging = true,
-					PreferredLocation_Id = 1,
+					Preferred_LocationTypeId = 1,
 					Modified = new DateTime(2016, 3, 23),
 					Published = new DateTime(2016, 4, 13),
 					Creator_Fqdn = M100.Fqdn,
@@ -229,9 +240,9 @@ namespace T2D.Infra
 					Created = new DateTime(2015, 3, 1),
 					IsLocalOnly = true,
 					LocationTypeId = 2,
-					Location_GPS = "123",
+					Location_Gps = "(123.0, 55.9)",
 					Logging = true,
-					PreferredLocation_Id = 1,
+					Preferred_LocationTypeId = 1,
 					Modified = new DateTime(2014, 3, 3),
 					Published = new DateTime(2012, 4, 13)
 				});

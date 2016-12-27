@@ -26,6 +26,9 @@ namespace T2D.Infra
 		public DbSet<Relation> Relations { get; set; }
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<Entities.Attribute> Attributes { get; set; }
+		public DbSet<LocationType> LocationTypes { get; set; }
+
+		public DbSet<Entities.Inventory> Inventories { get; set; }
 
 		public DbSet<Entities.Session> Sessions { get; set; }
 		public DbSet<Entities.SessionAccess> SessionAccesses { get; set; }
@@ -39,6 +42,7 @@ namespace T2D.Infra
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			InventoryDb.SetDbMapping(modelBuilder);
 			BaseThingDb.SetDbMapping(modelBuilder);
 			AttributeDb.SetDbMapping(modelBuilder);
 			RoleDb.SetDbMapping(modelBuilder);
@@ -47,6 +51,7 @@ namespace T2D.Infra
 			SessionDb.SetDbMapping(modelBuilder);
 			SessionAccessDb.SetDbMapping(modelBuilder);
 			ThingRoleDb.SetDbMapping(modelBuilder);
+			ThingAttributeDb.SetDbMapping(modelBuilder);
 			ThingAttributeRoleRightDb.SetDbMapping(modelBuilder);
 		}
 

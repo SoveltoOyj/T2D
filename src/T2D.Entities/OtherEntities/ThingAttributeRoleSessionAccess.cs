@@ -9,12 +9,18 @@ namespace T2D.Entities
     public class ThingAttributeRoleSessionAccess:IEntity
     {
     public Guid Id { get; set; }
-		public string SessionId { get; set; }
+
+		public Guid SessionId { get; set; }
 		public Session Session { get; set; }
-		public string ThingAttributeId { get; set; }
+
+		public int ThingAttributeId { get; set; }
 		public ThingAttribute ThingAttribute { get; set; }
+
+		public int RoleId { get; set; }
+		public Role Role{ get; set; }
+
 		public DateTime Timestamp { get; set; }
 
-		public RightEnum AccessType { get; set; }
+		public RightEnum Rights { get; set; }
 	}
 }

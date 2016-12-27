@@ -10,14 +10,19 @@ namespace T2D.Entities
 	public class BaseThing:IThing
 	{
 		public Guid Id { get; set; }
+
 		[StringLength(256), Required]
 		public string Fqdn { get; set; }
+
 		[StringLength(512), Required]
 		public string US { get; set; }
+
+		[StringLength(1024)]
 		public string Title { get; set; }
+
 		public List<ThingRelation> ThingRelations { get; set; }
 		public List<ThingRoleMember> ThingRoleMembers { get; set; }
-        public List<ThingRoleMember> MemeberThingRoleMembers { get; set; }
+    public List<ThingRoleMember> MemeberThingRoleMembers { get; set; }
 		public List<ThingRole> ThingRoles { get; set; }
 		public List<ThingAttribute> ThingAttributes { get; set; }
 		public List<Session> Sessions { get; set; }
