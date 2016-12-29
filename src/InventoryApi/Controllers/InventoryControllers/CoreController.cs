@@ -130,13 +130,9 @@ namespace InventoryApi.Controllers.InventoryControllers
 				foreach(var th in group)
 				{
 					var thingIdTitle = new GetRelationsResponse.RelationsThings.IdTitle { ThingId = ThingIdHelper.Create(th.Thing2_Fqdn, th.Thing2_US) };
-					//TODO: it should be local in this version
-					if (th.Thing2IsLocal || !th.Thing2IsLocal)
-					{
 						var thing2 = this.Find(th.Thing2_Fqdn, th.Thing2_US);
 						if (thing2 != null)
 							thingIdTitle.Title = thing2.Title;
-					}
 					rt.Things.Add(thingIdTitle);
 				}
 				ret.RelationThings.Add(rt);
