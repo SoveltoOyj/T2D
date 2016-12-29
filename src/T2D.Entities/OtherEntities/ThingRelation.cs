@@ -22,7 +22,7 @@ namespace T2D.Entities
 		[StringLength(512), Required]
 		public string Thing2_US { get; set; }
 
-//		public bool Thing2IsLocal { get; set; }
+		public bool Thing2IsLocal { get; set; }
 // use index-search instead?
 
 		public override string ToString()

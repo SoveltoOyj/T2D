@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,10 +11,14 @@ namespace T2D.Entities
 	{
 
 		public int Id { get; set; }
+        [StringLength(256)]
 		public string Name { get; set; }
-		public string Pattern { get; set; }
-		public string MinValue { get; set; }
-		public string MaxValue { get; set; }
+        [StringLength(1024)]
+        public string Pattern { get; set; }
+        [StringLength(256)]
+        public string MinValue { get; set; }
+        [StringLength(256)]
+        public string MaxValue { get; set; }
 
 		public override string ToString()
 		{
@@ -37,6 +42,7 @@ namespace T2D.Entities
 		Parted_US,
 		Logging,
 		IsLocalOnly,
+        StatusId,
 		LocationTypeId,
 		Location_Timestamp,
 		Location_GPS,
