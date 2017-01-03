@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +12,9 @@ namespace T2D.Entities
     public Guid Id { get; set; }
 
 		public Guid SessionId { get; set; }
-		public Session Session { get; set; }
+        [StringLength(512)]
+        public String SessionToken { get; set; }
+        public Session Session { get; set; }
 
 		public int ThingAttributeId { get; set; }
 		public ThingAttribute ThingAttribute { get; set; }
