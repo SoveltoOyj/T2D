@@ -1,29 +1,28 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{35F390D5-3E61-4217-9CF3-531FECE6AC36}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{87764519-9FC7-4867-A7C5-B80210F8620B}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
 		ToDo.txt = ToDo.txt
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "T2D.Entities", "src\T2D.Entities\T2D.Entities.xproj", "{0B56FF91-A9C0-4766-8985-B4E039544567}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "T2D.Model", "src\T2D.Model\T2D.Model.xproj", "{DC2F843C-F3F4-45F9-A1C0-131EDF233E08}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "T2D.Infra", "src\T2D.Infra\T2D.Infra.xproj", "{C05F6D4A-690F-4CB5-ADA7-CAA9765A486B}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "InventoryApi", "src\InventoryApi\InventoryApi.xproj", "{70C56F8D-574B-49DE-8B01-C757A5D154C2}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "T2D.InventoryBL", "src\T2D.InventoryBL\T2D.InventoryBL.xproj", "{3D3948E2-ECA8-4018-AA96-4C0AB4EDC169}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B95CDDC4-6CFF-4991-8641-6A5B812D7624}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "InventoryApi.Test", "InventoryApi.Test\InventoryApi.Test.xproj", "{49DD50AF-9354-4E59-9B82-A0017D81B54C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "T2D.Entities", "src\T2D.Entities\T2D.Entities.csproj", "{0B56FF91-A9C0-4766-8985-B4E039544567}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "T2D.Model", "src\T2D.Model\T2D.Model.csproj", "{DC2F843C-F3F4-45F9-A1C0-131EDF233E08}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "T2D.Infra", "src\T2D.Infra\T2D.Infra.csproj", "{C05F6D4A-690F-4CB5-ADA7-CAA9765A486B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventoryApi", "src\InventoryApi\InventoryApi.csproj", "{70C56F8D-574B-49DE-8B01-C757A5D154C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "T2D.InventoryBL", "src\T2D.InventoryBL\T2D.InventoryBL.csproj", "{3D3948E2-ECA8-4018-AA96-4C0AB4EDC169}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventoryApi.Test", "InventoryApi.Test\InventoryApi.Test.csproj", "{49DD50AF-9354-4E59-9B82-A0017D81B54C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
