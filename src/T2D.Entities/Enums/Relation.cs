@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +14,8 @@ namespace T2D.Entities
 	public class Relation:IEnumEntity
 	{
 		public int Id { get; set; }
-		public string Name { get; set; }
+        [MaxLength(256)]
+        public string Name { get; set; }
 
 		public override string ToString()
 		{
@@ -29,5 +31,7 @@ namespace T2D.Entities
 		Inherits,
 		Orginates,
 		Belongings,
+        WalletIn,
+        HasAlias,
 	}	;
 }

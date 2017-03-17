@@ -22,13 +22,13 @@ namespace T2D.Entities
 
 		public List<ThingRelation> ThingRelations { get; set; }
 		public List<ThingRoleMember> ThingRoleMembers { get; set; }
-    public List<ThingRoleMember> MemeberThingRoleMembers { get; set; }
+        public List<ThingRoleMember> MemeberThingRoleMembers { get; set; }
 		public List<ThingRole> ThingRoles { get; set; }
 		public List<ThingAttribute> ThingAttributes { get; set; }
 		public List<Session> Sessions { get; set; }
-		public List<SessionAccess> SessionAccesses { get; set; }
-
-		public BaseThing()
+        public List<SessionAccess> SessionAccesses { get; set; }
+ 
+        public BaseThing()
         {
             ThingRelations = new List<ThingRelation>();
             MemeberThingRoleMembers = new List<ThingRoleMember>();

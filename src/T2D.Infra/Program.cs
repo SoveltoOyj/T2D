@@ -51,9 +51,10 @@ namespace T2D.Infra
 				AddEnumData(dbc, dbc.Relations, typeof(RelationEnum));
 				AddEnumData(dbc, dbc.Roles, typeof(RoleEnum));
 				AddEnumData(dbc, dbc.LocationTypes, typeof(LocationTypeEnum));
+                AddEnumData(dbc, dbc.Status, typeof(StatusEnum));
 
-				//attributes
-				AddAttributeData(dbc, typeof(AttributeEnum));
+                //attributes
+                AddAttributeData(dbc, typeof(AttributeEnum));
 
 				string fqdn = "inv1.sovelto.fi";
 				//Inventories
@@ -79,6 +80,7 @@ namespace T2D.Infra
 					Title = "MySuitcase",
 					Created = new DateTime(2015, 3, 1),
 					IsLocalOnly = true,
+                    StatusId = 1,
 					LocationTypeId = 1,
 					Logging = true,
 					Preferred_LocationTypeId = 1,
@@ -99,8 +101,9 @@ namespace T2D.Infra
 					Title = "A Container",
 					Created = new DateTime(2015, 3, 1),
 					IsLocalOnly = true,
+                    StatusId = 1,
 					LocationTypeId = 2,
-					Location_Gps = "(123.8, 56.9)",
+                    Location_Gps = "(123.8, 56.9)",
 					Logging = true,
 					Preferred_LocationTypeId = 1,
 					Modified = new DateTime(2014, 3, 3),
@@ -116,7 +119,8 @@ namespace T2D.Infra
 					Title = "A Thing",
 					Created = new DateTime(2016, 3, 1),
 					IsLocalOnly = true,
-					LocationTypeId = 1,
+                    StatusId = 1,
+                    LocationTypeId = 1,
 					Location_Gps = "(12.0, 43.9)",
 					Logging = true,
 					Preferred_LocationTypeId = 1,
@@ -141,8 +145,8 @@ namespace T2D.Infra
 				trm = new ThingRoleMember { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count++), ThingId = M100.Id, ThingRoleId = tr.Id };
 				dbc.ThingRoleMembers.Add(trm);
 
-				//add Belongings role to T2 for T1
-				tr = new ThingRole { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count), RoleId = (int)RoleEnum.Belongings, ThingId = T2.Id };
+				//add Maintenance role to T2 for T1
+				tr = new ThingRole { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count), RoleId = (int)RoleEnum.Maintenance, ThingId = T2.Id };
 				dbc.ThingRoles.Add(tr);
 				trm = new ThingRoleMember { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count++), ThingId = T1.Id, ThingRoleId = tr.Id };
 				dbc.ThingRoleMembers.Add(trm);
@@ -221,6 +225,7 @@ namespace T2D.Infra
 					Title = "MyCar",
 					Created = new DateTime(2015, 3, 1),
 					IsLocalOnly = true,
+                    StatusId = 1,
 					LocationTypeId = 1,
 					Logging = true,
 					Preferred_LocationTypeId = 1,
@@ -239,6 +244,7 @@ namespace T2D.Infra
 					Title = "MyTV",
 					Created = new DateTime(2015, 3, 1),
 					IsLocalOnly = true,
+                    StatusId = 1,
 					LocationTypeId = 2,
 					Location_Gps = "(123.0, 55.9)",
 					Logging = true,

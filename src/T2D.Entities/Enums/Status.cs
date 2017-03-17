@@ -7,7 +7,7 @@ using T2D.Helpers;
 
 namespace T2D.Entities
 {
-	public class LocationType:IEnumEntity
+	public class Status:IEnumEntity
 	{
 		public int Id { get; set; }
         [MaxLength(256)]
@@ -20,10 +20,16 @@ namespace T2D.Entities
 
 	}
 
-	public enum LocationTypeEnum
+	public enum StatusEnum
 	{
-		GPS = 1,
-		Street,
-		Thing,
+	 NormalOperational = 1,
+     Template,
+     DestroyedOrDeleted,
+     Planned,
+     WaitingForService,
+     Malfunctionioning,
+     Missing,
+     Danger,
+     AvailableForRentOrSale,
 	};
 }

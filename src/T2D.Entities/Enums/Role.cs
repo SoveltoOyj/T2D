@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,8 @@ namespace T2D.Entities
 	public class Role:IEnumEntity
 	{
 		public int Id { get; set; }
-		public string Name { get; set; }
+        [MaxLength(256)]
+        public string Name { get; set; }
 		public override string ToString()
 		{
 			return this.ToJson();
@@ -20,29 +22,34 @@ namespace T2D.Entities
 
 	public enum RoleEnum
 	{
-		Omnipotent = 1,
-	 Owner,
-	 Administrator,
-	 GroupMember,
-	 Holder,
-	 ContractingParty,
-	 Lessee,
-	 User,
-	 Maintenance,
-	 Transport,
-	 Storage,
-	 Finder,
-	 Purchaser,
-	 Inspector,
-	 Manufacturer,
-	 Customs,
-	 Bank,
-	 Belongings,
-	 Passanger,
+	 Omnipotent = 1,
 	 Anonymous,
 	 Alias,
-	 IoTBot,
 	 ArchetypeMember, 
 	 CurrentVersion,
+	 Owner,
+	 Administrator,
+     Member,
+	 User,
+	 Maintenance,
+     Logistics,
+     Viewer,
+	 Manufacturer,
+     Gatekeeper1,
+     Gatekeeper2,
+//	 GroupMember,
+//	 Holder,
+//	 ContractingParty,
+//	 Lessee,
+//	 Transport,
+//	 Storage,
+//	 Finder,
+//	 Purchaser,
+//	 Inspector,
+//	 Customs,
+//	 Bank,
+//	 Belongings,
+//	 Passanger,
+//	 IoTBot,
 	};
 }

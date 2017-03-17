@@ -26,9 +26,10 @@ namespace T2D.Infra
 		public DbSet<Relation> Relations { get; set; }
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<Entities.Attribute> Attributes { get; set; }
-		public DbSet<LocationType> LocationTypes { get; set; }
+        public DbSet<LocationType> LocationTypes { get; set; }
+        public DbSet<Status> Status { get; set; }
 
-		public DbSet<Entities.Inventory> Inventories { get; set; }
+        public DbSet<Entities.Inventory> Inventories { get; set; }
 
 		public DbSet<Entities.Session> Sessions { get; set; }
 		public DbSet<Entities.SessionAccess> SessionAccesses { get; set; }
