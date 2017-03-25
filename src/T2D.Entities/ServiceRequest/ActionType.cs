@@ -5,7 +5,7 @@ using System.Text;
 
 namespace T2D.Entities
 {
-   public class ActionType : IEntity
+   public abstract class ActionTypeBase : IEntity
 	{
 		public Guid Id { get; set; }
 
@@ -14,10 +14,10 @@ namespace T2D.Entities
 
 	}
 
-	public class GenericActionType : ActionType { }
-	public class PaymentRequestActionType : ActionType { }
-	public class ReceiptRequestActionType : ActionType { }
-	public class IoTBotRequestActionType : ActionType { }
-	public class ServiceRequestActionType : ActionType { }
+	public class GenericAction : ActionTypeBase { }
+	public class PaymentRequestAction : ActionTypeBase { }
+	public class ReceiptRequestAction : ActionTypeBase { }
+	public class IoTBotRequestAction : ActionTypeBase { }
+	public class ServiceRequestAction : ActionTypeBase { }
 
 }

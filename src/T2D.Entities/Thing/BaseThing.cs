@@ -7,7 +7,7 @@ using T2D.Helpers;
 
 namespace T2D.Entities
 {
-	public class BaseThing:IThing
+	public abstract class BaseThing:IThing
 	{
 		public Guid Id { get; set; }
 

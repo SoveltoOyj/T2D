@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace T2D.Entities
 {
-    public class IOThing:GenericThing
+    public class IoThing:GenericThing
     {
     }
 }

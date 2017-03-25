@@ -10,7 +10,7 @@ namespace T2D.Entities
 		public Guid Id { get; set; }
 
 		public Guid ServiceRequestTypeId { get; set; }
-		public ServiceRequestType ServiceRequestType { get; set; }
+		public ServiceType ServiceRequestType { get; set; }
 
 		/// <summary>
 		/// Requestor ThingId
@@ -31,40 +31,6 @@ namespace T2D.Entities
 
 		public DateTime StartedAt { get; set; }
 
-
-
 	}
-
-	public class ActionStatus:IEntity
-	{
-		public Guid Id { get; set; }
-
-		public ServiceRequestInstance ServiceRequestInstanceId { get; set; }
-		public ServiceRequestInstance ServiceRequestInstance { get; set; }
-
-		public Guid ActionTypeId { get; set; }
-		public ActionType ActionType { get; set; }
-
-		public int ActionKind { get; set; }
-
-		public Guid ThingId { get; set; }
-		public BaseThing Thing { get; set; }
-
-		public Guid Alarm_ThingId { get; set; }
-		public BaseThing Alarm_Thing { get; set; }
-
-		public DateTime	DeadLine { get; set; }
-
-		public int Status { get; set; }
-
-	}
-
-	public enum ActionStatusEnum
-	{
-		NotStarted,
-		Started,
-		DoneOk,
-		Failed,
-	}
-
+	
 }

@@ -10,6 +10,7 @@ namespace T2D.Infra
 {
 	public class EfContext : DbContext
 	{
+		#region Things
 		public DbSet<BaseThing> Things { get; set; }
 		public DbSet<AliasThing> AliasThings { get; set; }
 		public DbSet<GenericThing> GenericThings { get; set; }
@@ -17,6 +18,9 @@ namespace T2D.Infra
 		public DbSet<RegularThing> RegularThings { get; set; }
 		public DbSet<ArchetypeThing> ArchetypeThings { get; set; }
 		public DbSet<ArchivedThing> ArchivedThings { get; set; }
+		public DbSet<IoThing>IoTThings { get; set; }
+		public DbSet<WalletThing> WalletThings { get; set; }
+		#endregion
 
 		public DbSet<ThingRelation> ThingRelations { get; set; }
 		public DbSet<ThingRoleMember> ThingRoleMembers { get; set; }
@@ -26,25 +30,26 @@ namespace T2D.Infra
 		public DbSet<Relation> Relations { get; set; }
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<Entities.Attribute> Attributes { get; set; }
-        public DbSet<LocationType> LocationTypes { get; set; }
-        public DbSet<Status> Status { get; set; }
+		public DbSet<LocationType> LocationTypes { get; set; }
+		public DbSet<Status> Status { get; set; }
 
-        public DbSet<Entities.Inventory> Inventories { get; set; }
+		public DbSet<Entities.Inventory> Inventories { get; set; }
 
 		public DbSet<Entities.Session> Sessions { get; set; }
 		public DbSet<Entities.SessionAccess> SessionAccesses { get; set; }
 
 		#region ServiceRequest
-		public DbSet<ActionType> ActionTypes{ get; set; }
-		public DbSet<GenericActionType> GenericActionType { get; set; }
-		public DbSet<PaymentRequestActionType>  PaymentRequestActionType { get; set; }
-		public DbSet<ReceiptRequestActionType> ReceiptRequestActionType { get; set; }
-		public DbSet<IoTBotRequestActionType> IoTBotRequestActionType { get; set; }
-		public DbSet<ServiceRequestActionType> ServiceRequestActionType { get; set; }
-
-		public DbSet<ServiceRequestType> ServiceRequestTypes { get; set; }
-		public DbSet<ServiceRequestAction> ServiceRequestActions { get; set; }
+		public DbSet<ServiceType> ServiceRequestTypes { get; set; }
 		public DbSet<ServiceRequestInstance> ServiceRequestInstances { get; set; }
+
+		public DbSet<ActionTypeBase> ActionTypes { get; set; }
+		public DbSet<GenericAction> GenericActionType { get; set; }
+		public DbSet<PaymentRequestAction> PaymentRequestActionType { get; set; }
+		public DbSet<ReceiptRequestAction> ReceiptRequestActionType { get; set; }
+		public DbSet<IoTBotRequestAction> IoTBotRequestActionType { get; set; }
+		public DbSet<ActionRequestInstance> ServiceRequestActionType { get; set; }
+
+		public DbSet<ActionRequestInstance> ActionRequestInstances { get; set; }
 		public DbSet<ActionStatus> ActionStatuses { get; set; }
 
 
@@ -62,6 +67,8 @@ namespace T2D.Infra
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			ThingDb.SetDbMapping(modelBuilder);
+
 			InventoryDb.SetDbMapping(modelBuilder);
 			BaseThingDb.SetDbMapping(modelBuilder);
 			AttributeDb.SetDbMapping(modelBuilder);
@@ -77,6 +84,8 @@ namespace T2D.Infra
 			ServiceRequestActionDb.SetDbMapping(modelBuilder);
 			ServiceRequestInstanceDb.SetDbMapping(modelBuilder);
 			ActionStatusDb.SetDbMapping(modelBuilder);
+			ActionTypeDb.SetDbMapping(modelBuilder);
+
 
 		}
 

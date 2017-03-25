@@ -11,7 +11,7 @@ namespace T2D.Infra
 	{
 		public static void SetDbMapping(ModelBuilder modelBuilder)
 		{
-			var tbl = modelBuilder.Entity<ServiceRequestAction>();
+			var tbl = modelBuilder.Entity<ActionRequestInstance>();
 
 			tbl.HasOne(e => e.Thing)
 				.WithMany()
