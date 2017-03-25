@@ -7,17 +7,17 @@ using T2D.Entities;
 
 namespace T2D.Infra
 {
-	public class ServiceRequestActionDb
+	public class ActionDefinitionDb
 	{
 		public static void SetDbMapping(ModelBuilder modelBuilder)
 		{
-			var tbl = modelBuilder.Entity<ActionRequestInstance>();
+			var tbl = modelBuilder.Entity<ActionDefinition>();
 
 			tbl.HasOne(e => e.Thing)
 				.WithMany()
 				.OnDelete(DeleteBehavior.Restrict)
 				;
-			tbl.HasOne(e => e.ServiceRequest)
+			tbl.HasOne(e => e.ServiceDefinition)
 							.WithMany()
 							.OnDelete(DeleteBehavior.Restrict)
 							;

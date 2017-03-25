@@ -5,7 +5,7 @@ using System.Text;
 
 namespace T2D.Entities
 {
-	public class ServiceType : IEntity
+	public class ServiceDefinition : IEntity
 	{
 		public Guid Id { get; set; }
 
@@ -17,10 +17,10 @@ namespace T2D.Entities
 		public BaseThing Thing { get; set; }
 
 		/* pitää miettiä miten tehdään
-		public List<ServiceRequestAction> Mandatories { get; set; }
-		public List<ServiceRequestAction> Optionals { get; set; }
-		public List<ServiceRequestAction> Selecteds { get; set; }
-		public List<ServiceRequestAction> Pendings { get; set; }
+		public List<ActionDefinition> Mandatories { get; set; }
+		public List<ActionDefinition> Optionals { get; set; }
+		public List<ActionDefinition> Selecteds { get; set; }
+		public List<ActionDefinition> Pendings { get; set; }
 		*/
 	}
 }

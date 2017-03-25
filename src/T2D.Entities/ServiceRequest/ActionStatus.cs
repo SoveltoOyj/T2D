@@ -5,17 +5,18 @@ using System.Text;
 
 namespace T2D.Entities
 {
+	/// <summary>
+	/// ActionDefinition will be copied here to enable that Service Type can change during Service Request.
+	/// </summary>
 	public class ActionStatus:IEntity
 	{
 		public Guid Id { get; set; }
 
-		public ServiceRequestInstance ServiceRequestInstanceId { get; set; }
-		public ServiceRequestInstance ServiceRequestInstance { get; set; }
+		public ServiceStatus ServiceStatusId { get; set; }
+		public ServiceStatus ServiceStatus { get; set; }
 
 		public Guid ActionTypeId { get; set; }
 		public ActionTypeBase ActionType { get; set; }
-
-		public int ActionKind { get; set; }
 
 		public Guid ThingId { get; set; }
 		public BaseThing Thing { get; set; }
@@ -25,15 +26,17 @@ namespace T2D.Entities
 
 		public DateTime	DeadLine { get; set; }
 
-		public ActionState ActionStatusEnum { get; set; }
+		public ActionListType ActionListType { get; set; }
+
+		public State State { get; set; }
 
 	}
 
-	public enum ActionState
+	public enum State
 	{
 		NotStarted,
 		Started,
-		DoneOk,
+		Done,
 		Failed,
 	}
 

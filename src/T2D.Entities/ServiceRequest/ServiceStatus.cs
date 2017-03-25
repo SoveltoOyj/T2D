@@ -5,12 +5,12 @@ using System.Text;
 
 namespace T2D.Entities
 {
-   public class ServiceRequestInstance : IEntity
+   public class ServiceStatus : IEntity
 	{
 		public Guid Id { get; set; }
 
-		public Guid ServiceRequestTypeId { get; set; }
-		public ServiceType ServiceRequestType { get; set; }
+		public Guid ServiceDefinitionId { get; set; }
+		public ServiceDefinition ServiceDefinition { get; set; }
 
 		/// <summary>
 		/// Requestor ThingId
@@ -25,7 +25,7 @@ namespace T2D.Entities
 		public List<ActionStatus> Pendings { get; set; }
 		*/
 
-		public int Status { get; set; }
+		public State State{ get; set; }
 
 		public Guid SessionId { get; set; }
 

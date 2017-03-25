@@ -7,11 +7,11 @@ using T2D.Entities;
 
 namespace T2D.Infra
 {
-	public class ServiceRequestInstanceDb
+	public class ServiceStatusDb
 	{
 		public static void SetDbMapping(ModelBuilder modelBuilder)
 		{
-			var tbl = modelBuilder.Entity<ServiceRequestInstance>();
+			var tbl = modelBuilder.Entity<ServiceStatus>();
 
 			tbl.HasOne(e => e.Thing)
 				.WithMany()

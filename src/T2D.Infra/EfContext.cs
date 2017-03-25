@@ -24,9 +24,7 @@ namespace T2D.Infra
 
 		public DbSet<ThingRelation> ThingRelations { get; set; }
 		public DbSet<ThingRoleMember> ThingRoleMembers { get; set; }
-
 		public DbSet<ThingRole> ThingRoles { get; set; }
-
 		public DbSet<Relation> Relations { get; set; }
 		public DbSet<Role> Roles { get; set; }
 		public DbSet<Entities.Attribute> Attributes { get; set; }
@@ -39,21 +37,18 @@ namespace T2D.Infra
 		public DbSet<Entities.SessionAccess> SessionAccesses { get; set; }
 
 		#region ServiceRequest
-		public DbSet<ServiceType> ServiceRequestTypes { get; set; }
-		public DbSet<ServiceRequestInstance> ServiceRequestInstances { get; set; }
+		public DbSet<ServiceDefinition> ServiceDefinitions { get; set; }
+		public DbSet<ServiceStatus> ServiceStatuses { get; set; }
 
 		public DbSet<ActionTypeBase> ActionTypes { get; set; }
-		public DbSet<GenericAction> GenericActionType { get; set; }
-		public DbSet<PaymentRequestAction> PaymentRequestActionType { get; set; }
-		public DbSet<ReceiptRequestAction> ReceiptRequestActionType { get; set; }
-		public DbSet<IoTBotRequestAction> IoTBotRequestActionType { get; set; }
-		public DbSet<ActionRequestInstance> ServiceRequestActionType { get; set; }
+		public DbSet<GenericAction> GenericActionTypes { get; set; }
+		public DbSet<PaymentRequestAction> PaymentRequestActionTypes { get; set; }
+		public DbSet<ReceiptRequestAction> ReceiptRequestActionTypes { get; set; }
+		public DbSet<IoTBotRequestAction> IoTBotRequestActionTypes { get; set; }
+		public DbSet<ActionDefinition> ServiceRequestActionTypes { get; set; }
 
-		public DbSet<ActionRequestInstance> ActionRequestInstances { get; set; }
+		public DbSet<ActionDefinition> ActionDefinitions { get; set; }
 		public DbSet<ActionStatus> ActionStatuses { get; set; }
-
-
-
 		#endregion
 
 
@@ -81,8 +76,8 @@ namespace T2D.Infra
 			ThingAttributeDb.SetDbMapping(modelBuilder);
 			ThingAttributeRoleRightDb.SetDbMapping(modelBuilder);
 
-			ServiceRequestActionDb.SetDbMapping(modelBuilder);
-			ServiceRequestInstanceDb.SetDbMapping(modelBuilder);
+			ActionDefinitionDb.SetDbMapping(modelBuilder);
+			ServiceStatusDb.SetDbMapping(modelBuilder);
 			ActionStatusDb.SetDbMapping(modelBuilder);
 			ActionTypeDb.SetDbMapping(modelBuilder);
 

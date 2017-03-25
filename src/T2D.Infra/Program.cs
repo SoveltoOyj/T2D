@@ -16,6 +16,7 @@ namespace T2D.Infra
 			bool doLoop = true;
 			while (doLoop)
 			{
+				Console.WriteLine("");
 				Console.WriteLine("1 = Create new T2D database (existing db will be deleted)");
 				Console.WriteLine("2 = Create new T2D database (existing db will be deleted) and insert base data");
 				Console.WriteLine("3 = Insert Base data");
@@ -33,18 +34,18 @@ namespace T2D.Infra
 						break;
 					case 2:
 						CreateDB(dbc);
-						InsertBaseData(dbc);
+					 	new TestData.BasicData(dbc).DoIt();
 						PrintData();
 						break;
 					case 3:
-						InsertBaseData(dbc);
+						new TestData.BasicData(dbc).DoIt();
 						PrintData();
 						break;
 					case 4:
 						InsertExtraData(dbc);
 						break;
 					case 5:
-						InsertServiceRequestData(dbc);
+						new TestData.Service_Action_TestData(dbc).DoIt();
 						break;
 					default:
 						doLoop = false;
@@ -61,157 +62,6 @@ namespace T2D.Infra
 			dbc.Database.EnsureCreated();
 		}
 
-		private static void InsertBaseData(EfContext dbc)
-		{
-			Console.WriteLine("\nCreating data ...");
-			//Enums
-			AddEnumData(dbc, dbc.Relations, typeof(RelationEnum));
-			AddEnumData(dbc, dbc.Roles, typeof(RoleEnum));
-			AddEnumData(dbc, dbc.LocationTypes, typeof(LocationTypeEnum));
-			AddEnumData(dbc, dbc.Status, typeof(StatusEnum));
-
-			//attributes
-			AddAttributeData(dbc, typeof(AttributeEnum));
-
-			string fqdn = "inv1.sovelto.fi";
-			//Inventories
-			dbc.Inventories.Add(new Inventory { Fqdn = fqdn, Name = "Sovelto" });
-			dbc.SaveChanges();
-			var I1 = dbc.Inventories.SingleOrDefault(t => t.Fqdn == fqdn);
-
-			//Archetypethings
-			dbc.ArchetypeThings.Add(new ArchetypeThing { Fqdn = fqdn, US = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
-			//AuthenticationThings
-			var M100 = new AuthenticationThing { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0), Fqdn = fqdn, US = "M100", Title = "Matti, Facebook", };
-			dbc.AuthenticationThings.Add(M100);
-			dbc.SaveChanges();
-
-			//things
-			dbc.RegularThings.Add(new RegularThing
-			{
-				Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-				Fqdn = fqdn,
-				US = "T1",
-				Title = "MySuitcase",
-				Created = new DateTime(2015, 3, 1),
-				IsLocalOnly = true,
-				StatusId = 1,
-				LocationTypeId = 1,
-				Logging = true,
-				Preferred_LocationTypeId = 1,
-				Modified = new DateTime(2016, 3, 23),
-				Published = new DateTime(2016, 4, 13),
-				Creator_Fqdn = M100.Fqdn,
-				Creator_US = M100.US
-
-			});
-			dbc.SaveChanges();
-			var T1 = dbc.Things.SingleOrDefault(t => t.Fqdn == fqdn && t.US == "T1");
-
-			dbc.RegularThings.Add(new RegularThing
-			{
-				Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2),
-				Fqdn = fqdn,
-				US = "T2",
-				Title = "A Container",
-				Created = new DateTime(2015, 3, 1),
-				IsLocalOnly = true,
-				StatusId = 1,
-				LocationTypeId = 2,
-				Location_Gps = "(123.8, 56.9)",
-				Logging = true,
-				Preferred_LocationTypeId = 1,
-				Modified = new DateTime(2014, 3, 3),
-				Published = new DateTime(2012, 4, 13)
-			});
-			dbc.SaveChanges();
-			var T2 = dbc.Things.SingleOrDefault(t => t.Fqdn == fqdn && t.US == "T2");
-
-			dbc.RegularThings.Add(new RegularThing
-			{
-				Fqdn = fqdn,
-				US = "ThingNb3",
-				Title = "A Thing",
-				Created = new DateTime(2016, 3, 1),
-				IsLocalOnly = true,
-				StatusId = 1,
-				LocationTypeId = 1,
-				Location_Gps = "(12.0, 43.9)",
-				Logging = true,
-				Preferred_LocationTypeId = 1,
-				Modified = new DateTime(2016, 3, 23),
-				Published = new DateTime(2016, 4, 13),
-				Parted_Fqdn = T2.Fqdn,
-				Parted_US = T2.US
-			});
-			dbc.SaveChanges();
-
-			//ThingRoleMember
-			byte count = 1;
-			// add omnipotent role to T0 for T0
-			ThingRole tr = new ThingRole { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count), RoleId = (int)RoleEnum.Omnipotent, ThingId = M100.Id };
-			dbc.ThingRoles.Add(tr);
-			ThingRoleMember trm = new ThingRoleMember { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count++), ThingId = M100.Id, ThingRoleId = tr.Id };
-			dbc.ThingRoleMembers.Add(trm);
-
-			//add owner role to T1 for T0
-			tr = new ThingRole { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count), RoleId = (int)RoleEnum.Owner, ThingId = T1.Id };
-			dbc.ThingRoles.Add(tr);
-			trm = new ThingRoleMember { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count++), ThingId = M100.Id, ThingRoleId = tr.Id };
-			dbc.ThingRoleMembers.Add(trm);
-
-			//add Maintenance role to T2 for T1
-			tr = new ThingRole { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count), RoleId = (int)RoleEnum.Maintenance, ThingId = T2.Id };
-			dbc.ThingRoles.Add(tr);
-			trm = new ThingRoleMember { Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count++), ThingId = T1.Id, ThingRoleId = tr.Id };
-			dbc.ThingRoleMembers.Add(trm);
-
-			dbc.SaveChanges();
-
-
-			//ThingRelation
-			count = 1;
-			dbc.ThingRelations.Add(new ThingRelation
-			{
-				Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count++),
-				Thing1_Id = M100.Id,
-				Thing2_Fqdn = T1.Fqdn,
-				Thing2_US = T1.US,
-				RelationId = (int)RelationEnum.Belongings
-			});
-			dbc.ThingRelations.Add(new ThingRelation
-			{
-				Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count++),
-				Thing1_Id = M100.Id,
-				Thing2_Fqdn = T1.Fqdn,
-				Thing2_US = T1.US,
-				RelationId = (int)RelationEnum.RoleIn
-			});
-			dbc.ThingRelations.Add(new ThingRelation
-			{
-				Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count++),
-				Thing1_Id = T1.Id,
-				Thing2_Fqdn = T2.Fqdn,
-				Thing2_US = T2.US,
-				RelationId = (int)RelationEnum.ContainedBy
-			});
-
-
-			dbc.SaveChanges();
-			count = 1;
-			// test session data
-			// add session 00000001 for T0, no sessionaccess yet
-			dbc.Sessions.Add(new Session
-			{
-				Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, count),
-				StartTime = DateTime.UtcNow,
-				EntryPoint_ThingId = M100.Id,
-				InventoryId = I1.Id,
-			});
-			dbc.SaveChanges();
-
-		}
-
 		private static void InsertExtraData(EfContext dbc)
 		{
 			Console.WriteLine("\nCreating Extra data ...");
@@ -219,7 +69,7 @@ namespace T2D.Infra
 			//MyTV
 			string fqdn = "inv1.sovelto.fi";
 			//AuthenticationThings
-			var M100 = FindByThingId(dbc, fqdn, "M100");
+			var M100 = TestData.CommonTestData.FindByThingId(dbc, fqdn, "M100");
 			if (M100 == null)
 				throw new Exception("Can't find M100");
 
@@ -241,7 +91,7 @@ namespace T2D.Infra
 				Creator_US = M100.US
 			});
 			dbc.SaveChanges();
-			var S1 = FindByThingId(dbc, fqdn, "S1");
+			var S1 = TestData.CommonTestData.FindByThingId(dbc, fqdn, "S1");
 
 			dbc.RegularThings.Add(new RegularThing
 			{
@@ -259,7 +109,7 @@ namespace T2D.Infra
 				Published = new DateTime(2012, 4, 13)
 			});
 			dbc.SaveChanges();
-			var S2 = FindByThingId(dbc, fqdn, "S2");
+			var S2 = TestData.CommonTestData.FindByThingId(dbc, fqdn, "S2");
 
 
 			//ThingRoleMember
@@ -288,15 +138,8 @@ namespace T2D.Infra
 			}
 		}
 
-		private static void InsertServiceRequestData(EfContext dbc)
-		{
-		}
 
-		private static BaseThing FindByThingId(EfContext dbc, string fqdn, string uniqueString)
-		{
-			return dbc.Things.FirstOrDefault(t => t.Fqdn == fqdn && t.US == uniqueString);
-		}
-
+		
 		private static void PrintData()
 		{
 			using (var dbc = new EfContext())
@@ -326,16 +169,7 @@ namespace T2D.Infra
 			}
 		}
 
-		private static void AddEnumData<TEntity>(EfContext dbc, DbSet<TEntity> dbSet, Type enumType)
-			where TEntity : class, IEnumEntity, new()
-		{
-			foreach (var item in Enum.GetNames(enumType))
-			{
-				dbSet.Add(new TEntity { Id = (int)Enum.Parse(enumType, item, false), Name = item });
-			}
-			SaveIdentityOnData<TEntity>(dbc);
-		}
-
+	
 		private static void AddAttributeData(EfContext dbc, Type enumType)
 		{
 			var entityType = dbc.Model.FindEntityType(typeof(Entities.Attribute));
@@ -347,33 +181,9 @@ namespace T2D.Infra
 				//ToDo: Add min/max/Pattern and so on...
 				dbc.Attributes.Add(new Entities.Attribute { Id = (int)Enum.Parse(enumType, item, false), Name = item });
 			}
-			SaveIdentityOnData<Entities.Attribute>(dbc);
+			TestData.CommonTestData.SaveIdentityOnData<Entities.Attribute>(dbc);
 		}
 
-		private static void SaveIdentityOnData<TEntity>(EfContext dbc)
-			where TEntity : class
-		{
-			//T2D.Infra.EfContext dbc = ((IInfrastructure<IServiceProvider>)dbSet).GetService<DbContext>() as T2D.Infra.EfContext;
-
-			var entityType = dbc.Model.FindEntityType(typeof(TEntity));
-			var table = entityType.SqlServer();
-			string tableName;
-			if (string.IsNullOrWhiteSpace(table.Schema))
-				tableName = table.TableName;
-			else
-				tableName = table.Schema + "." + table.TableName;
-
-			dbc.Database.OpenConnection();
-			try
-			{
-				dbc.Database.ExecuteSqlCommand($"Set identity_insert {tableName} on;");
-				dbc.SaveChanges();
-			}
-			finally
-			{
-				dbc.Database.ExecuteSqlCommand($"Set identity_insert {tableName} off;");
-			}
-		}
-
+		
 	}
 }

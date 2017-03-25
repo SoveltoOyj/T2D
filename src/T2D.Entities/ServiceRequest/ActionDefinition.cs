@@ -6,11 +6,11 @@ using System.Text;
 namespace T2D.Entities
 {
 	
-	public class ActionRequestInstance:IEntity
+	public class ActionDefinition:IEntity
 	{
 		public Guid Id { get; set; }
-		public Guid ServiceRequestTypeId { get; set; }
-		public ServiceType ServiceRequest { get; set; }
+		public Guid ServiceDefinitionId { get; set; }
+		public ServiceDefinition ServiceDefinition { get; set; }
 
 		public Guid ActionTypeId { get; set; }
 		public ActionTypeBase ActionType { get; set; }
