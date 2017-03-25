@@ -4,19 +4,24 @@
     <TargetFramework>netstandard1.6</TargetFramework>
     <AssemblyName>T2D.InventoryBL</AssemblyName>
     <PackageId>T2D.InventoryBL</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.1.0</Version>
+    <Authors>Sovelto T2D Team</Authors>
+    <Company>Soveltamo</Company>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\T2D.Entities\T2D.Entities.csproj" />
+    <ProjectReference Include="..\T2D.Model\T2D.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="5.1.1" />
+    <PackageReference Include="AutoMapper" Version="6.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

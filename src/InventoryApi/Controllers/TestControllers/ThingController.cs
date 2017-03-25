@@ -10,10 +10,10 @@ using T2D.Model;
 
 namespace InventoryApi.Controllers.TestControllers
 {
-	[Route("api/test/[controller]")]
-	public class ThingController : CrudThingController<T2D.Entities.BaseThing, T2D.Model.BaseThing>
-	{
-	}
+	//[Route("api/test/[controller]")]
+	//public class ThingController : CrudThingController<T2D.Entities.BaseThing, T2D.Model.BaseThing>
+	//{
+	//}
 
 
 	[Route("api/test/[controller]")]
