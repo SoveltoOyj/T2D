@@ -34,6 +34,25 @@ namespace T2D.Infra
 		public DbSet<Entities.Session> Sessions { get; set; }
 		public DbSet<Entities.SessionAccess> SessionAccesses { get; set; }
 
+		#region ServiceRequest
+		public DbSet<ActionType> ActionTypes{ get; set; }
+		public DbSet<GenericActionType> GenericActionType { get; set; }
+		public DbSet<PaymentRequestActionType>  PaymentRequestActionType { get; set; }
+		public DbSet<ReceiptRequestActionType> ReceiptRequestActionType { get; set; }
+		public DbSet<IoTBotRequestActionType> IoTBotRequestActionType { get; set; }
+		public DbSet<ServiceRequestActionType> ServiceRequestActionType { get; set; }
+
+		public DbSet<ServiceRequestType> ServiceRequestTypes { get; set; }
+		public DbSet<ServiceRequestAction> ServiceRequestActions { get; set; }
+		public DbSet<ServiceRequestInstance> ServiceRequestInstances { get; set; }
+		public DbSet<ActionStatus> ActionStatuses { get; set; }
+
+
+
+		#endregion
+
+
+
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			optionsBuilder.UseSqlServer(@"Server=(local);Database=T2D;Trusted_Connection=True;");
@@ -54,6 +73,11 @@ namespace T2D.Infra
 			ThingRoleDb.SetDbMapping(modelBuilder);
 			ThingAttributeDb.SetDbMapping(modelBuilder);
 			ThingAttributeRoleRightDb.SetDbMapping(modelBuilder);
+
+			ServiceRequestActionDb.SetDbMapping(modelBuilder);
+			ServiceRequestInstanceDb.SetDbMapping(modelBuilder);
+			ActionStatusDb.SetDbMapping(modelBuilder);
+
 		}
 
 
