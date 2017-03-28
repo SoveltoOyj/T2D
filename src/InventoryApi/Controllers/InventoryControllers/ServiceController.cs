@@ -26,13 +26,62 @@ namespace InventoryApi.Controllers.InventoryControllers
 		[Produces(typeof(GetServicesResponse))]
 		public IActionResult GetServices([FromBody]GetServicesRequest value)
 		{
+			var session = this.GetSession(value.Session, true);
+
+			T2D.Entities.BaseThing thing =
+				this.Find(value.ThingId)
+				.Include(t => t.ThingRoles)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+				return BadRequest($"Thing '{value.ThingId}' do not exists.");
+
+			var role = this.RoleMapper.EnumToEntity(value.Role);
+			//TODO: check that session has right to 
+			if (!AttributeSecurity.QueryServiceRequestRight(thing, session, role))
+				return BadRequest($"Not enough priviledges to query Services of {value.ThingId}.");
+
+
+			//var ret = new QueryMyRolesResponse
+			//{
+			//	Roles = new List<string>(),
+			//};
+			//var roleIds = new List<int>();
+
+			//// add roles and add to SessionAccess
+			//foreach (var item in thingRoleMembers)
+			//{
+			//	if (item.ThingRole != null)
+			//	{
+			//		int roleId = item.ThingRole.RoleId;
+			//		if (!roleIds.Contains(roleId)) roleIds.Add(roleId);
+			//		if (!session.SessionAccesses.Any(sa => sa.RoleId == roleId && sa.ThingId == thing.Id))
+			//		{
+			//			dbc.SessionAccesses.Add(new SessionAccess { RoleId = roleId, SessionId = session.Id, ThingId = thing.Id });
+			//		}
+			//	}
+			//}
+			//dbc.SaveChanges();
+			//ret.Roles.AddRange(
+			//	dbc.Roles
+			//		.Where(r => roleIds.Contains(r.Id))
+			//		.Select(r => r.Name)
+			//		.ToList()
+			//	);
+
+
+
+
+			var q = dbc.ServiceDefinitions
+							.Where(sd => sd.ThingId == thing.Id)
+							.Select(sd => sd.Title)
+							;
+
+
 			GetServicesResponse ret = new GetServicesResponse
 			{
-				Services = new List<string>
-				{
-					"Huollettava, lamppu sammunut",
-					"Hämäräkytkin/ajastusongelma"
-				}
+				Services = q.ToList(),
 			};
 			return Ok(ret);
 		}

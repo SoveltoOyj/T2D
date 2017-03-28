@@ -178,7 +178,7 @@ namespace T2D.Infra.TestData
 				Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
 				StartTime = DateTime.UtcNow,
 				EntryPoint_ThingId = M100.Id,
-				InventoryId = CommonTestData.Entities["I1"].Id,
+		//		InventoryId = CommonTestData.Entities["I1"].Id,
 			};
 			_dbc.Sessions.Add(S1);
 			_dbc.SaveChanges();

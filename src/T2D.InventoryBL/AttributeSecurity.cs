@@ -36,5 +36,18 @@ namespace T2D.InventoryBL
 		{
 			return true;
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="thing"></param>
+		/// <param name="session"></param>
+		/// <param name="role">not necessary in dbContext!</param>
+		/// <returns></returns>
+		public static bool QueryServiceRequestRight(BaseThing thing, Session session, Role role)
+		{
+			return true;
+		}
+
 	}
 }

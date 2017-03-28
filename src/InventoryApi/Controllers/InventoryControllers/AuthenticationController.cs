@@ -25,7 +25,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 		public IActionResult Post([FromBody]AuthenticationRequest value)
 		{
 			// mock, AuthenticationThing is created if not exists
-			if (string.IsNullOrWhiteSpace(value.ThingId)) value.ThingId = "inventory1.sovelto.fi/Teemu Testaaja";
+			if (string.IsNullOrWhiteSpace(value.ThingId)) value.ThingId = "inv1.sovelto.fi/Teemu Testaaja";
 			var T0 = dbc.AuthenticationThings.SingleOrDefault(t => t.Fqdn == ThingIdHelper.GetFQDN(value.ThingId) && t.US == ThingIdHelper.GetUniqueString(value.ThingId));
 			if (T0 == null)
 			{

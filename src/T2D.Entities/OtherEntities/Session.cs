@@ -13,8 +13,8 @@ namespace T2D.Entities
         [StringLength(512)]
 		public string Token { get; set; }
 
-		public Guid InventoryId { get; set; }
-		public Inventory Inventory { get; set; }
+		//public Guid InventoryId { get; set; }
+		//public Inventory Inventory { get; set; }
 
 		public Guid ExternalSessionId { get; set; }
 		public Guid Remote_InventoryId { get; set; }

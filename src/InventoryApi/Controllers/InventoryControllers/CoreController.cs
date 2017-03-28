@@ -167,57 +167,5 @@ namespace InventoryApi.Controllers.InventoryControllers
 			return Ok(ret);
 		}
 
-		[NonAction]
-		private bool CheckSession(string sessionId)
-		{
-			Guid guid;
-			if (!Guid.TryParse(sessionId, out guid)) return false;
-
-			//find session from entities
-			Session session = dbc.Sessions.SingleOrDefault(s => s.Id == guid);
-			return session != null;
-		}
-		[NonAction]
-		private Session GetSession(string sessionId, bool alsoSessionAccess)
-		{
-			Guid guid;
-			if (!Guid.TryParse(sessionId, out guid)) throw new Exception("Session is invalid.");
-
-			//find session from entities
-			var q = dbc.Sessions.Where(s => s.Id == guid);
-			if (alsoSessionAccess)
-				q = q.Include(s => s.SessionAccesses);
-
-			Session session = q.SingleOrDefault();
-			if (session==null) throw new Exception("Session is invalid.");
-
-			return session;
-		}
-
-
-		[NonAction]
-		private T2D.Entities.IThing Find(string c, string u)
-		{
-			return dbc.Things.FirstOrDefault(t => t.Fqdn == c && t.US == u);
-		}
-
-		[NonAction]
-		private IQueryable<T2D.Entities.BaseThing> Find(string thingId)
-		{
-			return dbc.Things.Where(t => t.Fqdn == ThingIdHelper.GetFQDN(thingId) && t.US == ThingIdHelper.GetUniqueString(thingId));
-		}
-
-		[NonAction]
-		public static object GetPropertyValue(object obj, string propertyName)
-		{
-			var prop =  obj.GetType().GetProperties()
-				 .SingleOrDefault(pi => pi.Name == propertyName)
-				 ;
-			if (prop == null) return null;
-
-			return prop.GetValue(obj, null);
-
-		}
-
 	}
 }
