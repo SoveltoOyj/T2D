@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace T2D.Model.InventoryApi
 {
-	public class GetAttributeRequest : GetAttributeRelationsBaseRequest
+	public class GetAttributeRequest : BaseRequest
 	{
 		public string Attribute { get; set; }
 	}

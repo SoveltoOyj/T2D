@@ -32,12 +32,5 @@ namespace T2D.Entities
 
 	}
 
-	public enum State
-	{
-		NotStarted,
-		Started,
-		Done,
-		Failed,
-	}
 
 }

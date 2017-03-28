@@ -53,7 +53,8 @@ namespace T2D.Infra.TestData
 			_dbc.ArchetypeThings.Add(new ArchetypeThing { Id = CommonTestData.Next(), Fqdn = CommonTestData.Fqdn, US = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
 
 			//AuthenticationThings
-			var M100 = new AuthenticationThing { Id = CommonTestData.Next(), Fqdn = CommonTestData.Fqdn, US = "M100", Title = "Matti, Facebook", };
+			var M100 = new AuthenticationThing { Id = CommonTestData.Next(),
+				Fqdn = CommonTestData.Fqdn, US = "M100", Title = "Matti, Facebook", };
 			_dbc.AuthenticationThings.Add(M100);
 			_dbc.SaveChanges();
 			CommonTestData.Entities["M100"] = M100;

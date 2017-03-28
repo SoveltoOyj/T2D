@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 namespace T2D.Model.InventoryApi
 {
 	// request-luokan kantaluokka (demo git:n käytöstä, poista tämä turha kommentti)
-	public abstract class GetAttributeRelationsBaseRequest
+	public abstract class BaseRequest
 	{
 		public string Session { get; set; }
 		public string ThingId { get; set; }
 		public string Role { get; set; }
 	}
-	public class GetRelationsRequest : GetAttributeRelationsBaseRequest
+	public class GetRelationsRequest : BaseRequest
 	{
 	}
 	public class GetRelationsResponse
