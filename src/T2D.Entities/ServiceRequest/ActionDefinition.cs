@@ -16,8 +16,14 @@ namespace T2D.Entities
 		public Guid ServiceDefinitionId { get; set; }
 		public ServiceDefinition ServiceDefinition { get; set; }
 
-		public Guid ThingId { get; set; }
-		public BaseThing Thing { get; set; }
+		/// <summary>
+		/// To which thing this action should be executed.
+		/// </summary>
+		public Guid Object_ThingId { get; set; }
+		public BaseThing Object_Thing { get; set; }
+
+		public Guid Operator_ThingId { get; set; }
+		public BaseThing Operator_Thing { get; set; }
 
 		public Guid Alarm_ThingId { get; set; }
 		public BaseThing Alarm_Thing { get; set; }

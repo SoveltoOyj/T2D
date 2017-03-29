@@ -86,6 +86,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 				StartedAt = DateTime.UtcNow,
 				State = StateEnum.NotStarted,
 				ThingId = session.EntryPoint_ThingId,
+				CompletedAt=null,
 			};
 			dbc.ServiceStatuses.Add(ss);
 
@@ -98,6 +99,8 @@ namespace InventoryApi.Controllers.InventoryControllers
 					DeadLine = ss.StartedAt.Add(item.TimeSpan),
 					ServiceStatus = ss,
 					State = StateEnum.NotStarted,
+					AddedAt = DateTime.UtcNow,
+					CompletedAt=null,
 				};
 				ss.ActionStatuses.Add(actionStatus);
 			}
@@ -177,34 +180,41 @@ namespace InventoryApi.Controllers.InventoryControllers
 		[Produces(typeof(GetActionStatusesResponse))]
 		public IActionResult GetActionStatuses([FromBody]GetActionStatusesRequest value)
 		{
+			var session = this.GetSession(value.Session, true);
+
+			T2D.Entities.BaseThing thing =
+				this.Find<T2D.Entities.BaseThing>(value.ThingId)
+				.Include(t => t.ThingRoles)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+				return BadRequest($"Thing '{value.ThingId}' do not exists.");
+
 			GetActionStatusesResponse ret = new GetActionStatusesResponse
 			{
 				Statuses = new List<ActionStatusResponse>()
 			};
-			var rnd = new Random();
 
-			
-				int count = rnd.Next(11);
-				for (int i = 0; i < count; i++)
+
+			var query = dbc.ActionStatuses
+				.Include(acs => acs.ServiceStatus)
+				.Include(acs => acs.ActionDefinition)
+				.Where(acs => acs.ActionDefinition.Operator_ThingId == thing.Id)  //action is assignt to this thing
+				.OrderBy(acs => acs.State)
+				.ThenByDescending(acs => acs.DeadLine)
+				;
+
+			foreach (var item in query)
 				{
 					ret.Statuses.Add(new ActionStatusResponse
 					{
-						ActionId = Guid.NewGuid(),
-						Title = "Action Title...",
-						AddedAt = DateTime.Now.AddSeconds(rnd.NextDouble() * -1000.0),
-						State = this.StateMapper.EnumToEntity((T2D.Entities.StateEnum)(rnd.Next(2) + 1)).Name,
-					});
-				}
-
-				count = rnd.Next(11);
-				for (int i = 0; i < count; i++)
-				{
-					ret.Statuses.Add(new ActionStatusResponse
-					{
-						ActionId = Guid.NewGuid(),
-						Title = "Action Title...",
-						AddedAt = DateTime.Now.AddSeconds(rnd.NextDouble() * -1000.0),
-						State = this.StateMapper.EnumToEntity((T2D.Entities.StateEnum)(rnd.Next(3) + 1)).Name,
+						ActionId = item.Id,
+						Title = item.ActionDefinition.Title,
+						AddedAt = item.AddedAt,
+						State = item.State.ToString(),
+						ActionClass = item.ActionDefinition.GetType().Name,
+						ActionType= item.ActionDefinition.ActionListType.ToString(),
 					});
 				}
 
@@ -216,30 +226,49 @@ namespace InventoryApi.Controllers.InventoryControllers
 		[Produces(typeof(GetActionStatusResponse))]
 		public IActionResult GetActionStatus([FromBody]GetActionStatusRequest value)
 		{
-			var rnd = new Random();
-			var state = StateMapper.EnumToEntity((T2D.Entities.StateEnum)(rnd.Next(4) + 1)).Name;
+			var session = this.GetSession(value.Session, true);
+
+			T2D.Entities.BaseThing thing =
+				this.Find<T2D.Entities.BaseThing>(value.ThingId)
+				.Include(t => t.ThingRoles)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+				return BadRequest($"Thing '{value.ThingId}' do not exists.");
+
+			var actionStatus = dbc.ActionStatuses
+				.Include(acs=>acs.ActionDefinition)
+					.ThenInclude(ad=>ad.Alarm_Thing)
+				.SingleOrDefault(acs => acs.Id == value.ActionId);
+
+
+			if (actionStatus == null) return BadRequest($"Action '{value.ActionId}' do not exists."); 
+
+			//get Status and update status if needed
+			var serviceStatus = UpdateServiceRequestState(actionStatus, null);
 
 			var ret = new GetActionStatusResponse
 			{
 				Action=new T2D.Model.Action
 				{
 					Id=value.ActionId,
-					Title="Action Title...",
-					ActionListType="Mandatory",
-					ActionType = "GenericAction",
-					Alarm_ThingId="inv1.sovelto.fi/M100",
-					DeadLine=DateTime.Now.AddHours(rnd.Next(20)),
-					State = state,
-					ThingId = "inv1.sovelto.fi/M100",
+					Title=actionStatus.ActionDefinition.Title,
+					ActionClass = actionStatus.ActionDefinition.GetType().Name,
+					ActionType = actionStatus.ActionDefinition.ActionListType.ToString(),
+					Alarm_ThingId= CreateThingIdFromThing(actionStatus.ActionDefinition.Alarm_Thing),
+					DeadLine = actionStatus.DeadLine ,
+					State = actionStatus.State.ToString(),
+					ThingId = CreateThingIdFromThing(actionStatus.ActionDefinition.Operator_Thing),
 					Service = new Service
 					{
-						ThingId = "inv1.sovelto.fi/SL1",
-						AddedAt = DateTime.Now.AddHours(-1*rnd.Next(20)),
-						Id = Guid.NewGuid(),
-						RequestorThingId = "Anonymous",
-						SessionId=Guid.NewGuid(),
-						State = state,
-						Title="Service title..",
+						ThingId = CreateThingIdFromThing(serviceStatus.Thing),
+						AddedAt = serviceStatus.StartedAt,
+						Id = serviceStatus.Id,
+						RequestorThingId = CreateThingIdFromThing(serviceStatus.Thing),
+						SessionId=serviceStatus.SessionId,
+						State = serviceStatus.State.ToString(),
+						Title=serviceStatus.ServiceDefinition.Title,
 					}
 				}
 			};
@@ -250,10 +279,115 @@ namespace InventoryApi.Controllers.InventoryControllers
 		[HttpPost, ActionName("UpdateActionStatus")]
 		public IActionResult UpdateActionStatus([FromBody]UpdateActionStatusRequest value)
 		{
+			var session = this.GetSession(value.Session, true);
+
+			T2D.Entities.BaseThing thing =
+				this.Find<T2D.Entities.BaseThing>(value.ThingId)
+				.Include(t => t.ThingRoles)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+				return BadRequest($"Thing '{value.ThingId}' do not exists.");
+
+
+			var actionStatus = dbc.ActionStatuses
+				.Include(acs => acs.ActionDefinition)
+					.ThenInclude(ad => ad.Alarm_Thing)
+				.SingleOrDefault(acs => acs.Id == value.ActionId);
+
+
+			if (actionStatus == null) return BadRequest($"Action '{value.ActionId}' do not exists.");
+
+			StateEnum newState;
+			if (Enum.TryParse(value.State, out newState))
+			{
+				UpdateServiceRequestState(actionStatus, newState);
+			}
+			else
+			{
+				return BadRequest($"Unknown state {value.State}.");
+			}
 			return Ok();
 
 		}
 
+		[NonAction]
+		private ServiceStatus UpdateServiceRequestState(ActionStatus actionStatus, StateEnum? newActionState)
+		{
 
+			var thisServiceStatus = dbc.ServiceStatuses
+				.Include(ss=>ss.ActionStatuses)
+					.ThenInclude(acs=>acs.ActionDefinition)
+				.Include(ss=>ss.ServiceDefinition)
+				.Single(ss=>ss.Id == actionStatus.ServiceStatusId)
+			  ;
+
+			if (newActionState != null)
+			{
+				actionStatus.State = newActionState.Value;
+			}
+			if (IsStateNotFinneshed(thisServiceStatus.State))
+			{
+				//check if any mandatory action is over deadline
+				var q = thisServiceStatus.ActionStatuses
+					.Where(acs => acs.DeadLine < DateTime.UtcNow)
+					.Where(acs => IsStateNotFinneshed(acs.State))
+					;
+
+				foreach (var item in q)
+				{
+					item.State = StateEnum.NotDoneInTime;
+				}
+				if (q.Count() > 0)
+				{
+					thisServiceStatus.State = StateEnum.NotDoneInTime;
+				}
+			}
+
+			List<StateEnum> states;
+			// check if it service has been started
+			if (thisServiceStatus.State == StateEnum.NotStarted)
+			{
+				states = new List<StateEnum>
+				{
+					StateEnum.Done, StateEnum.Started,
+				};
+				var q = thisServiceStatus.ActionStatuses
+					.Where(acs => states.Contains(acs.State))
+					;
+				if (q.Count() > 0)
+				{
+					thisServiceStatus.State = StateEnum.Started;
+				}
+			}
+
+			// check if done, all mandatory done in time
+			if (thisServiceStatus.State == StateEnum.Started)
+			{
+				var q = thisServiceStatus.ActionStatuses
+					.Where(acs => acs.State != StateEnum.Done )
+					.Where(acs => acs.ActionDefinition.ActionListType == ActionListType.Mandatory)
+					;
+				if (q.Count() < 1)
+				{
+					thisServiceStatus.State = StateEnum.Done;
+				}
+			}
+
+
+			dbc.SaveChanges();
+			return thisServiceStatus;
+		}
+
+		private bool IsStateNotFinneshed(StateEnum state)
+		{
+			return state == StateEnum.NotStarted || state == StateEnum.Started;
+		}
+
+		private string CreateThingIdFromThing(T2D.Entities.BaseThing thing)
+		{
+			return ThingIdHelper.Create(thing.Fqdn, thing.US, false);
+		}
 	}
 }

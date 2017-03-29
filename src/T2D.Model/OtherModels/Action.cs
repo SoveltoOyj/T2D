@@ -19,7 +19,7 @@ namespace T2D.Model
 
 		public DateTime DeadLine { get; set; }
 
-		public string ActionListType { get; set; }
+		public string ActionClass { get; set; }
 
 		public string State { get; set; }
 

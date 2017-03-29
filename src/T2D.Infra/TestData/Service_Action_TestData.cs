@@ -60,8 +60,9 @@ namespace T2D.Infra.TestData
 					ServiceDefinitionId = sd.Id,
 					ActionListType = ActionListType.Mandatory,
 					Alarm_ThingId = CommonTestData.Entities["M100"].Id,
-					ThingId = _streetlight.Id,
-					TimeSpan=new TimeSpan(0,1,0),
+					Object_ThingId = _streetlight.Id,
+					Operator_ThingId = CommonTestData.Entities["M100"].Id,
+					TimeSpan =new TimeSpan(0,1,0),
 				});
 
 			sd = new ServiceDefinition
@@ -80,7 +81,8 @@ namespace T2D.Infra.TestData
 					ServiceDefinitionId = sd.Id,
 					ActionListType = ActionListType.Mandatory,
 					Alarm_ThingId = CommonTestData.Entities["M100"].Id,
-					ThingId = _streetlight.Id,
+					Object_ThingId = _streetlight.Id,
+					Operator_ThingId = CommonTestData.Entities["M100"].Id,
 					TimeSpan = new TimeSpan(0, 1, 0),
 				});
 			_dbc.SaveChanges();

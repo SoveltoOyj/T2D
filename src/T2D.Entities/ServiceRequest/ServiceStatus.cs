@@ -18,18 +18,13 @@ namespace T2D.Entities
 		public Guid ThingId { get; set; } 
 		public BaseThing Thing { get; set; }
 
-		/* pitää miettiä kuinka toteutetaan
-		public List<ActionStatus> Mandatories { get; set; }
-		public List<ActionStatus> Optionals { get; set; }
-		public List<ActionStatus> Selecteds { get; set; }
-		public List<ActionStatus> Pendings { get; set; }
-		*/
 
 		public StateEnum State{ get; set; }
 
 		public Guid SessionId { get; set; }
 
 		public DateTime StartedAt { get; set; }
+		public DateTime? CompletedAt { get; set; }
 
 		public List<ActionStatus> ActionStatuses { get; set; }
 

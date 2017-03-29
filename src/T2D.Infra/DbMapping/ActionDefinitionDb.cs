@@ -23,10 +23,19 @@ namespace T2D.Infra
 				.HasValue<ServiceRequestAction>(value++)
 				;
 
-			tbl.HasOne(e => e.Thing)
+			tbl.HasOne(e => e.Object_Thing)
 				.WithMany()
 				.OnDelete(DeleteBehavior.Restrict)
 				;
+			tbl.HasOne(e => e.Alarm_Thing)
+				.WithMany()
+				.OnDelete(DeleteBehavior.Restrict)
+				;
+			tbl.HasOne(e => e.Operator_Thing)
+				.WithMany()
+				.OnDelete(DeleteBehavior.Restrict)
+				;
+
 			tbl.HasOne(e => e.ServiceDefinition)
 							.WithMany(sd=>sd.Actions )
 							.OnDelete(DeleteBehavior.Restrict)

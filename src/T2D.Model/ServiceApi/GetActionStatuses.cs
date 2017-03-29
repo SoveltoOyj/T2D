@@ -20,5 +20,7 @@ namespace T2D.Model.ServiceApi
 		public string Title { get; set; }
 		public DateTime AddedAt { get; set; }
 		public string State { get; set; }
+		public string ActionType { get; set; }
+		public string ActionClass { get; set; }
 	}
 }

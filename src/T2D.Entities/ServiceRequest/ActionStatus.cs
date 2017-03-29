@@ -20,6 +20,9 @@ namespace T2D.Entities
 
 		public DateTime	DeadLine { get; set; }
 
+		public DateTime AddedAt { get; set; }
+		public DateTime? CompletedAt { get; set; }
+
 		public StateEnum State { get; set; }
 
 	}
