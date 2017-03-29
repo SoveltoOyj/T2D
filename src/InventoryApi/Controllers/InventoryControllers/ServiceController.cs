@@ -262,7 +262,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 					ThingId = CreateThingIdFromThing(actionStatus.ActionDefinition.Operator_Thing),
 					Service = new Service
 					{
-						ThingId = CreateThingIdFromThing(serviceStatus.Thing),
+						ThingId = CreateThingIdFromThing(serviceStatus.ServiceDefinition.Thing),
 						AddedAt = serviceStatus.StartedAt,
 						Id = serviceStatus.Id,
 						RequestorThingId = CreateThingIdFromThing(serviceStatus.Thing),
@@ -321,6 +321,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 				.Include(ss=>ss.ActionStatuses)
 					.ThenInclude(acs=>acs.ActionDefinition)
 				.Include(ss=>ss.ServiceDefinition)
+				  .ThenInclude(sd=>sd.Thing)
 				.Single(ss=>ss.Id == actionStatus.ServiceStatusId)
 			  ;
 
