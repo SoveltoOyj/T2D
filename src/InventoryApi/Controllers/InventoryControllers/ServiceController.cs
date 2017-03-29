@@ -29,7 +29,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 			var session = this.GetSession(value.Session, true);
 
 			T2D.Entities.BaseThing thing =
-				this.Find(value.ThingId)
+				this.Find<T2D.Entities.BaseThing>(value.ThingId)
 				.Include(t => t.ThingRoles)
 				.FirstOrDefault()
 				;
@@ -42,42 +42,10 @@ namespace InventoryApi.Controllers.InventoryControllers
 			if (!AttributeSecurity.QueryServiceRequestRight(thing, session, role))
 				return BadRequest($"Not enough priviledges to query Services of {value.ThingId}.");
 
-
-			//var ret = new QueryMyRolesResponse
-			//{
-			//	Roles = new List<string>(),
-			//};
-			//var roleIds = new List<int>();
-
-			//// add roles and add to SessionAccess
-			//foreach (var item in thingRoleMembers)
-			//{
-			//	if (item.ThingRole != null)
-			//	{
-			//		int roleId = item.ThingRole.RoleId;
-			//		if (!roleIds.Contains(roleId)) roleIds.Add(roleId);
-			//		if (!session.SessionAccesses.Any(sa => sa.RoleId == roleId && sa.ThingId == thing.Id))
-			//		{
-			//			dbc.SessionAccesses.Add(new SessionAccess { RoleId = roleId, SessionId = session.Id, ThingId = thing.Id });
-			//		}
-			//	}
-			//}
-			//dbc.SaveChanges();
-			//ret.Roles.AddRange(
-			//	dbc.Roles
-			//		.Where(r => roleIds.Contains(r.Id))
-			//		.Select(r => r.Name)
-			//		.ToList()
-			//	);
-
-
-
-
 			var q = dbc.ServiceDefinitions
 							.Where(sd => sd.ThingId == thing.Id)
 							.Select(sd => sd.Title)
 							;
-
 
 			GetServicesResponse ret = new GetServicesResponse
 			{
@@ -87,9 +55,55 @@ namespace InventoryApi.Controllers.InventoryControllers
 		}
 
 		[HttpPost, ActionName("ServiceRequest")]
-		//[Produces(typeof(ServiceRequestResponse))]
 		public IActionResult ServiceRequest([FromBody]ServiceRequestRequest value)
 		{
+			var session = this.GetSession(value.Session, true);
+
+			T2D.Entities.GenericThing thing =
+				this.Find< T2D.Entities.GenericThing>(value.ThingId)
+				.Include(t => t.ThingRoles)
+				.Include(t => t.ServiceDefinitions)
+					.ThenInclude(sd => sd.Actions)
+				.Where(t=>t.ServiceDefinitions.Any(sd=>sd.Title==value.Service))
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+				return BadRequest($"Thing '{value.ThingId}' do not exists or do not have service {value.Service}.");
+
+			//have to read again, navigation properties did not work as exptected
+			ServiceDefinition serviceDefinition =	thing.ServiceDefinitions
+					.Where(sd => sd.Title == value.Service)
+					.SingleOrDefault()
+					;
+
+
+			// create ServiceStatus
+			ServiceStatus ss = new ServiceStatus
+			{
+				ServiceDefinitionId = serviceDefinition.Id,
+				SessionId = session.Id,
+				StartedAt = DateTime.UtcNow,
+				State = StateEnum.NotStarted,
+				ThingId = thing.Id,
+			};
+			dbc.ServiceStatuses.Add(ss);
+
+			//create ActionStatuses
+			foreach (var item in thing.ServiceDefinitions.First().Actions)
+			{
+				var actionStatus = new ActionStatus
+				{
+					ActionDefinitionId = item.Id,
+					DeadLine = ss.StartedAt.Add(item.TimeSpan),
+					ServiceStatus = ss,
+					State = StateEnum.NotStarted,
+				};
+				ss.ActionStatuses.Add(actionStatus);
+			}
+
+			dbc.SaveChanges();
+
 			return Ok();
 		}
 

@@ -12,23 +12,15 @@ namespace T2D.Entities
 	{
 		public Guid Id { get; set; }
 
-		public ServiceStatus ServiceStatusId { get; set; }
+		public Guid ServiceStatusId { get; set; }
 		public ServiceStatus ServiceStatus { get; set; }
 
-		public Guid ActionTypeId { get; set; }
-		public ActionTypeBase ActionType { get; set; }
-
-		public Guid ThingId { get; set; }
-		public BaseThing Thing { get; set; }
-
-		public Guid Alarm_ThingId { get; set; }
-		public BaseThing Alarm_Thing { get; set; }
+		public Guid ActionDefinitionId { get; set; }
+		public ActionDefinition ActionDefinition { get; set; }
 
 		public DateTime	DeadLine { get; set; }
 
-		public ActionListType ActionListType { get; set; }
-
-		public State State { get; set; }
+		public StateEnum State { get; set; }
 
 	}
 

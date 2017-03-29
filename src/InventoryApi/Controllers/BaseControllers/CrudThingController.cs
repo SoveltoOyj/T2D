@@ -44,7 +44,7 @@ namespace InventoryApi.Controllers.BaseControllers
 		[HttpGet("id")]
 		public virtual TThingModel Get([FromQuery] string c, [FromQuery]string u)
 		{
-			return  _mapper.EntityToModel(Find(c,u));
+			return  _mapper.EntityToModel(Find<TThingEntity>(c,u));
 		}
 
 		// POST api/test/{model}
@@ -79,7 +79,7 @@ namespace InventoryApi.Controllers.BaseControllers
 		public virtual TThingModel Patch([FromQuery] string c, [FromQuery]string u, [FromBody]JsonPatchDocument<TThingModel> value)
 		{
 
-			TThingEntity current = Find(c, u);
+			TThingEntity current = Find<TThingEntity>(c, u);
 			if (current == null) throw new Exception($"Thing not Found");
 
 			var updatedModel = _mapper.EntityToModel(current);
@@ -104,7 +104,7 @@ namespace InventoryApi.Controllers.BaseControllers
 		[HttpPut()]
 		public virtual TThingModel Put([FromBody]TThingModel value)
 		{
-			TThingEntity current = Find(value);
+			TThingEntity current = Find<TThingEntity, TThingModel>(value);
 			if (current == null) throw new Exception($"Thing not Found");
 
 			_mapper.UpdateEntityFromModel(value, ref current, false);
@@ -116,7 +116,7 @@ namespace InventoryApi.Controllers.BaseControllers
 		[HttpDelete()]
 		public virtual void Delete([FromQuery] string c, [FromQuery]string u)
 		{
-			var t = Find(c,u);
+			var t = Find<TThingEntity>(c,u);
 			if (t==null) throw new Exception($"Thing not Found");
 
 			dbc.Entry(t).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
@@ -124,14 +124,14 @@ namespace InventoryApi.Controllers.BaseControllers
 		}
 
 
-		private TThingEntity Find(TThingModel value)
-		{
-			if (value == null || value.Id==null) throw new ArgumentNullException("value", "Thing or Thing Id is null.");
-			return Find(ThingIdHelper.GetFQDN(value.Id), ThingIdHelper.GetUniqueString(value.Id));
-		}
-		private TThingEntity Find(string c, string u)
-		{
-			return dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn == c && t.US == u);
-		}
+		//private TThingEntity Find(TThingModel value)
+		//{
+		//	if (value == null || value.Id==null) throw new ArgumentNullException("value", "Thing or Thing Id is null.");
+		//	return Find(ThingIdHelper.GetFQDN(value.Id), ThingIdHelper.GetUniqueString(value.Id));
+		//}
+		//private TThingEntity Find(string c, string u)
+		//{
+		//	return dbc.Set<TThingEntity>().FirstOrDefault(t => t.Fqdn == c && t.US == u);
+		//}
 	}
 }

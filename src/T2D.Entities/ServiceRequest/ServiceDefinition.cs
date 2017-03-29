@@ -14,13 +14,13 @@ namespace T2D.Entities
 		public string Title { get; set; }
 
 		public Guid ThingId { get; set; }
-		public BaseThing Thing { get; set; }
+		public GenericThing Thing { get; set; }
 
-		/* pitää miettiä miten tehdään
-		public List<ActionDefinition> Mandatories { get; set; }
-		public List<ActionDefinition> Optionals { get; set; }
-		public List<ActionDefinition> Selecteds { get; set; }
-		public List<ActionDefinition> Pendings { get; set; }
-		*/
+		public List<ActionDefinition> Actions { get; set; }
+
+		public ServiceDefinition()
+		{
+			Actions = new List<ActionDefinition>();
+		}
 	}
 }

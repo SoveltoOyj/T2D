@@ -38,16 +38,17 @@ namespace T2D.Infra
 
 		#region ServiceRequest
 		public DbSet<ServiceDefinition> ServiceDefinitions { get; set; }
-		public DbSet<ServiceStatus> ServiceStatuses { get; set; }
-
-		public DbSet<ActionTypeBase> ActionTypes { get; set; }
-		public DbSet<GenericAction> GenericActionTypes { get; set; }
-		public DbSet<PaymentRequestAction> PaymentRequestActionTypes { get; set; }
-		public DbSet<ReceiptRequestAction> ReceiptRequestActionTypes { get; set; }
-		public DbSet<IoTBotRequestAction> IoTBotRequestActionTypes { get; set; }
-		public DbSet<ActionDefinition> ServiceRequestActionTypes { get; set; }
 
 		public DbSet<ActionDefinition> ActionDefinitions { get; set; }
+		public DbSet<GenericAction> GenericActions { get; set; }
+		public DbSet<PaymentRequestAction> PaymentRequestActions { get; set; }
+		public DbSet<ReceiptRequestAction> ReceiptRequestActions { get; set; }
+		public DbSet<IoTBotRequestAction> IoTBotRequestActions { get; set; }
+		public DbSet<ActionDefinition> ServiceRequestActions { get; set; }
+
+
+		public DbSet<ServiceStatus> ServiceStatuses { get; set; }
+
 		public DbSet<ActionStatus> ActionStatuses { get; set; }
 		#endregion
 
@@ -79,7 +80,6 @@ namespace T2D.Infra
 			ActionDefinitionDb.SetDbMapping(modelBuilder);
 			ServiceStatusDb.SetDbMapping(modelBuilder);
 			ActionStatusDb.SetDbMapping(modelBuilder);
-			ActionTypeDb.SetDbMapping(modelBuilder);
 
 
 		}

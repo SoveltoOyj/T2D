@@ -25,11 +25,18 @@ namespace T2D.Entities
 		public List<ActionStatus> Pendings { get; set; }
 		*/
 
-		public State State{ get; set; }
+		public StateEnum State{ get; set; }
 
 		public Guid SessionId { get; set; }
 
 		public DateTime StartedAt { get; set; }
+
+		public List<ActionStatus> ActionStatuses { get; set; }
+
+		public ServiceStatus()
+		{
+			ActionStatuses = new List<ActionStatus>(); 
+		}
 
 	}
 	

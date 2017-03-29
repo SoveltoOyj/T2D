@@ -33,7 +33,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 			var session = this.GetSession(value.Session, true);
 
 			T2D.Entities.BaseThing thing = 
-				this.Find(value.ThingId) 
+				this.Find<T2D.Entities.BaseThing>(value.ThingId) 
 				.Include(t=>t.ThingRoles)
 				.FirstOrDefault()
 				;
@@ -101,7 +101,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 			var session = this.GetSession(value.Session, true);
 
 			T2D.Entities.BaseThing thing =
-				this.Find(value.ThingId)
+				this.Find<T2D.Entities.BaseThing>(value.ThingId)
 				.Include(t => t.ThingAttributes)
 				.Include(t => t.ThingRelations)
 				.FirstOrDefault()
@@ -130,7 +130,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 				foreach(var th in group)
 				{
 					var thingIdTitle = new GetRelationsResponse.RelationsThings.IdTitle { ThingId = ThingIdHelper.Create(th.Thing2_Fqdn, th.Thing2_US) };
-						var thing2 = this.Find(th.Thing2_Fqdn, th.Thing2_US);
+						var thing2 = this.Find<T2D.Entities.BaseThing>(th.Thing2_Fqdn, th.Thing2_US);
 						if (thing2 != null)
 							thingIdTitle.Title = thing2.Title;
 					rt.Things.Add(thingIdTitle);
@@ -147,7 +147,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 			var session = this.GetSession(value.Session, true);
 
 			T2D.Entities.BaseThing thing =
-				this.Find(value.ThingId)
+				this.Find<T2D.Entities.BaseThing>(value.ThingId)
 				.Include(t => t.ThingAttributes)
 				.FirstOrDefault()
 				;

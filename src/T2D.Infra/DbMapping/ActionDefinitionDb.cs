@@ -12,13 +12,23 @@ namespace T2D.Infra
 		public static void SetDbMapping(ModelBuilder modelBuilder)
 		{
 			var tbl = modelBuilder.Entity<ActionDefinition>();
+			
+			int value = 1;
+			tbl
+				.HasDiscriminator<int>("Discriminator")
+				.HasValue<GenericAction>(value++)
+				.HasValue<PaymentRequestAction>(value++)
+				.HasValue<ReceiptRequestAction>(value++)
+				.HasValue<IoTBotRequestAction>(value++)
+				.HasValue<ServiceRequestAction>(value++)
+				;
 
 			tbl.HasOne(e => e.Thing)
 				.WithMany()
 				.OnDelete(DeleteBehavior.Restrict)
 				;
 			tbl.HasOne(e => e.ServiceDefinition)
-							.WithMany()
+							.WithMany(sd=>sd.Actions )
 							.OnDelete(DeleteBehavior.Restrict)
 							;
 

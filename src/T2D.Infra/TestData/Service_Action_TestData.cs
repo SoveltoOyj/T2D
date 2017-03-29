@@ -9,7 +9,6 @@ namespace T2D.Infra.TestData
 	{
 		private EfContext _dbc { get; set; }
 
-		private GenericAction _changeBulb;
 		private RegularThing _streetlight;
 		public Service_Action_TestData(EfContext dbc)
 		{
@@ -18,7 +17,6 @@ namespace T2D.Infra.TestData
 		public void DoIt()
 		{
 			InsertThings();
-			InsertActionTypes();
 			InsertServiceDefinitions();
 		}
 		private void InsertThings()
@@ -44,16 +42,6 @@ namespace T2D.Infra.TestData
 			_dbc.SaveChanges();
 		}
 
-		private void InsertActionTypes()
-		{
-			_changeBulb = new GenericAction
-			{
-				Id = CommonTestData.Next(),
-				Title = "Change bulb",
-			};
-			_dbc.GenericActionTypes.Add(_changeBulb);
-			_dbc.SaveChanges();
-		}
 		private void InsertServiceDefinitions()
 		{
 			var sd = new ServiceDefinition
@@ -65,12 +53,12 @@ namespace T2D.Infra.TestData
 			_dbc.ServiceDefinitions.Add(sd);
 
 			_dbc.ActionDefinitions.Add(
-				new ActionDefinition
+				new GenericAction
 				{
 					Id = CommonTestData.Next(),
+					Title = "Change bulb",
 					ServiceDefinitionId = sd.Id,
 					ActionListType = ActionListType.Mandatory,
-					ActionTypeId = _changeBulb.Id,
 					Alarm_ThingId = CommonTestData.Entities["M100"].Id,
 					ThingId = _streetlight.Id,
 					TimeSpan=new TimeSpan(0,1,0),
@@ -85,12 +73,12 @@ namespace T2D.Infra.TestData
 			_dbc.ServiceDefinitions.Add(sd);
 
 			_dbc.ActionDefinitions.Add(
-				new ActionDefinition
+				new GenericAction
 				{
 					Id = CommonTestData.Next(),
+					Title = "Check darkness switch",
 					ServiceDefinitionId = sd.Id,
 					ActionListType = ActionListType.Mandatory,
-					ActionTypeId = _changeBulb.Id,
 					Alarm_ThingId = CommonTestData.Entities["M100"].Id,
 					ThingId = _streetlight.Id,
 					TimeSpan = new TimeSpan(0, 1, 0),

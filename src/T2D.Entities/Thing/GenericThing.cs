@@ -27,5 +27,12 @@ namespace T2D.Entities
 		public string Parted_Fqdn { get; set; }
 		[StringLength(512)]
 		public string Parted_US { get; set; }
+
+		public List<ServiceDefinition> ServiceDefinitions { get; set; }
+
+		public GenericThing()
+		{
+			ServiceDefinitions = new List<ServiceDefinition>();
+		}
 	}
 }

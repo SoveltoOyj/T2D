@@ -6,14 +6,15 @@ using System.Text;
 namespace T2D.Entities
 {
 	
-	public class ActionDefinition:IEntity
+	public abstract class ActionDefinition:IEntity
 	{
 		public Guid Id { get; set; }
+
+		[StringLength(256), Required]
+		public string Title { get; set; }
+
 		public Guid ServiceDefinitionId { get; set; }
 		public ServiceDefinition ServiceDefinition { get; set; }
-
-		public Guid ActionTypeId { get; set; }
-		public ActionTypeBase ActionType { get; set; }
 
 		public Guid ThingId { get; set; }
 		public BaseThing Thing { get; set; }
@@ -21,11 +22,18 @@ namespace T2D.Entities
 		public Guid Alarm_ThingId { get; set; }
 		public BaseThing Alarm_Thing { get; set; }
 
-
 		public TimeSpan TimeSpan { get; set; }
 
 		public ActionListType ActionListType { get; set; }
 	}
+
+
+	public class GenericAction : ActionDefinition { }
+	public class PaymentRequestAction : ActionDefinition { }
+	public class ReceiptRequestAction : ActionDefinition { }
+	public class IoTBotRequestAction : ActionDefinition { }
+	public class ServiceRequestAction : ActionDefinition { }
+
 
 	public enum ActionListType
 	{

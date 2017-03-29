@@ -13,15 +13,11 @@ namespace T2D.Infra
 		{
 			var tbl = modelBuilder.Entity<ActionStatus>();
 
-			tbl.HasOne(e => e.Thing)
-				.WithMany()
+			tbl.HasOne(e => e.ServiceStatus)
+				.WithMany(t => t.ActionStatuses)
+				.HasForeignKey(e => e.ServiceStatusId)
 				.OnDelete(DeleteBehavior.Restrict)
 				;
-			tbl.HasOne(e => e.Alarm_Thing)
-							.WithMany()
-							.OnDelete(DeleteBehavior.Restrict)
-							;
-
 		}
 
 	}

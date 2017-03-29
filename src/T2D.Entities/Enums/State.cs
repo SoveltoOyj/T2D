@@ -8,8 +8,8 @@ namespace T2D.Entities
 {
 	/// <summary>
 	/// Service ja Action States
+	/// ToDo: We'll propably use enum directly
 	/// </summary>
-
 	public class State : IEnumEntity
 	{
 		public int Id { get; set; }

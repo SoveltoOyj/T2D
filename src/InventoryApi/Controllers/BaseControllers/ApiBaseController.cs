@@ -60,18 +60,6 @@ namespace InventoryApi.Controllers.BaseControllers
 
 
 		[NonAction]
-		protected T2D.Entities.IThing Find(string c, string u)
-		{
-			return dbc.Things.FirstOrDefault(t => t.Fqdn == c && t.US == u);
-		}
-
-		[NonAction]
-		protected IQueryable<T2D.Entities.BaseThing> Find(string thingId)
-		{
-			return dbc.Things.Where(t => t.Fqdn == ThingIdHelper.GetFQDN(thingId) && t.US == ThingIdHelper.GetUniqueString(thingId));
-		}
-
-		[NonAction]
 		protected static object GetPropertyValue(object obj, string propertyName)
 		{
 			var prop = obj.GetType().GetProperties()
@@ -83,5 +71,35 @@ namespace InventoryApi.Controllers.BaseControllers
 
 		}
 
+
+		//[NonAction]
+		//protected T2D.Entities.IThing Find(string c, string u)
+		//{
+		//	return dbc.Things.FirstOrDefault(t => t.Fqdn == c && t.US == u);
+		//}
+
+		[NonAction]
+		protected TThingEntity Find<TThingEntity>(string c, string u)
+			where TThingEntity : T2D.Entities.IThing
+		{
+			return dbc.Things.OfType<TThingEntity>().FirstOrDefault(t => t.Fqdn == c && t.US == u);
+		}
+
+		[NonAction]
+		protected IQueryable<T> Find<T>(string thingId)
+			where T : T2D.Entities.IThing
+		{
+			return dbc.Things.OfType<T>().Where(t => t.Fqdn == ThingIdHelper.GetFQDN(thingId) && t.US == ThingIdHelper.GetUniqueString(thingId));
+		}
+
+
+		[NonAction]
+		protected TThingEntity Find<TThingEntity, TThingModel>(TThingModel value)
+			where TThingEntity: T2D.Entities.IThing
+			where TThingModel: T2D.Model.IThing
+		{
+			if (value == null || value.Id == null) throw new ArgumentNullException("value", "Thing or Thing Id is null.");
+			return Find<TThingEntity>(ThingIdHelper.GetFQDN(value.Id), ThingIdHelper.GetUniqueString(value.Id));
+		}
 	}
 }
