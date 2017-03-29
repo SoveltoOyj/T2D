@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\T2D.Entities\T2D.Entities.csproj" />
+    <ProjectReference Include="..\T2D.Model\T2D.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>

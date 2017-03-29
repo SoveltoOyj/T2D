@@ -53,6 +53,15 @@ namespace T2D.Infra.TestData
 			_dbc.ArchetypeThings.Add(new ArchetypeThing { Id = CommonTestData.Next(), Fqdn = CommonTestData.Fqdn, US = "ArcNb1", Title = "Archetype example", Modified = new DateTime(2016, 3, 23), Published = new DateTime(2016, 4, 13), Created = new DateTime(2014, 3, 23) });
 
 			//AuthenticationThings
+			//Anonymous user
+			_dbc.AuthenticationThings.Add(
+			new AuthenticationThing
+			{
+				Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+				Fqdn = CommonTestData.Fqdn,
+				US = "AnonymousUser",
+				Title = "Anonymous User",
+			});
 			var M100 = new AuthenticationThing { Id = CommonTestData.Next(),
 				Fqdn = CommonTestData.Fqdn, US = "M100", Title = "Matti, Facebook", };
 			_dbc.AuthenticationThings.Add(M100);
@@ -181,6 +190,15 @@ namespace T2D.Infra.TestData
 		//		InventoryId = CommonTestData.Entities["I1"].Id,
 			};
 			_dbc.Sessions.Add(S1);
+
+			//anonymous
+			_dbc.Sessions.Add( new Session
+			{
+				Id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2),
+				StartTime = DateTime.UtcNow,
+				EntryPoint_ThingId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+			});
+
 			_dbc.SaveChanges();
 			CommonTestData.Entities["S1"] = S1;
 		}

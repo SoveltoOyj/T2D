@@ -14,15 +14,16 @@ using T2D.Entities;
 namespace InventoryApi.Controllers.InventoryControllers
 {
 
-	[Route("api/inventory/[controller]")]
+	[Route("api/inventory/[controller]/[action]")]
 	public class AuthenticationController : ApiBaseController
 	{
 		public AuthenticationController() : base()
 		{
 		}
 
-		[HttpPost]
-		public IActionResult Post([FromBody]AuthenticationRequest value)
+		[HttpPost, ActionName("EnterAuthenticatedSession")]
+		[Produces(typeof(AuthenticationResponse))]
+		public IActionResult EnterAuthenticatedSession([FromBody]AuthenticationRequest value)
 		{
 			// mock, AuthenticationThing is created if not exists
 			if (string.IsNullOrWhiteSpace(value.ThingId)) value.ThingId = "inv1.sovelto.fi/Teemu Testaaja";
@@ -54,5 +55,27 @@ namespace InventoryApi.Controllers.InventoryControllers
 			};
 			return Ok(ret);
 		}
+
+		[HttpPost, ActionName("EnterAnonymousSession")]
+		[Produces(typeof(AuthenticationResponse))]
+		public IActionResult EnterAnonymousSession()
+		{
+			//Create SessionEntity
+			var session = new Session
+			{
+				EntryPoint_ThingId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+				StartTime = DateTime.UtcNow,
+			};
+			dbc.Sessions.Add(session);
+			dbc.SaveChanges();
+
+			var ret = new AuthenticationResponse
+			{
+				Session = session.Id.ToString(),
+			};
+			return Ok(ret);
+
+		}
+
 	}
 }

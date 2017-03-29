@@ -48,7 +48,9 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 			// explicit loading - select those thingRoleMembers, where ThingRoleMember is one of things in session
 			// have to use Lists
-			List<Guid> sessionThings = new List<Guid> { session.EntryPoint_ThingId };
+			List<Guid> sessionThings = new List<Guid>();
+				sessionThings.Add(session.EntryPoint_ThingId);
+
 			foreach (var item in session.SessionAccesses)
 			{ 
 				if (!sessionThings.Contains(item.ThingId))

@@ -317,6 +317,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 		{
 
 			var thisServiceStatus = dbc.ServiceStatuses
+				.Include(ss=>ss.Thing)
 				.Include(ss=>ss.ActionStatuses)
 					.ThenInclude(acs=>acs.ActionDefinition)
 				.Include(ss=>ss.ServiceDefinition)

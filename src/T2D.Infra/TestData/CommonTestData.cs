@@ -9,7 +9,7 @@ namespace T2D.Infra.TestData
 {
 	static class CommonTestData
 	{
-		private static int _next = 0;
+		private static int _next = 1;  //id 1 is reserved for anonymous user
 		public static string Fqdn = "inv1.sovelto.fi";
 
 		public static Dictionary<string, IEntity> Entities = new Dictionary<string, IEntity>();
