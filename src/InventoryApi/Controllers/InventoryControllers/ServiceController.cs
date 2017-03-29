@@ -85,7 +85,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 				SessionId = session.Id,
 				StartedAt = DateTime.UtcNow,
 				State = StateEnum.NotStarted,
-				ThingId = thing.Id,
+				ThingId = session.EntryPoint_ThingId,
 			};
 			dbc.ServiceStatuses.Add(ss);
 
@@ -111,35 +111,64 @@ namespace InventoryApi.Controllers.InventoryControllers
 		[Produces(typeof(GetServiceStatusResponse))]
 		public IActionResult GetServiceStatus([FromBody]GetServiceStatusRequest value)
 		{
+			var session = this.GetSession(value.Session, true);
+
+			T2D.Entities.GenericThing thing =
+				this.Find<T2D.Entities.GenericThing>(value.ThingId)
+				.Include(t => t.ThingRoles)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+				return BadRequest($"Thing '{value.ThingId}' do not exists.");
+
+
 			GetServiceStatusResponse ret = new GetServiceStatusResponse
 			{
 				Statuses = new List<ServiceStatusResponse>()
 			};
-			var rnd = new Random();
+
+			var baseQuery = dbc.ServiceStatuses
+				.Include(ss => ss.ServiceDefinition)
+				.Where(ss => ss.ThingId == session.EntryPoint_ThingId)  //requestor is me
+				.Where(ss => ss.ServiceDefinition.ThingId == thing.Id)
+				;
 
 			if (value.ServiceId == null)
 			{
-				int count = rnd.Next(11);
-				for (int i = 0; i < count; i++)
+				var query = baseQuery
+					.OrderByDescending(ss=>ss.StartedAt)
+					.Take(10)
+					;
+
+				foreach (var item in query)
 				{
 					ret.Statuses.Add(new ServiceStatusResponse
 					{
-						ServiceId = Guid.NewGuid(),
-						Title = "Service Title...",
-						RequestedAt = DateTime.Now.AddSeconds(rnd.NextDouble() * -1000.0),
-						State = this.StateMapper.EnumToEntity((T2D.Entities.StateEnum)(rnd.Next(5) + 1)).Name,
+						ServiceId = item.Id,
+						Title = item.ServiceDefinition.Title,
+						RequestedAt = item.StartedAt,
+						State = item.State.ToString(),
 					});
 				}
 			}
 			else
 			{
-				ret.Statuses.Add(new ServiceStatusResponse
+				var serviceStatus = baseQuery
+					.Where(ss => ss.Id == value.ServiceId.Value)
+					.SingleOrDefault()
+					;
+
+				if (serviceStatus != null)
 				{
-					ServiceId = value.ServiceId.Value,
-					Title = "Service Title...",
-					RequestedAt = DateTime.Now.AddSeconds(rnd.NextDouble() * -1000.0),
-					State = this.StateMapper.EnumToEntity((T2D.Entities.StateEnum)(rnd.Next(5) + 1)).Name,
-				});
+					ret.Statuses.Add(new ServiceStatusResponse
+					{
+						ServiceId = serviceStatus.Id,
+						Title = serviceStatus.ServiceDefinition.Title,
+						RequestedAt = serviceStatus.StartedAt,
+						State = serviceStatus.State.ToString(),
+					});
+				}
 			}
 			return Ok(ret);
 		}
