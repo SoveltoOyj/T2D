@@ -35,7 +35,7 @@ namespace T2D.Infra.TestData
 				Preferred_LocationTypeId = 1,
 				Modified = new DateTime(2016, 3, 23),
 				Published = new DateTime(2016, 4, 13),
-				Creator_Fqdn = ((IThing) CommonTestData.Entities["M100"]).Fqdn,
+				Creator_Fqdn = ((IThing)CommonTestData.Entities["M100"]).Fqdn,
 				Creator_US = ((IThing)CommonTestData.Entities["M100"]).US
 			};
 			_dbc.RegularThings.Add(_streetlight);
@@ -47,8 +47,8 @@ namespace T2D.Infra.TestData
 			var sd = new ServiceDefinition
 			{
 				Id = CommonTestData.Next(),
-				ThingId=_streetlight.Id,
-				Title="Huollettava, lamppu sammunut"
+				ThingId = _streetlight.Id,
+				Title = "Huollettava, lamppu sammunut"
 			};
 			_dbc.ServiceDefinitions.Add(sd);
 
@@ -62,7 +62,7 @@ namespace T2D.Infra.TestData
 					Alarm_ThingId = CommonTestData.Entities["M100"].Id,
 					Object_ThingId = _streetlight.Id,
 					Operator_ThingId = CommonTestData.Entities["M100"].Id,
-					TimeSpan =new TimeSpan(0,1,0),
+					TimeSpan = new TimeSpan(0, 1, 0),
 				});
 
 			sd = new ServiceDefinition
@@ -86,6 +86,44 @@ namespace T2D.Infra.TestData
 					TimeSpan = new TimeSpan(0, 1, 0),
 				});
 			_dbc.SaveChanges();
+
+
+			sd = new ServiceDefinition
+			{
+				Id = CommonTestData.Next(),
+				ThingId = _streetlight.Id,
+				Title = "Remove StreetLight"
+			};
+			_dbc.ServiceDefinitions.Add(sd);
+
+			_dbc.ActionDefinitions.Add(
+				new GenericAction
+				{
+					Id = CommonTestData.Next(),
+					Title = "Switch SL Off",
+					ServiceDefinitionId = sd.Id,
+					ActionListType = ActionListType.Mandatory,
+					Alarm_ThingId = CommonTestData.Entities["M100"].Id,
+					Object_ThingId = _streetlight.Id,
+					Operator_ThingId = CommonTestData.Entities["M100"].Id,
+					TimeSpan = new TimeSpan(0, 1, 0),
+				});
+
+			_dbc.ActionDefinitions.Add(
+				new GenericAction
+				{
+					Id = CommonTestData.Next(),
+					Title = "Remove SL totally",
+					ServiceDefinitionId = sd.Id,
+					ActionListType = ActionListType.Mandatory,
+					Alarm_ThingId = CommonTestData.Entities["M100"].Id,
+					Object_ThingId = _streetlight.Id,
+					Operator_ThingId = CommonTestData.Entities["M100"].Id,
+					TimeSpan = new TimeSpan(0, 1, 0),
+				});
+
+			_dbc.SaveChanges();
+
 
 		}
 	}
