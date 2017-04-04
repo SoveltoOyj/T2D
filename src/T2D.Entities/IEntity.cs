@@ -6,10 +6,13 @@ namespace T2D.Entities
 	{
 		Guid Id { get; set; }
 	}
-		public interface IThing:IEntity
+	public interface IThing : IEntity
 	{
 		string Fqdn { get; set; }
 		string US { get; set; }
+	}
+	public interface IInventoryThing : IThing
+	{
 		string Title { get; set; }
 	}
 

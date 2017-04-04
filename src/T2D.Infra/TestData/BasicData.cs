@@ -83,8 +83,7 @@ namespace T2D.Infra.TestData
 				Preferred_LocationTypeId = 1,
 				Modified = new DateTime(2016, 3, 23),
 				Published = new DateTime(2016, 4, 13),
-				Creator_Fqdn = M100.Fqdn,
-				Creator_US = M100.US
+				CreatorThingId = M100.Id,
 			};
 			_dbc.RegularThings.Add(T1);
 			CommonTestData.Entities["T1"] = T1;
@@ -125,8 +124,7 @@ namespace T2D.Infra.TestData
 				Preferred_LocationTypeId = 1,
 				Modified = new DateTime(2016, 3, 23),
 				Published = new DateTime(2016, 4, 13),
-				Parted_Fqdn = T2.Fqdn,
-				Parted_US = T2.US
+				PartedThingId = T2.Id,
 			});
 			_dbc.SaveChanges();
 

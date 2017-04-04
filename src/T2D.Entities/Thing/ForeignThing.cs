@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 
 namespace T2D.Entities
 {
-    public class ArchivedThing:RegularThing
-    {
-    }
+	/// <summary>
+	/// Things that lives in other Inventories.
+	/// </summary>
+	public class ForeignThing : BaseThing
+	{
+	}
 }

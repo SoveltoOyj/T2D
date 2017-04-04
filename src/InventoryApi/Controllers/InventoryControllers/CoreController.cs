@@ -133,8 +133,8 @@ namespace InventoryApi.Controllers.InventoryControllers
 				{
 					var thingIdTitle = new GetRelationsResponse.RelationsThings.IdTitle { ThingId = ThingIdHelper.Create(th.Thing2_Fqdn, th.Thing2_US) };
 						var thing2 = this.Find<T2D.Entities.BaseThing>(th.Thing2_Fqdn, th.Thing2_US);
-						if (thing2 != null)
-							thingIdTitle.Title = thing2.Title;
+						if (thing2 != null && thing2 is IInventoryThing)
+							thingIdTitle.Title = ((IInventoryThing)thing2).Title;
 					rt.Things.Add(thingIdTitle);
 				}
 				ret.RelationThings.Add(rt);

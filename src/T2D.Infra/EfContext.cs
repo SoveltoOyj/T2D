@@ -17,7 +17,6 @@ namespace T2D.Infra
 		public DbSet<AuthenticationThing> AuthenticationThings { get; set; }
 		public DbSet<RegularThing> RegularThings { get; set; }
 		public DbSet<ArchetypeThing> ArchetypeThings { get; set; }
-		public DbSet<ArchivedThing> ArchivedThings { get; set; }
 		public DbSet<IoThing>IoTThings { get; set; }
 		public DbSet<WalletThing> WalletThings { get; set; }
 		#endregion

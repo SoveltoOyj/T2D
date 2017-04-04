@@ -35,8 +35,7 @@ namespace T2D.Infra.TestData
 				Preferred_LocationTypeId = 1,
 				Modified = new DateTime(2016, 3, 23),
 				Published = new DateTime(2016, 4, 13),
-				Creator_Fqdn = ((IThing)CommonTestData.Entities["M100"]).Fqdn,
-				Creator_US = ((IThing)CommonTestData.Entities["M100"]).US
+				CreatorThingId = ((IThing)CommonTestData.Entities["M100"]).Id,
 			};
 			_dbc.RegularThings.Add(_streetlight);
 			_dbc.SaveChanges();

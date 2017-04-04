@@ -21,9 +21,40 @@ namespace T2D.Infra
 				.HasValue<AuthenticationThing>(value++)
 				.HasValue<RegularThing>(value++)
 				.HasValue<ArchetypeThing>(value++)
-				.HasValue<ArchivedThing>(value++)
 				.HasValue<IoThing>(value++)
 				.HasValue<WalletThing>(value++)
+				;
+
+			modelBuilder.Entity<AuthenticationThing>().HasOne(e => e.PersonThing)
+				.WithMany()
+				.HasForeignKey(e => e.PersonThingId)
+				.OnDelete(DeleteBehavior.Restrict)
+				;
+
+			modelBuilder.Entity<RegularThing>().HasOne(e => e.ArchetypeThing)
+				.WithMany()
+				.HasForeignKey(e => e.ArchetypeThingId)
+				.OnDelete(DeleteBehavior.Restrict)
+				;
+
+			modelBuilder.Entity<RegularThing>().HasOne(e => e.LocationThing)
+							.WithMany()
+							.HasForeignKey(e => e.LocationThingId)
+							.OnDelete(DeleteBehavior.Restrict)
+							;
+
+			modelBuilder.Entity<RegularThing>().HasOne(e => e.PreferredLocationThing)
+							.WithMany()
+							.HasForeignKey(e => e.PreferredLocationThingId)
+							.OnDelete(DeleteBehavior.Restrict)
+							;
+
+
+
+			modelBuilder.Entity<GenericThing>().HasOne(e => e.PartedThing)
+				.WithMany(e=>e.Parts)
+				.HasForeignKey(e => e.PartedThingId)
+				.OnDelete(DeleteBehavior.Restrict)
 				;
 		}
 

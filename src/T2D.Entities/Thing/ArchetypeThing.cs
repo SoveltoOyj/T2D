@@ -5,7 +5,14 @@ using System.Threading.Tasks;
 
 namespace T2D.Entities
 {
-    public class ArchetypeThing:GenericThing
-    {
-    }
+	/// <summary>
+	/// Archetype Thing.
+	/// </summary>
+	public class ArchetypeThing : GenericThing
+	{
+
+		#region Navigation Properties
+		public List<RegularThing> InstanceThings { get; set; }
+		#endregion
+	}
 }

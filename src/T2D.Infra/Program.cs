@@ -87,8 +87,7 @@ namespace T2D.Infra
 				Preferred_LocationTypeId = 1,
 				Modified = new DateTime(2016, 3, 23),
 				Published = new DateTime(2016, 4, 13),
-				Creator_Fqdn = M100.Fqdn,
-				Creator_US = M100.US
+				CreatorThingId = M100.Id,
 			});
 			dbc.SaveChanges();
 			var S1 = TestData.CommonTestData.FindByThingId(dbc, fqdn, "S1");

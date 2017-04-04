@@ -7,7 +7,11 @@ using T2D.Helpers;
 
 namespace T2D.Entities
 {
-	public abstract class BaseThing:IThing
+	/// <summary>
+	/// All things, things in this Inventory as well as things that live in other Inventories and this
+	/// Inventory Things have relations to those.
+	/// </summary>
+	public abstract class BaseThing : IThing
 	{
 		public Guid Id { get; set; }
 
@@ -17,32 +21,34 @@ namespace T2D.Entities
 		[StringLength(512), Required]
 		public string US { get; set; }
 
-		[StringLength(1024)]
-		public string Title { get; set; }
 
+		#region Navigation Properties
 		public List<ThingRelation> ThingRelations { get; set; }
 		public List<ThingRoleMember> ThingRoleMembers { get; set; }
-        public List<ThingRoleMember> MemeberThingRoleMembers { get; set; }
+		public List<ThingRoleMember> MemeberThingRoleMembers { get; set; }
 		public List<ThingRole> ThingRoles { get; set; }
 		public List<ThingAttribute> ThingAttributes { get; set; }
 		public List<Session> Sessions { get; set; }
-        public List<SessionAccess> SessionAccesses { get; set; }
- 
-        public BaseThing()
-        {
-            ThingRelations = new List<ThingRelation>();
-            MemeberThingRoleMembers = new List<ThingRoleMember>();
-            ThingRoleMembers = new List<ThingRoleMember>();
-            ThingRoles = new List<ThingRole>();
-            ThingAttributes = new List<ThingAttribute>();
-            Sessions = new List<Session>();
+		public List<SessionAccess> SessionAccesses { get; set; }
+		#endregion
+
+
+		public BaseThing()
+		{
+			ThingRelations = new List<ThingRelation>();
+			MemeberThingRoleMembers = new List<ThingRoleMember>();
+			ThingRoleMembers = new List<ThingRoleMember>();
+			ThingRoles = new List<ThingRole>();
+			ThingAttributes = new List<ThingAttribute>();
+			Sessions = new List<Session>();
 			SessionAccesses = new List<SessionAccess>();
-        }
+		}
 
-        public override string ToString()
-        {
-            return this.ToJson();
-        }
+		public override string ToString()
+		{
+			return this.ToJson();
+		}
 
-    }
+	}
+	
 }

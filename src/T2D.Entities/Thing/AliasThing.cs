@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 
 namespace T2D.Entities
 {
-    public class AliasThing:BaseThing
-    {
-    }
+	/// <summary>
+	/// Alias ThingId to an existing Thing
+	/// </summary>
+	public class AliasThing : BaseThing
+	{
+	}
 }
