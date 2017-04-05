@@ -201,16 +201,17 @@ namespace T2D.Infra.TestData
 
 		private void AddAttributeData(EfContext dbc, Type enumType)
 		{
-			var entityType = dbc.Model.FindEntityType(typeof(Entities.Attribute));
-			var table = entityType.SqlServer();
-			var tableName = table.Schema + "." + table.TableName;
 
 			foreach (var item in Enum.GetNames(enumType))
 			{
 				//ToDo: Add min/max/Pattern and so on...
-				dbc.Attributes.Add(new Entities.Attribute { Id = (int)Enum.Parse(enumType, item, false), Name = item });
+				dbc.Attributes.Add(new Entities.Attribute {
+					Id = CommonTestData.GetGuid((int)Enum.Parse(enumType, item, false)),
+					Title = item,
+					AttributeType = AttributeType.T2DAttribute,
+				});
 			}
-			CommonTestData.SaveIdentityOnData<Entities.Attribute>(dbc);
+			dbc.SaveChanges(); 
 		}
 
 	}

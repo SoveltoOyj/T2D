@@ -7,7 +7,7 @@ using T2D.Entities;
 
 namespace T2D.Infra.TestData
 {
-	static class CommonTestData
+	public static class CommonTestData
 	{
 		private static int _next = 1;  //id 1 is reserved for anonymous user
 		public static string Fqdn = "inv1.sovelto.fi";
@@ -17,9 +17,16 @@ namespace T2D.Infra.TestData
 		public static Guid Next()
 		{
 			_next++;
-			var bytes = BitConverter.GetBytes(_next);
+			return GetGuid(_next);
+		}
+
+		public static Guid GetGuid(int i)
+		{
+			var bytes = BitConverter.GetBytes(i);
 			return new Guid(0, 0, 0, 0, 0, 0, 0, bytes[3], bytes[2], bytes[1], bytes[0]);
 		}
+
+
 
 		public static BaseThing FindByThingId(EfContext dbc, string fqdn, string uniqueString)
 		{

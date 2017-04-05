@@ -10,12 +10,12 @@ using InventoryApi.Controllers.BaseControllers;
 
 namespace InventoryApi.Controllers.MetadataControllers
 {
-	[Route("api/metadata/[controller]")]
-	public class AttributeController : CrudEnumController<T2D.Entities.Attribute, T2D.Model.Attribute>
-	{
-		public AttributeController() : base(onlyGet:true)
-		{
-		}
+	//[Route("api/metadata/[controller]")]
+	//public class AttributeController : CrudEnumController<T2D.Entities.Attribute, T2D.Model.Attribute>
+	//{
+	//	public AttributeController() : base(onlyGet:true)
+	//	{
+	//	}
 
-	}
+	//}
 }

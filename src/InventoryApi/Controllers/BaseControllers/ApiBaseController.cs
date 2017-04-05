@@ -21,7 +21,11 @@ namespace InventoryApi.Controllers.BaseControllers
 		protected T2D.Infra.EfContext dbc = new T2D.Infra.EfContext();
 		protected EnumMapper<T2D.Entities.RoleEnum, T2D.Entities.Role> RoleMapper = new EnumMapper<T2D.Entities.RoleEnum, T2D.Entities.Role>();
 		protected EnumMapper<T2D.Entities.RelationEnum, T2D.Entities.Relation> RelationMapper = new EnumMapper<T2D.Entities.RelationEnum, T2D.Entities.Relation>();
-		protected EnumMapper<T2D.Entities.AttributeEnum, T2D.Entities.Attribute> AttributeMapper = new EnumMapper<T2D.Entities.AttributeEnum, T2D.Entities.Attribute>();
+
+		//ToDo: Ahti KORJAA
+//		protected EnumMapper<T2D.Entities.AttributeEnum, T2D.Entities.Attribute> AttributeMapper = new EnumMapper<T2D.Entities.AttributeEnum, T2D.Entities.Attribute>();
+		protected EnumMapper<T2D.Entities.AttributeEnum, T2D.Entities.Relation> AttributeMapper = new EnumMapper<T2D.Entities.AttributeEnum, T2D.Entities.Relation>();
+
 		protected EnumMapper<T2D.Entities.ServiceAndActitivityStateEnum, T2D.Entities.ServiceAndActivityState> StateMapper = new EnumMapper<T2D.Entities.ServiceAndActitivityStateEnum, T2D.Entities.ServiceAndActivityState>();
 
 		protected override void Dispose(bool disposing)

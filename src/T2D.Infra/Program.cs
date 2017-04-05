@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using T2D.Entities;
+using T2D.Infra.TestData;
 
 namespace T2D.Infra
 {
@@ -104,20 +105,6 @@ namespace T2D.Infra
 			}
 		}
 
-	
-		private static void AddAttributeData(EfContext dbc, Type enumType)
-		{
-			var entityType = dbc.Model.FindEntityType(typeof(Entities.Attribute));
-			var table = entityType.SqlServer();
-			var tableName = table.Schema + "." + table.TableName;
-
-			foreach (var item in Enum.GetNames(enumType))
-			{
-				//ToDo: Add min/max/Pattern and so on...
-				dbc.Attributes.Add(new Entities.Attribute { Id = (int)Enum.Parse(enumType, item, false), Name = item });
-			}
-			TestData.CommonTestData.SaveIdentityOnData<Entities.Attribute>(dbc);
-		}
 
 		
 	}

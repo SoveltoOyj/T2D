@@ -1,30 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using T2D.Helpers;
+using System.Text;
 
 namespace T2D.Entities
 {
-	public class Attribute : IEnumEntity
-	{
 
-		public int Id { get; set; }
-		[StringLength(256)]
-		public string Name { get; set; }
-		[StringLength(1024)]
-		public string Pattern { get; set; }
-		[StringLength(256)]
-		public string MinValue { get; set; }
-		[StringLength(256)]
-		public string MaxValue { get; set; }
-
-		public override string ToString()
-		{
-			return this.ToJson();
-		}
-	}
 	public enum AttributeEnum
 	{
 		//artifical "attributes"
@@ -59,4 +39,10 @@ namespace T2D.Entities
 		PreferredLocation_StreetAddress,
 		PreferredLocation,
 	};
+
+	public enum AttributeType
+	{
+		T2DAttribute,
+		Extension,
+	}
 }

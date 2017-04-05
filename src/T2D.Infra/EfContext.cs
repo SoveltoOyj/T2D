@@ -35,6 +35,8 @@ namespace T2D.Infra
 		public DbSet<Entities.Session> Sessions { get; set; }
 		public DbSet<Entities.SessionAccess> SessionAccesses { get; set; }
 
+		public DbSet<Extension> Extensions{ get; set; }
+
 		#region ServiceRequest
 		public DbSet<ServiceDefinition> ServiceDefinitions { get; set; }
 

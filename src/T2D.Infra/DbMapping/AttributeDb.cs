@@ -13,7 +13,7 @@ namespace T2D.Infra
     {
       var tbl = modelBuilder.Entity<T2D.Entities.Attribute>();
 
-      tbl.Property(e => e.Name)
+      tbl.Property(e => e.Title)
         .HasMaxLength(256)
         ;
 

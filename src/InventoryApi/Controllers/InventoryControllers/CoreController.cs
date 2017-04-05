@@ -164,9 +164,9 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 			GetAttributeResponse ret = new GetAttributeResponse
 			{
-				Attribute = attribute.Name,
+				Attribute = attribute.Title,
 				TimeStamp = DateTime.UtcNow,
-				Value=GetPropertyValue(thing,attribute.Name)
+				Value=GetPropertyValue(thing,attribute.Title)
 			};
 			return Ok(ret);
 		}
