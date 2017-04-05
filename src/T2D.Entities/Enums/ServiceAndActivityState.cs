@@ -10,7 +10,7 @@ namespace T2D.Entities
 	/// Service ja Action States
 	/// ToDo: We'll propably use enum directly
 	/// </summary>
-	public class State : IEnumEntity
+	public class ServiceAndActivityState : IEnumEntity
 	{
 		public int Id { get; set; }
 		[MaxLength(256)]
@@ -23,7 +23,7 @@ namespace T2D.Entities
 	}
 
 
-	public enum StateEnum
+	public enum ServiceAndActitivityStateEnum
 	{
 		NotStarted = 1,
 		Started,

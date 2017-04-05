@@ -11,14 +11,14 @@ namespace T2D.Entities
 	{
 
 		public int Id { get; set; }
-        [StringLength(256)]
+		[StringLength(256)]
 		public string Name { get; set; }
-        [StringLength(1024)]
-        public string Pattern { get; set; }
-        [StringLength(256)]
-        public string MinValue { get; set; }
-        [StringLength(256)]
-        public string MaxValue { get; set; }
+		[StringLength(1024)]
+		public string Pattern { get; set; }
+		[StringLength(256)]
+		public string MinValue { get; set; }
+		[StringLength(256)]
+		public string MaxValue { get; set; }
 
 		public override string ToString()
 		{
@@ -27,7 +27,12 @@ namespace T2D.Entities
 	}
 	public enum AttributeEnum
 	{
-		Relations = 1,
+		//artifical "attributes"
+		Relations = 1,  // contains both ConnectTO and ConnectFROM
+		ServiceDefinition,
+		Activity,  //both assignTo "nakitus" and object "kohde" 
+
+		//attributes
 		Id,
 		Fqdn,
 		US,
@@ -42,16 +47,16 @@ namespace T2D.Entities
 		Parted_US,
 		Logging,
 		IsLocalOnly,
-        StatusId,
-		LocationTypeId,
+		StatusId,
+		LocationType,
 		Location_Timestamp,
 		Location_GPS,
 		Location_StreetAddress,
-		Location_Id,
-		PreferredLocationTypeId,
+		Location,
+		PreferredLocationType,
 		PreferredLocation_Timestamp,
 		PreferredLocation_GPS,
 		PreferredLocation_StreetAddress,
-		PreferredLocation_Id,
+		PreferredLocation,
 	};
 }

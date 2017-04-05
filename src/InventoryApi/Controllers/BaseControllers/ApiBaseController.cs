@@ -22,7 +22,7 @@ namespace InventoryApi.Controllers.BaseControllers
 		protected EnumMapper<T2D.Entities.RoleEnum, T2D.Entities.Role> RoleMapper = new EnumMapper<T2D.Entities.RoleEnum, T2D.Entities.Role>();
 		protected EnumMapper<T2D.Entities.RelationEnum, T2D.Entities.Relation> RelationMapper = new EnumMapper<T2D.Entities.RelationEnum, T2D.Entities.Relation>();
 		protected EnumMapper<T2D.Entities.AttributeEnum, T2D.Entities.Attribute> AttributeMapper = new EnumMapper<T2D.Entities.AttributeEnum, T2D.Entities.Attribute>();
-		protected EnumMapper<T2D.Entities.StateEnum, T2D.Entities.State> StateMapper = new EnumMapper<T2D.Entities.StateEnum, T2D.Entities.State>();
+		protected EnumMapper<T2D.Entities.ServiceAndActitivityStateEnum, T2D.Entities.ServiceAndActivityState> StateMapper = new EnumMapper<T2D.Entities.ServiceAndActitivityStateEnum, T2D.Entities.ServiceAndActivityState>();
 
 		protected override void Dispose(bool disposing)
 		{
@@ -77,6 +77,13 @@ namespace InventoryApi.Controllers.BaseControllers
 		//{
 		//	return dbc.Things.FirstOrDefault(t => t.Fqdn == c && t.US == u);
 		//}
+
+		[NonAction]
+		protected TThingEntity Find<TThingEntity>(Guid guid)
+			where TThingEntity : T2D.Entities.IThing
+		{
+			return dbc.Things.OfType<TThingEntity>().FirstOrDefault(t => t.Id==guid);
+		}
 
 		[NonAction]
 		protected TThingEntity Find<TThingEntity>(string c, string u)

@@ -13,6 +13,20 @@ namespace T2D.Infra
 		{
 			var tbl = modelBuilder.Entity<ThingRelation>();
 
+			tbl.
+				HasOne(e => e.FromThing)
+						.WithMany(e => e.FromThingRelations)
+						.HasForeignKey(e => e.FromThingId)
+						.OnDelete(DeleteBehavior.Restrict)
+						;
+
+			tbl.
+				HasOne(e => e.ToThing)
+						.WithMany(e => e.ToThingRelations)
+						.HasForeignKey(e => e.ToThingId)
+						.OnDelete(DeleteBehavior.Restrict)
+						;
+
 
 		}
 	}

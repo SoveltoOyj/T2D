@@ -23,24 +23,24 @@ namespace T2D.Entities
 
 
 		#region Navigation Properties
-		public List<ThingRelation> ThingRelations { get; set; }
+		public List<ThingRelation> ToThingRelations { get; set; }
+		public List<ThingRelation> FromThingRelations { get; set; }
 		public List<ThingRoleMember> ThingRoleMembers { get; set; }
 		public List<ThingRoleMember> MemeberThingRoleMembers { get; set; }
 		public List<ThingRole> ThingRoles { get; set; }
 		public List<ThingAttribute> ThingAttributes { get; set; }
-		public List<Session> Sessions { get; set; }
 		public List<SessionAccess> SessionAccesses { get; set; }
 		#endregion
 
 
 		public BaseThing()
 		{
-			ThingRelations = new List<ThingRelation>();
+			ToThingRelations = new List<ThingRelation>();
+			FromThingRelations = new List<ThingRelation>();
 			MemeberThingRoleMembers = new List<ThingRoleMember>();
 			ThingRoleMembers = new List<ThingRoleMember>();
 			ThingRoles = new List<ThingRole>();
 			ThingAttributes = new List<ThingAttribute>();
-			Sessions = new List<Session>();
 			SessionAccesses = new List<SessionAccess>();
 		}
 

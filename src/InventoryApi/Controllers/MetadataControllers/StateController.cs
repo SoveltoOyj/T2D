@@ -17,7 +17,7 @@ namespace InventoryApi.Controllers.MetadataControllers
 		public virtual IEnumerable<T2D.Model.State> Get()
 		{
 			List<T2D.Model.State> ret = new List<T2D.Model.State>();
-			foreach (var item in GetValues<T2D.Entities.StateEnum>())
+			foreach (var item in GetValues<T2D.Entities.ServiceAndActitivityStateEnum>())
 			{
 				ret.Add(new T2D.Model.State { Id = (int)item, Name = item.ToString() });
 			}
@@ -29,7 +29,7 @@ namespace InventoryApi.Controllers.MetadataControllers
 		[HttpGet("{id}")]
 		public virtual T2D.Model.State Get(int id)
 		{
-			var item = (T2D.Entities.StateEnum)id;
+			var item = (T2D.Entities.ServiceAndActitivityStateEnum)id;
 			return new T2D.Model.State { Id = (int)item, Name = item.ToString() };
 		}
 

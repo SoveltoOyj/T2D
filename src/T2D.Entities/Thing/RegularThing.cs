@@ -15,7 +15,7 @@ namespace T2D.Entities
 		public bool Logging { get; set; }
 		public bool IsLocalOnly { get; set; }
 		public int StatusId { get; set; }
-		public Status Status { get; set; }
+		public FunctionalStatus Status { get; set; }
 		public int LocationTypeId { get; set; }
 		public LocationType LocationType { get; set; }
 		public DateTime? Location_Timestamp { get; set; }

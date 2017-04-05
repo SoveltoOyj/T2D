@@ -7,26 +7,31 @@ using T2D.Helpers;
 
 namespace T2D.Entities
 {
+
+	/// <summary>
+	/// Local Sessions.
+	/// ToDo: External Sessions.
+	/// </summary>
 	public class Session : IEntity
 	{
 		public Guid Id { get; set; }
-        [StringLength(512)]
+
+		/// <summary>
+		/// Secret token, JWT?
+		/// </summary>
 		public string Token { get; set; }
 
-		//public Guid InventoryId { get; set; }
-		//public Inventory Inventory { get; set; }
-
-		public Guid ExternalSessionId { get; set; }
-		public Guid Remote_InventoryId { get; set; }
-
 		public Guid EntryPoint_ThingId { get; set; }
-		public BaseThing EntryPoint { get; set; }
 
 		public DateTime StartTime { get; set; }
 		public DateTime? EndTime { get; set; }
 
+
+		#region Navigation Properties
+		public AuthenticationThing EntryPoint { get; set; }
 		public List<SessionAccess> SessionAccesses { get; set; }
 		public List<ThingAttributeRoleSessionAccess> ThingAttributeRoleSessionAccesses { get; set; }
+		#endregion
 
 		public Session()
 		{

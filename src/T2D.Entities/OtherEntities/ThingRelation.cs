@@ -11,23 +11,21 @@ namespace T2D.Entities
 	{
 		public Guid Id { get; set; }
 
-		public Guid Thing1_Id { get; set; }
-		public BaseThing Thing1 { get; set; }
+		public Guid FromThingId { get; set; }
 
 		public int RelationId { get; set; }
-		public Relation Relation { get; set; }
 
-		[StringLength(256), Required]
-		public string Thing2_Fqdn { get; set; }
-		[StringLength(512), Required]
-		public string Thing2_US { get; set; }
-
-		public bool Thing2IsLocal { get; set; }
-// use index-search instead?
+		public Guid ToThingId { get; set; }
 
 		public override string ToString()
 		{
 			return this.ToJson();
 		}
+
+		#region Navigation Properties
+		public BaseThing FromThing { get; set; }
+		public BaseThing ToThing { get; set; }
+		public Relation Relation { get; set; }
+		#endregion
 	}
 }

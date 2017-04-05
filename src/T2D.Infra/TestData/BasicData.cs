@@ -30,7 +30,7 @@ namespace T2D.Infra.TestData
 			CommonTestData.AddEnumData(_dbc, _dbc.Relations, typeof(RelationEnum));
 			CommonTestData.AddEnumData(_dbc, _dbc.Roles, typeof(RoleEnum));
 			CommonTestData.AddEnumData(_dbc, _dbc.LocationTypes, typeof(LocationTypeEnum));
-			CommonTestData.AddEnumData(_dbc, _dbc.Status, typeof(StatusEnum));
+			CommonTestData.AddEnumData(_dbc, _dbc.Status, typeof(FunctionalStatusEnum));
 
 			//attributes
 			AddAttributeData(_dbc, typeof(AttributeEnum));
@@ -43,7 +43,7 @@ namespace T2D.Infra.TestData
 			{
 				Id = CommonTestData.Next(),
 				Fqdn = CommonTestData.Fqdn,
-				Name = "Sovelto"
+				Title = "Sovelto"
 			};
 			_dbc.Inventories.Add(i1);
 			_dbc.SaveChanges();
@@ -154,25 +154,22 @@ namespace T2D.Infra.TestData
 			_dbc.ThingRelations.Add(new ThingRelation
 			{
 				Id = CommonTestData.Next(),
-				Thing1_Id = M100.Id,
-				Thing2_Fqdn = T1.Fqdn,
-				Thing2_US = T1.US,
+				FromThingId = M100.Id,
+				ToThingId = T1.Id,
 				RelationId = (int)RelationEnum.Belongings
 			});
 			_dbc.ThingRelations.Add(new ThingRelation
 			{
 				Id = CommonTestData.Next(),
-				Thing1_Id = M100.Id,
-				Thing2_Fqdn = T1.Fqdn,
-				Thing2_US = T1.US,
+				FromThingId = M100.Id,
+				ToThingId = T1.Id,
 				RelationId = (int)RelationEnum.RoleIn
 			});
 			_dbc.ThingRelations.Add(new ThingRelation
 			{
 				Id = CommonTestData.Next(),
-				Thing1_Id = T1.Id,
-				Thing2_Fqdn = T2.Fqdn,
-				Thing2_US = T2.US,
+				FromThingId = T1.Id,
+				ToThingId = T2.Id,
 				RelationId = (int)RelationEnum.ContainedBy
 			});
 

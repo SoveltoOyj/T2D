@@ -7,17 +7,21 @@ using T2D.Helpers;
 
 namespace T2D.Entities
 {
-    public class SessionAccess:IEntity
-    {
-    public Guid Id { get; set; }
+	public class SessionAccess : IEntity
+	{
+		public Guid Id { get; set; }
+
 		public Guid SessionId { get; set; }
-		public Session Session { get; set; }
 
-		[Required]
 		public Guid ThingId { get; set; }
-		public BaseThing Thing { get; set; }
-
+	
 		public int RoleId { get; set; }
+
+		#region Navigation Properties
+		public Session Session { get; set; }
+		public BaseThing Thing { get; set; }
 		public Role Role { get; set; }
+
+		#endregion
 	}
 }

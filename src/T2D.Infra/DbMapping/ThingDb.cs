@@ -25,6 +25,7 @@ namespace T2D.Infra
 				.HasValue<WalletThing>(value++)
 				;
 
+			
 			modelBuilder.Entity<AuthenticationThing>().HasOne(e => e.PersonThing)
 				.WithMany()
 				.HasForeignKey(e => e.PersonThingId)
@@ -48,7 +49,6 @@ namespace T2D.Infra
 							.HasForeignKey(e => e.PreferredLocationThingId)
 							.OnDelete(DeleteBehavior.Restrict)
 							;
-
 
 
 			modelBuilder.Entity<GenericThing>().HasOne(e => e.PartedThing)

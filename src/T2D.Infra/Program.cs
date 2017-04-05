@@ -20,7 +20,7 @@ namespace T2D.Infra
 				Console.WriteLine("1 = Create new T2D database (existing db will be deleted)");
 				Console.WriteLine("2 = Create new T2D database (existing db will be deleted) and insert base data");
 				Console.WriteLine("3 = Insert Base data");
-				Console.WriteLine("4 = Insert extra data 1");
+				Console.WriteLine("4 = Print Data");
 				Console.WriteLine("5 = Insert ServiceRequest data");
 				Console.WriteLine("Other key => cancel");
 				var ki = Console.ReadKey();
@@ -42,7 +42,7 @@ namespace T2D.Infra
 						PrintData();
 						break;
 					case 4:
-						InsertExtraData(dbc);
+						PrintData();
 						break;
 					case 5:
 						new TestData.Service_Action_TestData(dbc).DoIt();
@@ -64,77 +64,6 @@ namespace T2D.Infra
 
 		private static void InsertExtraData(EfContext dbc)
 		{
-			Console.WriteLine("\nCreating Extra data ...");
-			//MyCar
-			//MyTV
-			string fqdn = "inv1.sovelto.fi";
-			//AuthenticationThings
-			var M100 = TestData.CommonTestData.FindByThingId(dbc, fqdn, "M100");
-			if (M100 == null)
-				throw new Exception("Can't find M100");
-
-			//things
-			dbc.RegularThings.Add(new RegularThing
-			{
-				Fqdn = fqdn,
-				US = "S1",
-				Title = "MyCar",
-				Created = new DateTime(2015, 3, 1),
-				IsLocalOnly = true,
-				StatusId = 1,
-				LocationTypeId = 1,
-				Logging = true,
-				Preferred_LocationTypeId = 1,
-				Modified = new DateTime(2016, 3, 23),
-				Published = new DateTime(2016, 4, 13),
-				CreatorThingId = M100.Id,
-			});
-			dbc.SaveChanges();
-			var S1 = TestData.CommonTestData.FindByThingId(dbc, fqdn, "S1");
-
-			dbc.RegularThings.Add(new RegularThing
-			{
-				Fqdn = fqdn,
-				US = "S2",
-				Title = "MyTV",
-				Created = new DateTime(2015, 3, 1),
-				IsLocalOnly = true,
-				StatusId = 1,
-				LocationTypeId = 2,
-				Location_Gps = "(123.0, 55.9)",
-				Logging = true,
-				Preferred_LocationTypeId = 1,
-				Modified = new DateTime(2014, 3, 3),
-				Published = new DateTime(2012, 4, 13)
-			});
-			dbc.SaveChanges();
-			var S2 = TestData.CommonTestData.FindByThingId(dbc, fqdn, "S2");
-
-
-			//ThingRoleMember
-
-			//add owner role to S1 and S2 for M100
-			foreach (var thing in new BaseThing[] { S1, S2 })
-			{
-				var tr = new ThingRole { RoleId = (int)RoleEnum.Owner, ThingId = thing.Id };
-				dbc.ThingRoles.Add(tr);
-				var trm = new ThingRoleMember { ThingId = M100.Id, ThingRoleId = tr.Id };
-				dbc.ThingRoleMembers.Add(trm);
-				dbc.SaveChanges();
-			}
-
-			//add relation to S1 and S2 from M100
-			foreach (var thing in new BaseThing[] { S1, S2 })
-			{
-				dbc.ThingRelations.Add(new ThingRelation
-				{
-					Thing1_Id = M100.Id,
-					Thing2_Fqdn = thing.Fqdn,
-					Thing2_US = thing.US,
-					RelationId = (int)RelationEnum.Belongings
-				});
-				dbc.SaveChanges();
-			}
 		}
 
 
@@ -155,13 +84,20 @@ namespace T2D.Infra
 					Console.WriteLine($"  {item.US}");
 				}
 
+				var q = dbc.Things
+									.Include(e => e.ToThingRelations)
+									   .ThenInclude(e => e.Relation)
+									.Include(e=>e.ToThingRelations)
+									   .ThenInclude(e => e.ToThing)
+									;
+
 				Console.WriteLine("\nEager Loading");
-				foreach (var item in dbc.Things.Include(e => e.ThingRelations).ThenInclude(e => e.Relation))
+				foreach (var item in q)
 				{
 					Console.WriteLine($"  {item.US}");
-					foreach (var tr in item.ThingRelations)
+					foreach (var tr in item.ToThingRelations)
 					{
-						Console.WriteLine($"      Relation to: {tr.Thing2_Fqdn}/{tr.Thing2_US} Relation:{tr.Relation}");
+						Console.WriteLine($"      Relation to: {tr.ToThing.Fqdn}/{tr.ToThing.US} Relation:{tr.Relation}");
 					}
 					Console.WriteLine();
 				}

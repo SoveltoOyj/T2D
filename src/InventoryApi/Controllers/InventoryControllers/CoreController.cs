@@ -105,7 +105,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 			T2D.Entities.BaseThing thing =
 				this.Find<T2D.Entities.BaseThing>(value.ThingId)
 				.Include(t => t.ThingAttributes)
-				.Include(t => t.ThingRelations)
+				.Include(t => t.ToThingRelations)
 				.FirstOrDefault()
 				;
 
@@ -122,7 +122,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 			var ret = new GetRelationsResponse();
 			ret.RelationThings = new List<GetRelationsResponse.RelationsThings>();
 
-			foreach (var group in thing.ThingRelations.GroupBy(tr=>tr.RelationId))
+			foreach (var group in thing.ToThingRelations.GroupBy(tr=>tr.RelationId))
 			{
 				var rt = new GetRelationsResponse.RelationsThings
 				{
@@ -131,8 +131,10 @@ namespace InventoryApi.Controllers.InventoryControllers
 				};
 				foreach(var th in group)
 				{
-					var thingIdTitle = new GetRelationsResponse.RelationsThings.IdTitle { ThingId = ThingIdHelper.Create(th.Thing2_Fqdn, th.Thing2_US) };
-						var thing2 = this.Find<T2D.Entities.BaseThing>(th.Thing2_Fqdn, th.Thing2_US);
+					var thing2 = this.Find<T2D.Entities.BaseThing>(th.ToThingId);
+					var thingIdTitle = new GetRelationsResponse.RelationsThings.IdTitle {
+						ThingId = ThingIdHelper.Create(thing2.Fqdn, thing2.US)
+					};
 						if (thing2 != null && thing2 is IInventoryThing)
 							thingIdTitle.Title = ((IInventoryThing)thing2).Title;
 					rt.Things.Add(thingIdTitle);

@@ -11,11 +11,11 @@ namespace T2D.Entities
 	/// Relation names. Static list.
 	/// ThingRelation will be read only from ThingId1 -> ThingId2, not vice versa.
 	/// </summary>
-	public class Relation:IEnumEntity
+	public class Relation : IEnumEntity
 	{
 		public int Id { get; set; }
-        [MaxLength(256)]
-        public string Name { get; set; }
+		[MaxLength(256)]
+		public string Name { get; set; }
 
 		public override string ToString()
 		{
@@ -31,7 +31,7 @@ namespace T2D.Entities
 		Inherits,
 		Orginates,
 		Belongings,
-        WalletIn,
-        HasAlias,
-	}	;
+		WalletIn,
+		HasAlias,
+	};
 }

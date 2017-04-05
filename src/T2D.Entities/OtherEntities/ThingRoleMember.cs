@@ -11,17 +11,18 @@ namespace T2D.Entities
     {
 		public Guid Id { get; set; }
 
-		[Required]
 		public Guid ThingId { get; set; }
-		public BaseThing Thing { get; set; }
 
-		[Required]
 		public Guid ThingRoleId { get; set; }
-		public ThingRole ThingRole { get; set; }
 
 		public override string ToString()
 		{
 			return this.ToJson();
 		}
+
+		#region Navigation Properties
+		public BaseThing Thing { get; set; }
+		public ThingRole ThingRole { get; set; }
+		#endregion
 	}
 }

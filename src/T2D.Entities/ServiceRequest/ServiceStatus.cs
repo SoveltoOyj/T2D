@@ -19,7 +19,7 @@ namespace T2D.Entities
 		public BaseThing Thing { get; set; }
 
 
-		public StateEnum State{ get; set; }
+		public ServiceAndActitivityStateEnum State{ get; set; }
 
 		public Guid SessionId { get; set; }
 
