@@ -26,6 +26,8 @@ namespace InventoryApi.Controllers.InventoryControllers
 		/// </summary>
 		/// <param name="value">Request argument</param>
 		/// <returns>Available roles.</returns>
+		/// <response code="200">Returns available roles.</response>
+		/// <response code="400">Bad request, like Thing do not exists or not enough priviledges.</response>
 		[HttpPost, ActionName("QueryMyRoles")]
 		[Produces(typeof(QueryMyRolesResponse))]
 		public IActionResult QueryMyRoles([FromBody]QueryMyRolesRequest value)
@@ -164,9 +166,9 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 			GetAttributeResponse ret = new GetAttributeResponse
 			{
-				Attribute = attribute.Title,
+				Attribute = attribute.Name,
 				TimeStamp = DateTime.UtcNow,
-				Value=GetPropertyValue(thing,attribute.Title)
+				Value=GetPropertyValue(thing,attribute.Name)
 			};
 			return Ok(ret);
 		}

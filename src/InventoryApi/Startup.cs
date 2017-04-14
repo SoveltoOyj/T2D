@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.Swagger.Model;
 using Microsoft.Extensions.PlatformAbstractions;
 
 namespace InventoryApi
@@ -34,20 +33,19 @@ namespace InventoryApi
 			// Add framework services.
 			services.AddMvc();
 
-			services.AddSwaggerGen();
-			services.ConfigureSwaggerGen(options =>
+			services.AddSwaggerGen(c =>
 			{
-				options.SingleApiVersion(new Info
+				c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info
 				{
+					Title = "ThingToData",
 					Version = "v1",
-					Title = "T2D Inventory API",
-					Description = "Thing to Data Inventory Api",
-					TermsOfService = "NA",
-					Contact = new Contact() { Name = "T2D Implementation Team", Email = "ahti.haukilehto@sovelto.fi", Url = "https://sovelto.fi" },
+					Contact = new Swashbuckle.AspNetCore.Swagger.Contact { Email = "ahti.haukilehto@sovelto.fi", Name = "Sovelto T2D Team" },
+					Description = "Thing to data reference implementation",
 				});
-				options.DescribeAllEnumsAsStrings();
-				options.IncludeXmlComments(System.IO.Path.Combine(basePath, "InventoryApi.xml"));
-				options.IncludeXmlComments(System.IO.Path.Combine(basePath, "T2D.Model.xml"));
+				c.DescribeAllParametersInCamelCase();
+				c.DescribeAllEnumsAsStrings();
+				c.IncludeXmlComments(System.IO.Path.Combine(basePath, "InventoryApi.xml"));
+				c.IncludeXmlComments(System.IO.Path.Combine(basePath, "T2D.Model.xml"));
 			});
 		}
 
@@ -62,7 +60,11 @@ namespace InventoryApi
 			}
 			app.UseMvc();
 			app.UseSwagger();
-			app.UseSwaggerUi();
+			app.UseSwaggerUI(c =>
+			{
+				c.SwaggerEndpoint("/swagger/v1/swagger.json", "ThingToData API V1");
+			});
+
 			app.UseDefaultFiles();
 			app.UseStaticFiles();
 		}
