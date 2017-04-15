@@ -21,4 +21,12 @@ namespace T2D.Entities
 		int Id { get; set; }
 		string Name { get; set; }
 	}
+
+	//entities that have Modified and Created properties
+	// these are automatically set by infra
+	public interface IAuditableEntity
+	{
+		DateTime Created { get; set; }
+		DateTime Modified { get; set; }
+	}
 }

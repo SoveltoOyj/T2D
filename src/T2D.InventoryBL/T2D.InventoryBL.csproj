@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+		<TargetFramework>netcoreapp1.1</TargetFramework>
     <AssemblyName>T2D.InventoryBL</AssemblyName>
     <PackageId>T2D.InventoryBL</PackageId>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\T2D.Entities\T2D.Entities.csproj" />
+    <ProjectReference Include="..\T2D.Infra\T2D.Infra.csproj" />
     <ProjectReference Include="..\T2D.Model\T2D.Model.csproj" />
   </ItemGroup>
 

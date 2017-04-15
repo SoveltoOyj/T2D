@@ -21,12 +21,18 @@ namespace InventoryApi.Controllers.InventoryControllers
 		{
 		}
 
+		/// <summary>
+		/// Enter authenticated session.
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <response code="200">A new Session was created and its id is returned.</response>
+		/// <response code="400">Bad request, like Thing Id is not OK.</response>
 		[HttpPost, ActionName("EnterAuthenticatedSession")]
 		[Produces(typeof(AuthenticationResponse))]
 		public IActionResult EnterAuthenticatedSession([FromBody]AuthenticationRequest value)
 		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
 			// mock, AuthenticationThing is created if not exists
-			if (string.IsNullOrWhiteSpace(value.ThingId)) value.ThingId = "inv1.sovelto.fi/Teemu Testaaja";
 			var T0 = dbc.AuthenticationThings.SingleOrDefault(t => t.Fqdn == ThingIdHelper.GetFQDN(value.ThingId) && t.US == ThingIdHelper.GetUniqueString(value.ThingId));
 			if (T0 == null)
 			{

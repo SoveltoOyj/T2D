@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
@@ -54,6 +55,22 @@ namespace T2D.Infra
 		#endregion
 
 
+		public override int SaveChanges()
+		{
+			var modifiedEntries = ChangeTracker.Entries<IAuditableEntity>()
+					 .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+
+			foreach (EntityEntry<IAuditableEntity> entry in modifiedEntries)
+			{
+				entry.Entity.Modified = DateTime.UtcNow;
+
+				if (entry.State == EntityState.Added)
+				{
+					entry.Entity.Created = DateTime.Now;
+				}
+			}
+			return base.SaveChanges();
+		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{

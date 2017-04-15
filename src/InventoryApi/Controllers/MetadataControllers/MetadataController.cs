@@ -10,11 +10,12 @@ using System.IO;
 using System.Reflection;
 using T2D.InventoryBL.Metadata;
 using T2D.Model;
+using System.ComponentModel.DataAnnotations;
 
 namespace InventoryApi.Controllers.MetadataControllers
 {
 	[Route("api/[controller]/[Action]")]
-	public class MetadataController : ApiBaseController
+	public class MetadataController : ApiBaseControllerOld
 	{
 
 		private readonly IHostingEnvironment _env;
@@ -45,8 +46,9 @@ namespace InventoryApi.Controllers.MetadataControllers
 		/// <response code="400">Version is not correct.</response>
 		[HttpGet(), ActionName("ApiCompatibility")]
 		[Produces(typeof(List<string>))]
-		public IActionResult ApiCompatibility(string version)
+		public IActionResult ApiCompatibility([Required]string version)
 		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
 			if (string.IsNullOrWhiteSpace(version)) return BadRequest("version is empty or null.");
 
 			List<string> ret = new List<string>
@@ -76,11 +78,12 @@ namespace InventoryApi.Controllers.MetadataControllers
 		/// <returns>List on enum values.</returns>
 		/// <param name="enumName">Name of an enum.</param>
 		/// <response code="200">Returns enum values.</response>
-		/// <response code="200">If for example enumName is null or not an enum name.</response>
+		/// <response code="400">If for example enumName is null or not an enum name.</response>
 		[HttpGet(), ActionName("EnumValues")]
 		[Produces(typeof(List<ModelEnum>))]
-		public IActionResult EnumValues([FromQuery] string enumName)
+		public IActionResult EnumValues([FromQuery] [Required] string enumName)
 		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
 			if (string.IsNullOrWhiteSpace(enumName)) return BadRequest("Enum name is empty or null.");
 			var enumBL = new EnumBL();
 			if (!enumBL.ApiEnumNames().Contains(enumName)) return BadRequest($"{enumName} is not a valid EnumName.");

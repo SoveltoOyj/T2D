@@ -8,7 +8,7 @@ using T2D.Model.Helpers;
 
 namespace InventoryApi.Controllers.BaseControllers
 {
-	public class CrudThingController<TThingEntity,TThingModel> : ApiBaseController
+	public class CrudThingController<TThingEntity,TThingModel> : ApiBaseControllerOld
 		where TThingEntity: class, T2D.Entities.IThing, new()
 		where TThingModel: class, T2D.Model.IThing, new()
 	{

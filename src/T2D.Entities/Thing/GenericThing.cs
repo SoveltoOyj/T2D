@@ -9,7 +9,7 @@ namespace T2D.Entities
 	/// <summary>
 	/// Base Class of all real Things including ArchetypeThing
 	/// </summary>
-	public class GenericThing : BaseThing, IInventoryThing
+	public class GenericThing : BaseThing, IInventoryThing, IAuditableEntity
 	{
 		[StringLength(1024)]
 		public string Title { get; set; }

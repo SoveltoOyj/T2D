@@ -20,7 +20,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 	/// Core 1 operations, currently only MOCS
 	/// </summary>
 	[Route("api/inventory/[controller]/[action]")]
-	public class ServiceController : ApiBaseController
+	public class ServiceController : ApiBaseControllerOld
 	{
 		[HttpPost, ActionName("GetServices")]
 		[Produces(typeof(GetServicesResponse))]
