@@ -6,14 +6,14 @@ using System.Text;
 using T2D.Entities;
 using T2D.Infra;
 
-namespace T2D.InventoryBL.Thing
+namespace T2D.InventoryBL
 {
 	public class SessionBL
 	{
 		private readonly EfContext _dbc;
-		private Session _session;
+		public Session Session {get; private set;}
 
-		public static SessionBL CreateSessionBL(EfContext dbc, string sessionId)
+		public static SessionBL CreateSessionBLForExistingSession(EfContext dbc, string sessionId)
 		{
 			SessionBL ret = new SessionBL(dbc);
 
@@ -26,11 +26,30 @@ namespace T2D.InventoryBL.Thing
 				.Where(s => s.Id == guid)
 				;
 
-			ret._session = q.SingleOrDefault();
-			if (ret._session == null) return null;
+			ret.Session = q.SingleOrDefault();
+			if (ret.Session == null) return null;
 
 			return ret;
 		}
+
+		public static SessionBL CreateSessionBLForNewSession(EfContext dbc, Guid authenticatedThingId)
+		{
+			SessionBL ret = new SessionBL(dbc);
+
+			var newSession = new Session
+			{
+				EntryPoint_ThingId = authenticatedThingId,
+				StartTime = DateTime.UtcNow,
+				Token="We'll see what this secret token will be."
+			};
+
+			dbc.Sessions.Add(newSession);
+			dbc.SaveChanges();
+			ret.Session = newSession;
+			return ret;
+		}
+
+
 
 		private SessionBL(EfContext dbc)
 		{
@@ -41,7 +60,7 @@ namespace T2D.InventoryBL.Thing
 		{
 			_dbc.SessionAccesses.Add(new SessionAccess
 			{
-				SessionId=_session.Id,
+				SessionId=Session.Id,
 				RoleId=roleId,
 				ThingId = thingId,
 			});

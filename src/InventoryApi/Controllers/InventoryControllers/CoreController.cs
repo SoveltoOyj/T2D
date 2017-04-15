@@ -185,7 +185,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 		public IActionResult CreateLocalThing([FromBody]CreateLocalThingRequest value)
 		{
 			if (!ModelState.IsValid) return BadRequest(ModelState);
-			SessionBL sessionBl = SessionBL.CreateSessionBL(dbc, value.Session);
+			SessionBL sessionBl = SessionBL.CreateSessionBLForExistingSession(dbc, value.Session);
 			if (sessionBl == null) return BadRequest("Session is not correct.");
 
 			ThingBL thingBl = ThingBL.CreateThingBL(dbc, sessionBl);

@@ -32,7 +32,7 @@ namespace T2D.InventoryBL.Thing
 			errorMsg = "";
 
 			//Check that omnipotent_Thing is available
-			BaseThing omnipotent = Find<BaseThing>(omnipotent_ThingID);
+			BaseThing omnipotent = _dbc.FindThing<BaseThing>(omnipotent_ThingID);
 			if (omnipotent == null)
 			{
 				errorMsg = $"Can't find omnipotent thing '{omnipotent_ThingID}'";
@@ -40,7 +40,7 @@ namespace T2D.InventoryBL.Thing
 			}
 
 			//Check that new thingID is unique 
-			if (Find<BaseThing>(new_thingID) != null)
+			if (_dbc.FindThing<BaseThing>(new_thingID) != null)
 			{
 				errorMsg = $"new ThingID'{new_thingID}' is not unique.";
 				return false;
@@ -50,10 +50,11 @@ namespace T2D.InventoryBL.Thing
 			switch (thingType)
 			{
 				case ThingType.RegularThing:
-					newThing = new RegularThing {
-						IsGpsPublic=false,
-						IsLocalOnly=true,
-						Logging=false,
+					newThing = new RegularThing
+					{
+						IsGpsPublic = false,
+						IsLocalOnly = true,
+						Logging = false,
 					};
 					break;
 				case ThingType.ArchetypeThing:
@@ -93,21 +94,17 @@ namespace T2D.InventoryBL.Thing
 		}
 
 
-		public T Find<T>(string thingId)
-			where T : class, T2D.Entities.IThing
-		{
-			return _dbc.Things.SingleOrDefault(t=>t.Fqdn == ThingIdHelper.GetFQDN(thingId) && t.US== ThingIdHelper.GetUniqueString(thingId)) as T;
-		}
 
 		public ThingRoleMember AddRoleMember(Guid toId, Guid fromId, int roleId)
 		{
 			//todo: security Check
 
 			//create new ThingRole if not exists
-			var thingRole= _dbc.ThingRoles.SingleOrDefault(tr => tr.ThingId == toId && tr.RoleId == roleId);
-			if (thingRole==null)
+			var thingRole = _dbc.ThingRoles.SingleOrDefault(tr => tr.ThingId == toId && tr.RoleId == roleId);
+			if (thingRole == null)
 			{
-				thingRole = new ThingRole {
+				thingRole = new ThingRole
+				{
 					Logging = false,
 					RoleId = roleId,
 					ThingId = toId,
@@ -116,7 +113,8 @@ namespace T2D.InventoryBL.Thing
 			}
 
 			// add ThingRoleMember
-			var thingRoleMember = new ThingRoleMember {
+			var thingRoleMember = new ThingRoleMember
+			{
 				ThingId = fromId,
 				ThingRole = thingRole,
 			};
