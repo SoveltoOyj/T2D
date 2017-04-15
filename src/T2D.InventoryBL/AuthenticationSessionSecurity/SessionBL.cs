@@ -13,6 +13,10 @@ namespace T2D.InventoryBL
 		private readonly EfContext _dbc;
 		public Session Session {get; private set;}
 
+		private SessionBL(EfContext dbc)
+		{
+			_dbc = dbc;
+		}
 		public static SessionBL CreateSessionBLForExistingSession(EfContext dbc, string sessionId)
 		{
 			SessionBL ret = new SessionBL(dbc);
@@ -32,13 +36,19 @@ namespace T2D.InventoryBL
 			return ret;
 		}
 
-		public static SessionBL CreateSessionBLForNewSession(EfContext dbc, Guid authenticatedThingId)
+		/// <summary>
+		/// Create a new SessionBL (and Session Entity also).
+		/// </summary>
+		/// <param name="dbc"></param>
+		/// <param name="authenticatedThingId">If Null, this will be anonymous session!</param>
+		/// <returns>SessionBL</returns>
+		public static SessionBL CreateSessionBLForNewSession(EfContext dbc, Guid? authenticatedThingId)
 		{
 			SessionBL ret = new SessionBL(dbc);
 
 			var newSession = new Session
 			{
-				EntryPoint_ThingId = authenticatedThingId,
+				EntryPoint_ThingId = authenticatedThingId==null? new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1):authenticatedThingId.Value ,
 				StartTime = DateTime.UtcNow,
 				Token="We'll see what this secret token will be."
 			};
@@ -51,10 +61,6 @@ namespace T2D.InventoryBL
 
 
 
-		private SessionBL(EfContext dbc)
-		{
-			_dbc = dbc;
-		}
 
 		public bool AddSessionAccess(int roleId, Guid thingId)
 		{

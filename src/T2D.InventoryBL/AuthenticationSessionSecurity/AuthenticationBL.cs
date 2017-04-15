@@ -29,7 +29,7 @@ namespace T2D.InventoryBL
 			errMsg = "";
 
 			// mock, AuthenticationThing is created if not exists
-			var T0 = _dbc.FindThing<AuthenticationThing>(thingId);
+			var T0 = _dbc.FindThing<BaseThing>(thingId);
 			if (T0 == null)
 			{
 				T0 = new T2D.Entities.AuthenticationThing
@@ -38,13 +38,26 @@ namespace T2D.InventoryBL
 					US = ThingIdHelper.GetUniqueString(thingId),
 					Title = $"Automatically created User {ThingIdHelper.GetUniqueString(thingId)}",
 				};
-				_dbc.AuthenticationThings.Add(T0);
+				_dbc.AuthenticationThings.Add(T0 as AuthenticationThing);
 				_dbc.SaveChanges();
+			}
+			else if (!(T0 is AuthenticationThing))
+			{
+				errMsg = $"Authentication Thing {thingId} is not an authentication thing.";
+				return null;
 			}
 
 			SessionBL sessionBL = SessionBL.CreateSessionBLForNewSession(_dbc, T0.Id);
 			return sessionBL;
 		}
 
+		public SessionBL EnterAnonymousSession(out string errMsg)
+		{
+			errMsg = "";
+
+			SessionBL sessionBL = SessionBL.CreateSessionBLForNewSession(_dbc, null);
+			return sessionBL;
+
+		}
 	}
 }

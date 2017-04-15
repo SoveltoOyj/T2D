@@ -24,6 +24,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 		/// <summary>
 		/// Enter authenticated session.
+		/// Note: this is MOCK version, enter will allways succeed. New Authenticated user will be created if it does not exists.
 		/// </summary>
 		/// <param name="value">Request argument</param>
 		/// <response code="200">A new Session was created and its id is returned.</response>
@@ -32,6 +33,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 		[Produces(typeof(AuthenticationResponse))]
 		public IActionResult EnterAuthenticatedSession([FromBody]AuthenticationRequest value)
 		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
 			string errMsg = null;
 			AuthenticationBL authenticationBL = AuthenticationBL.CreateAuthenticationBL(dbc);
 			var sessionBL = authenticationBL.EnterAuthenticatedSession(out errMsg, value.ThingId, value.AuthenticationType);
@@ -44,22 +46,23 @@ namespace InventoryApi.Controllers.InventoryControllers
 			return Ok(ret);
 		}
 
+		/// <summary>
+		/// Enter Anonymous session.
+		/// </summary>
+		/// <response code="200">A new Session was created and its id is returned.</response>
 		[HttpPost, ActionName("EnterAnonymousSession")]
 		[Produces(typeof(AuthenticationResponse))]
 		public IActionResult EnterAnonymousSession()
 		{
-			//Create SessionEntity
-			var session = new Session
-			{
-				EntryPoint_ThingId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-				StartTime = DateTime.UtcNow,
-			};
-			dbc.Sessions.Add(session);
-			dbc.SaveChanges();
+			if (!ModelState.IsValid) return BadRequest(ModelState);
+			string errMsg = null;
+			AuthenticationBL authenticationBL = AuthenticationBL.CreateAuthenticationBL(dbc);
+			var sessionBL = authenticationBL.EnterAnonymousSession(out errMsg);
+			if (sessionBL == null) return BadRequest(errMsg);
 
 			var ret = new AuthenticationResponse
 			{
-				Session = session.Id.ToString(),
+				Session = sessionBL.Session.Id.ToString(),
 			};
 			return Ok(ret);
 
