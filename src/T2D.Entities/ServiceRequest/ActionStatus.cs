@@ -23,7 +23,7 @@ namespace T2D.Entities
 		public DateTime AddedAt { get; set; }
 		public DateTime? CompletedAt { get; set; }
 
-		public ServiceAndActitivityStateEnum State { get; set; }
+		public ServiceAndActitivityState State { get; set; }
 
 	}
 

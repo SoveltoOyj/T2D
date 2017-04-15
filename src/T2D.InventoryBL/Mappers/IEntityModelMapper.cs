@@ -4,7 +4,7 @@ using T2D.Model;
 
 namespace T2D.InventoryBL
 {
-	public interface IMapper<TEntity, TModel>
+	public interface IEntityModelMapper<TEntity, TModel>
 		where TEntity : class, T2D.Entities.IEntity
 		where TModel : class, T2D.Model.IModel
 	{

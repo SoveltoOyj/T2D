@@ -7,10 +7,10 @@ using T2D.Helpers;
 
 namespace T2D.Entities
 {
-	public class FunctionalStatus:IEnumEntity
+	public class FunctionalStatus : IEnumEntity
 	{
 		public int Id { get; set; }
-        [MaxLength(256)]
+		[MaxLength(256)]
 		public string Name { get; set; }
 		public override string ToString()
 		{
@@ -22,14 +22,14 @@ namespace T2D.Entities
 
 	public enum FunctionalStatusEnum
 	{
-	 NormalOperational = 1,
-     Template,
-     DestroyedOrDeleted,
-     Planned,
-     WaitingForService,
-     Malfunctionioning,
-     Missing,
-     Danger,
-     AvailableForRentOrSale,
+		NormalOperational = 1,
+		Template,
+		DestroyedOrDeleted,
+		Planned,
+		WaitingForService,
+		Malfunctionioning,
+		Missing,
+		Danger,
+		AvailableForRentOrSale,
 	};
 }

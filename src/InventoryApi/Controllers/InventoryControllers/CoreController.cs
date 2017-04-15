@@ -173,5 +173,34 @@ namespace InventoryApi.Controllers.InventoryControllers
 			return Ok(ret);
 		}
 
+
+		/// <summary>
+		/// Create a new local Thing.
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <response code="200">It new Thing was created.</response>
+		/// <response code="400">Bad request, like Thing Id is not Unique or not enough priviledges.</response>
+		[HttpPost, ActionName("CreateLocalThing")]
+		public IActionResult CreateLocalThing([FromBody]CreateLocalThingRequest value)
+		{
+			var session = this.GetSession(value.Session, true);
+
+			T2D.Entities.BaseThing omnipotentThing =
+				this.Find<T2D.Entities.BaseThing>(value.OmnipotentThingId)
+				.FirstOrDefault()
+				;
+
+			if (omnipotentThing == null)
+				return BadRequest($"Ominpotent Thing '{value.OmnipotentThingId}' do not exists.");
+
+			//TODO: check that session has right to 
+			if (!AttributeSecurity.QueryMyRolesRight(omnipotentThing, session))
+				return BadRequest($"Not enough priviledges to query roles for thing {value.ThingId}.");
+
+
+
+			return Ok();
+		}
+
 	}
 }

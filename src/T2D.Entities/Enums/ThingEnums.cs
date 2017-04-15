@@ -10,4 +10,6 @@ namespace T2D.Entities
 		Template,
 		Archieved,
 	}
+
+
 }

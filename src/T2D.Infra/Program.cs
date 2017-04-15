@@ -43,7 +43,7 @@ namespace T2D.Infra
 						PrintData();
 						break;
 					case 4:
-						PrintData();
+						PrintData2();
 						break;
 					case 5:
 						new TestData.Service_Action_TestData(dbc).DoIt();
@@ -67,8 +67,28 @@ namespace T2D.Infra
 		{
 		}
 
+		private static void PrintData2()
+		{
+			using (var dbc = new EfContext())
+			{
+				var q = dbc.Attributes
+			.Where(a => a.AttributeType == T2D.Entities.AttributeType.T2DAttribute)
+			.ToList()
+			.Select(a => new { Id=0, GuidArray = a.Id.ToByteArray(), Name = a.Title })
+			;
 
-		
+				foreach (var item in q)
+				{
+					Array.Reverse(item.GuidArray);
+					Console.WriteLine(BitConverter.ToInt32(item.GuidArray, 0).ToString());
+				}
+				var x = q.ElementAt(1).Id;
+
+//							.Select(a => new { Id = BitConverter.ToInt32(a.Id.ToByteArray(), 12), Name = a.Title })
+
+			}
+		}
+
 		private static void PrintData()
 		{
 			using (var dbc = new EfContext())

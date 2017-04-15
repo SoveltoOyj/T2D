@@ -84,7 +84,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 				ServiceDefinitionId = serviceDefinition.Id,
 				SessionId = session.Id,
 				StartedAt = DateTime.UtcNow,
-				State = ServiceAndActitivityStateEnum.NotStarted,
+				State = ServiceAndActitivityState.NotStarted,
 				ThingId = session.EntryPoint_ThingId,
 				CompletedAt=null,
 			};
@@ -98,7 +98,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 					ActionDefinitionId = item.Id,
 					DeadLine = ss.StartedAt.Add(item.TimeSpan),
 					ServiceStatus = ss,
-					State = ServiceAndActitivityStateEnum.NotStarted,
+					State = ServiceAndActitivityState.NotStarted,
 					AddedAt = DateTime.UtcNow,
 					CompletedAt=null,
 				};
@@ -299,7 +299,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 			if (actionStatus == null) return BadRequest($"Action '{value.ActionId}' do not exists.");
 
-			ServiceAndActitivityStateEnum newState;
+			ServiceAndActitivityState newState;
 			if (Enum.TryParse(value.State, out newState))
 			{
 				UpdateServiceRequestState(actionStatus, newState);
@@ -313,7 +313,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 		}
 
 		[NonAction]
-		private ServiceStatus UpdateServiceRequestState(ActionStatus actionStatus, ServiceAndActitivityStateEnum? newActionState)
+		private ServiceStatus UpdateServiceRequestState(ActionStatus actionStatus, ServiceAndActitivityState? newActionState)
 		{
 
 			var thisServiceStatus = dbc.ServiceStatuses
@@ -339,41 +339,41 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 				foreach (var item in q)
 				{
-					item.State = ServiceAndActitivityStateEnum.NotDoneInTime;
+					item.State = ServiceAndActitivityState.NotDoneInTime;
 				}
 				if (q.Count() > 0)
 				{
-					thisServiceStatus.State = ServiceAndActitivityStateEnum.NotDoneInTime;
+					thisServiceStatus.State = ServiceAndActitivityState.NotDoneInTime;
 				}
 			}
 
-			List<ServiceAndActitivityStateEnum> states;
+			List<ServiceAndActitivityState> states;
 			// check if it service has been started
-			if (thisServiceStatus.State == ServiceAndActitivityStateEnum.NotStarted)
+			if (thisServiceStatus.State == ServiceAndActitivityState.NotStarted)
 			{
-				states = new List<ServiceAndActitivityStateEnum>
+				states = new List<ServiceAndActitivityState>
 				{
-					ServiceAndActitivityStateEnum.Done, ServiceAndActitivityStateEnum.Started,
+					ServiceAndActitivityState.Done, ServiceAndActitivityState.Started,
 				};
 				var q = thisServiceStatus.ActionStatuses
 					.Where(acs => states.Contains(acs.State))
 					;
 				if (q.Count() > 0)
 				{
-					thisServiceStatus.State = ServiceAndActitivityStateEnum.Started;
+					thisServiceStatus.State = ServiceAndActitivityState.Started;
 				}
 			}
 
 			// check if done, all mandatory done in time
-			if (thisServiceStatus.State == ServiceAndActitivityStateEnum.Started)
+			if (thisServiceStatus.State == ServiceAndActitivityState.Started)
 			{
 				var q = thisServiceStatus.ActionStatuses
-					.Where(acs => acs.State != ServiceAndActitivityStateEnum.Done )
+					.Where(acs => acs.State != ServiceAndActitivityState.Done )
 					.Where(acs => acs.ActionDefinition.ActionListType == ActionListType.Mandatory)
 					;
 				if (q.Count() < 1)
 				{
-					thisServiceStatus.State = ServiceAndActitivityStateEnum.Done;
+					thisServiceStatus.State = ServiceAndActitivityState.Done;
 				}
 			}
 
@@ -382,9 +382,9 @@ namespace InventoryApi.Controllers.InventoryControllers
 			return thisServiceStatus;
 		}
 
-		private bool IsStateNotFinneshed(ServiceAndActitivityStateEnum state)
+		private bool IsStateNotFinneshed(ServiceAndActitivityState state)
 		{
-			return state == ServiceAndActitivityStateEnum.NotStarted || state == ServiceAndActitivityStateEnum.Started;
+			return state == ServiceAndActitivityState.NotStarted || state == ServiceAndActitivityState.Started;
 		}
 
 		private string CreateThingIdFromThing(T2D.Entities.BaseThing thing)

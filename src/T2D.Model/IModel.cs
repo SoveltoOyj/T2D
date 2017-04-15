@@ -17,10 +17,10 @@ namespace T2D.Model
 		Guid Id { get; set; }
 	}
 
-	public interface IEnumModel
+	public class ModelEnum
 	{
-		int Id { get; set; }
-		string Name { get; set; }
+		public int Id { get; set; }
+		public string Name { get; set; }
 	}
 
 

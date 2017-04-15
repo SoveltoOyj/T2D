@@ -11,6 +11,7 @@ namespace T2D.InventoryBL.Mappers
 	/// </summary>
 	/// <typeparam name="TEnum"></typeparam>
 	/// <typeparam name="TEntity"></typeparam>
+	[Obsolete("Todo: this will be taken away.")]
 	public class EnumMapper<TEnum, TEntity> 
 	where TEnum : struct, IConvertible
 	where TEntity : class, T2D.Entities.IEnumEntity, new()

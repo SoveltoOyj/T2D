@@ -17,13 +17,16 @@ namespace InventoryApi.Test
 		protected readonly TestServer _server;
 		protected HttpClient _client { get; }
 
-		public InventoryApiBase()
+		protected readonly ITestOutputHelper _output;
+
+		public InventoryApiBase(ITestOutputHelper output)
 		{
 			_server = new TestServer(new WebHostBuilder()
 				.UseStartup<Startup>())
 				;
 			_client = _server.CreateClient();
 			_client.AcceptJson();
+			_output = output;
 		}
 		public void Dispose()
 		{

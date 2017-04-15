@@ -4,7 +4,10 @@ using System.Text;
 
 namespace T2D.Entities
 {
-
+	/// <summary>
+	/// AttributeEnum contains all T2D defined Attributes (both artifical and real)
+	/// Attribute Entity contains also Extensions.
+	/// </summary>
 	public enum AttributeEnum
 	{
 		//artifical "attributes"
@@ -42,7 +45,7 @@ namespace T2D.Entities
 
 	public enum AttributeType
 	{
-		T2DAttribute,
+		T2DAttribute=1,
 		Extension,
 	}
 }
