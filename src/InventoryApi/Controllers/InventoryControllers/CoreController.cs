@@ -185,10 +185,10 @@ namespace InventoryApi.Controllers.InventoryControllers
 		public IActionResult CreateLocalThing([FromBody]CreateLocalThingRequest value)
 		{
 			if (!ModelState.IsValid) return BadRequest(ModelState);
-			SessionBL sessionBl = SessionBL.CreateSessionBLForExistingSession(dbc, value.Session);
+			SessionBL sessionBl = SessionBL.CreateSessionBLForExistingSession(_dbc, value.Session);
 			if (sessionBl == null) return BadRequest("Session is not correct.");
 
-			ThingBL thingBl = ThingBL.CreateThingBL(dbc, sessionBl);
+			ThingBL thingBl = ThingBL.CreateThingBL(_dbc, sessionBl);
 			if (thingBl == null) return BadRequest();
 
 			string errMsg = null;
@@ -202,6 +202,43 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 			if (ret) return Ok();
 			return BadRequest(errMsg);
+		}
+
+		/// <summary>
+		/// Set thing role access rights
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <response code="200">Right set was succesfull.</response>
+		/// <response code="400">Bad request, like Thing Id is OK or not enough priviledges.</response>
+		[HttpPost, ActionName("SetRoleAccessRight")]
+		[Produces(typeof(bool))]
+		public IActionResult SetRoleAccessRight([FromBody]SetRoleAccessRighsRequest value)
+		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
+			SessionBL sessionBl = SessionBL.CreateSessionBLForExistingSession(_dbc, value.Session);
+			if (sessionBl == null) return BadRequest("Session is not correct.");
+
+			ThingBL thingBl = ThingBL.CreateThingBL(_dbc, sessionBl);
+			if (thingBl == null) return BadRequest();
+
+			string errMsg = null;
+			string allErrorMessages = "";
+			int? roleId = _enumBL.EnumIdFromApiString<RoleEnum>(value.Role);
+			if (roleId==null) return BadRequest($"Role is not correct.");
+			foreach (var item in value.AttributeRoleRights)
+			{
+				int? attributeId = _enumBL.EnumIdFromApiString<AttributeEnum>(item.Attribute);
+				if (attributeId == null)
+				{
+					allErrorMessages += $"Attribute {item.Attribute} is not correct, continue with other attributes. ";
+					continue;
+				}
+				thingBl.SetRoleAccessRights(out errMsg,  roleId.Value,  attributeId.Value,   value.ThingId, item.RoleAccessRights);
+				allErrorMessages += errMsg;
+				errMsg = null;
+			}
+
+			return Ok(allErrorMessages);
 		}
 
 	}

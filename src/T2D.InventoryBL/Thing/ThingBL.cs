@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using T2D.Entities;
 using T2D.Infra;
+using T2D.InventoryBL.Metadata;
 using T2D.Model.Enums;
 using T2D.Model.Helpers;
 
@@ -100,17 +102,7 @@ namespace T2D.InventoryBL.Thing
 			//todo: security Check
 
 			//create new ThingRole if not exists
-			var thingRole = _dbc.ThingRoles.SingleOrDefault(tr => tr.ThingId == toId && tr.RoleId == roleId);
-			if (thingRole == null)
-			{
-				thingRole = new ThingRole
-				{
-					Logging = false,
-					RoleId = roleId,
-					ThingId = toId,
-				};
-				_dbc.ThingRoles.Add(thingRole);
-			}
+			var thingRole = RetrieveThingRole(roleId, toId);
 
 			// add ThingRoleMember
 			var thingRoleMember = new ThingRoleMember
@@ -123,6 +115,86 @@ namespace T2D.InventoryBL.Thing
 			return thingRoleMember;
 		}
 
+		public bool SetRoleAccessRights(out string errMsg, int roleId, int attributeId, string thingId, string[] roleAccessRights)
+		{
+			//todo: security Check
+			errMsg = "";
+			BaseThing thing = _dbc.FindThing<BaseThing>(thingId);
+			if (thing == null)
+			{
+				errMsg = $"ThingId {thingId} do not exists.";
+				return false;
+			}
 
+			RightFlag accessRight = 0;
+			foreach (var item in roleAccessRights)
+			{
+				RightFlag value;
+				if (!Enum.TryParse<RightFlag>(item, out value))
+				{
+					errMsg = $"RoleAccessRight {item} is not correct.";
+					return false;
+				}
+				accessRight |= value;
+			}
+
+			//create a new ThingRole if it does not exists
+			ThingRole tr = RetrieveThingRole(roleId, thing.Id);
+
+			//create a new ThingAttribute if it does not exists
+			ThingAttribute ta =
+				_dbc.ThingAttributes
+				.Include(tatt=>tatt.ThingAttributeRoleRights)
+				.SingleOrDefault(tatt => tatt.AttributeId == attributeId && tatt.ThingId == thing.Id)
+				;
+			if (ta == null)
+			{
+				ta = new ThingAttribute
+				{
+					AttributeId=attributeId,
+					ThingId=thing.Id,
+					Logging=false,
+				};
+				_dbc.ThingAttributes.Add(ta);
+			}
+
+			//create a new ThingAttributeRoleRight if it does not exists
+			ThingAttributeRoleRight tarl = ta.ThingAttributeRoleRights.SingleOrDefault(tattrl => tattrl.ThingRoleId == tr.Id);
+			if (tarl == null)
+			{
+				tarl = new ThingAttributeRoleRight
+				{
+					ThingAttributeId=ta.Id,
+					ThingRoleId = tr.Id,
+					Rights = accessRight,
+				};
+				_dbc.ThingAttributeRoleRights.Add(tarl);
+			}
+			else
+			{
+				tarl.Rights = accessRight;
+			}
+
+			_dbc.SaveChanges();
+			return true;
+		}
+
+		private ThingRole RetrieveThingRole(int roleId, Guid thingId) {
+			//create new ThingRole if not exists
+			var thingRole = _dbc.ThingRoles.SingleOrDefault(tr => tr.ThingId == thingId && tr.RoleId == roleId);
+			if (thingRole == null)
+			{
+				thingRole = new ThingRole
+				{
+					Logging = false,
+					RoleId = roleId,
+					ThingId = thingId,
+				};
+				_dbc.ThingRoles.Add(thingRole);
+				_dbc.SaveChanges();
+			}
+			return thingRole;
+
+		}
 	}
 }

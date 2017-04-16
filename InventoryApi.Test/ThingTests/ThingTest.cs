@@ -19,7 +19,7 @@ namespace InventoryApi.Test
 		public ThingTest(ITestOutputHelper output) : base(output){ }
 
 		[Fact]
-		public async void CreateLocalThing_OK()
+		public async void CreateLocalThing_ShouldBeOK()
 		{
 			var jsonContent = new JsonContent(new CreateLocalThingRequest {
 				Session = "00000000-0000-0000-0000-000000000001",
@@ -29,6 +29,40 @@ namespace InventoryApi.Test
 				OmnipotentThingId = $"{cfqdn}/M100"
 			});
 			var response = await _client.PostAsync($"{_url}/CreateLocalThing", jsonContent );
+
+			response.EnsureSuccessStatusCode();
+		}
+
+
+		[Fact]
+		public async void SetRoleRights_NewThing_ShouldBeOK()
+		{
+			string thingId = await CreateATestThing();
+			var jsonContent = new JsonContent(new SetRoleAccessRighsRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = thingId,
+				Role = "Owner",
+				AttributeRoleRights = new List<AttributeRoleRight>
+				{
+					new AttributeRoleRight
+					{
+						Attribute = "Description",
+						RoleAccessRights = new string[] { "Create", "Read", "Update" },
+					},
+					new AttributeRoleRight
+					{
+						Attribute = "Created",
+						RoleAccessRights = new string[] { "Create", "Read" },
+					},
+					new AttributeRoleRight
+					{
+						Attribute = "Location",
+						RoleAccessRights = new string[] { "Create", "Update" },
+					},
+				}
+			});
+			var response = await _client.PostAsync($"{_url}/SetRoleAccessRight", jsonContent);
 
 			response.EnsureSuccessStatusCode();
 		}
@@ -116,27 +150,22 @@ namespace InventoryApi.Test
 		//		}
 
 
-		//		private async Task<BaseThing> CreateATestThing(HttpClient client)
-		//		{
-		//			string us = Guid.NewGuid().ToString();
-		//			string id = $"{cfqdn}/{us}";
-		//			string title = "New Thing";
-
-		//			BaseThing newThing = new BaseThing
-		//			{
-		//				Id = id,
-		//				Title = title
-		//			};
-
-		//			//			var postResponse = await client.PostAsJsonAsync($"{_url}", newThing);
-		//			//			var created = await postResponse.Content.ReadAsJsonAsync<BaseThing>();
-		//			//Assert.NotNull(created);
-		//			//Assert.Equal(id, created.Id);
-		//			//Assert.Equal(title, created.Title);
-		//			//return created;
-		//			return null;
-		//		}
-
+		private async Task<string> CreateATestThing()
+		{
+			string thingId = $"{cfqdn}/Test@{DateTime.Now.ToString()} - {Guid.NewGuid()}";
+			var jsonContent = new JsonContent(new CreateLocalThingRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = thingId,
+				Title = "Test thing",
+				ThingType = T2D.Model.Enums.ThingType.RegularThing,
+				OmnipotentThingId = $"{cfqdn}/M100"
+			});
+			var response = await _client.PostAsync($"{_url}/CreateLocalThing", jsonContent);
+			response.EnsureSuccessStatusCode();
+			return thingId;
+		}
+		
 		//		private async Task<System.Net.HttpStatusCode> DeleteATestThing(string id, HttpClient client)
 		//		{
 		//			var deleteResponse = await client.DeleteAsync($"{_url}{GetThingIdQueryString(id)}");

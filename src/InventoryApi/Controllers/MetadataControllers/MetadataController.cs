@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations;
 namespace InventoryApi.Controllers.MetadataControllers
 {
 	[Route("api/[controller]/[Action]")]
-	public class MetadataController : ApiBaseControllerOld
+	public class MetadataController : ApiBaseController
 	{
 
 		private readonly IHostingEnvironment _env;
@@ -68,7 +68,7 @@ namespace InventoryApi.Controllers.MetadataControllers
 		[Produces(typeof(List<string>))]
 		public IActionResult EnumNames()
 		{
-			return Ok(new EnumBL().ApiEnumNames());
+			return Ok(_enumBL.ApiEnumNames());
 		}
 
 
@@ -85,30 +85,29 @@ namespace InventoryApi.Controllers.MetadataControllers
 		{
 			if (!ModelState.IsValid) return BadRequest(ModelState);
 			if (string.IsNullOrWhiteSpace(enumName)) return BadRequest("Enum name is empty or null.");
-			var enumBL = new EnumBL();
-			if (!enumBL.ApiEnumNames().Contains(enumName)) return BadRequest($"{enumName} is not a valid EnumName.");
+			if (!_enumBL.ApiEnumNames().Contains(enumName)) return BadRequest($"{enumName} is not a valid EnumName.");
 
 			switch (enumName.ToLower())
 			{
 				case "attributetype":
-					return Ok(enumBL.ApiEnumValuesFromEnum<T2D.Entities.AttributeType>());
+					return Ok(_enumBL.ApiEnumValuesFromEnum<T2D.Entities.AttributeType>());
 				case "functionalstatus":
-					return Ok(enumBL.ApiEnumValuesFromEnumEntity(dbc.Status.AsQueryable()));
+					return Ok(_enumBL.ApiEnumValuesFromEnumEntity(_dbc.Status.AsQueryable()));
 				case "locationtype":
-					return Ok(enumBL.ApiEnumValuesFromEnumEntity(dbc.LocationTypes.AsQueryable()));
+					return Ok(_enumBL.ApiEnumValuesFromEnumEntity(_dbc.LocationTypes.AsQueryable()));
 				case "relation":
-					return Ok(enumBL.ApiEnumValuesFromEnumEntity(dbc.Relations.AsQueryable()));
+					return Ok(_enumBL.ApiEnumValuesFromEnumEntity(_dbc.Relations.AsQueryable()));
 				case "right":
-					return Ok(enumBL.ApiEnumValuesFromEnum<T2D.Entities.RightFlag>());
+					return Ok(_enumBL.ApiEnumValuesFromEnum<T2D.Entities.RightFlag>());
 				case "role":
-					return Ok(enumBL.ApiEnumValuesFromEnumEntity(dbc.Roles.AsQueryable()));
+					return Ok(_enumBL.ApiEnumValuesFromEnumEntity(_dbc.Roles.AsQueryable()));
 				case "serviceandactivitystate":
-					return Ok(enumBL.ApiEnumValuesFromEnum<T2D.Entities.ServiceAndActitivityState>());
+					return Ok(_enumBL.ApiEnumValuesFromEnum<T2D.Entities.ServiceAndActitivityState>());
 				case "thingstatus":
-					return Ok(enumBL.ApiEnumValuesFromEnum<T2D.Entities.ThingStatus>());
+					return Ok(_enumBL.ApiEnumValuesFromEnum<T2D.Entities.ThingStatus>());
 				case "attribute":
 					//Note: attribute has GUID ID, thats why this code.
-					var q = dbc.Attributes
+					var q = _dbc.Attributes
 								.Where(a => a.AttributeType == T2D.Entities.AttributeType.T2DAttribute)
 								.ToList()
 								.Select(a => new { GuidArray = a.Id.ToByteArray(), Name = a.Title })
@@ -123,11 +122,11 @@ namespace InventoryApi.Controllers.MetadataControllers
 							Name = item.Name,
 						});
 					}
-					return Ok(enumBL.ApiEnumValuesFromEnumEntity(values.AsQueryable <MyIEnumEntity>()));
+					return Ok(_enumBL.ApiEnumValuesFromEnumEntity(values.AsQueryable <MyIEnumEntity>()));
 				case "authenticationtype":
-					return Ok(enumBL.ApiEnumValuesFromEnum<T2D.Model.Enums.AuthenticationType>());
+					return Ok(_enumBL.ApiEnumValuesFromEnum<T2D.Model.Enums.AuthenticationType>());
 				case "thingtype":
-					return Ok(enumBL.ApiEnumValuesFromEnum<T2D.Model.Enums.ThingType>());
+					return Ok(_enumBL.ApiEnumValuesFromEnum<T2D.Model.Enums.ThingType>());
 			}
 			return BadRequest($"Can't find values for enum '{enumName}'");
 

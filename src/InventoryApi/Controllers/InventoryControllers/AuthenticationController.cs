@@ -35,7 +35,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 		{
 			if (!ModelState.IsValid) return BadRequest(ModelState);
 			string errMsg = null;
-			AuthenticationBL authenticationBL = AuthenticationBL.CreateAuthenticationBL(dbc);
+			AuthenticationBL authenticationBL = AuthenticationBL.CreateAuthenticationBL(_dbc);
 			var sessionBL = authenticationBL.EnterAuthenticatedSession(out errMsg, value.ThingId, value.AuthenticationType);
 			if (sessionBL == null) return BadRequest(errMsg);
 
@@ -56,7 +56,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 		{
 			if (!ModelState.IsValid) return BadRequest(ModelState);
 			string errMsg = null;
-			AuthenticationBL authenticationBL = AuthenticationBL.CreateAuthenticationBL(dbc);
+			AuthenticationBL authenticationBL = AuthenticationBL.CreateAuthenticationBL(_dbc);
 			var sessionBL = authenticationBL.EnterAnonymousSession(out errMsg);
 			if (sessionBL == null) return BadRequest(errMsg);
 

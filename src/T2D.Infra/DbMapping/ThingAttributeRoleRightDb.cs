@@ -21,7 +21,7 @@ namespace T2D.Infra
 
 			tbl.HasOne(e => e.ThingRole)
 					 .WithMany()
-					 .HasForeignKey(e => e.ThingAttributeId)
+					 .HasForeignKey(e => e.ThingRoleId)
 					 .OnDelete(DeleteBehavior.Restrict)
 					 ;
 

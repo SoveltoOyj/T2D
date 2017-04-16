@@ -5,12 +5,6 @@ using System.Threading.Tasks;
 
 namespace T2D.Model.InventoryApi
 {
-	public abstract class BaseRequest
-	{
-		public string Session { get; set; }
-		public string ThingId { get; set; }
-		public string Role { get; set; }
-	}
 	public class GetRelationsRequest : BaseRequest
 	{
 	}

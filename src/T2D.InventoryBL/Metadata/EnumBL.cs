@@ -45,8 +45,8 @@ namespace T2D.InventoryBL.Metadata
 			return ret;
 		}
 
-		public object ApiEnumValuesFromEnumEntity<TEnumEntity>(IQueryable<TEnumEntity> query)
-			where TEnumEntity:IEnumEntity
+		public List<ModelEnum> ApiEnumValuesFromEnumEntity<TEnumEntity>(IQueryable<TEnumEntity> query)
+			where TEnumEntity : IEnumEntity
 		{
 			var ret = new List<ModelEnum>();
 			foreach (var item in query)
@@ -55,5 +55,28 @@ namespace T2D.InventoryBL.Metadata
 			}
 			return ret;
 		}
+
+		/// <summary>
+		/// Gets int value of enum string
+		/// </summary>
+		/// <typeparam name="TEnum">Enum type</typeparam>
+		/// <param name="enumStr">Enum value as string.</param>
+		/// <returns>int value or null if enum does not contain that value.</returns>
+		public int? EnumIdFromApiString<TEnum>(string enumStr)
+			where TEnum : struct, IConvertible
+		{
+			if (!typeof(TEnum).GetTypeInfo().IsEnum)
+			{
+				throw new ArgumentException("TEnum must be of type System.Enum");
+			}
+
+			TEnum value;
+			if (!Enum.TryParse<TEnum>(enumStr, out value))
+			{
+				return null;
+			}
+			return ((IConvertible)value).ToInt32(System.Globalization.CultureInfo.InvariantCulture);
+		}
+
 	}
 }
