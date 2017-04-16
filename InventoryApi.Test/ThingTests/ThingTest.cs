@@ -206,6 +206,46 @@ namespace InventoryApi.Test
 
 		}
 
+		[Fact]
+		public async void SetAttributes_NewThing_ShouldReturn()
+		{
+			string thingId = await CreateATestThing();
+			var setAttributeRequest = new SetAttributesRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = thingId,
+				Role = "Owner",
+				AttributeValues = new List<SetAttributeValue>
+				{
+					new SetAttributeValue
+					{
+						Attribute="Title",
+						Value = "Moikka vaan",
+					},
+					new SetAttributeValue
+					{
+						Attribute="IsGpsPublic",
+						Value = true,
+					},
+					new SetAttributeValue
+					{
+						Attribute="Location_Timestamp",
+						Value = DateTime.UtcNow.ToString("u"),
+					},
+				}
+			};
+			var jsonContent = new JsonContent(setAttributeRequest);
+			var response = await _client.PostAsync($"{_url}/SetAttributes", jsonContent);
+			response.EnsureSuccessStatusCode();
+
+			var result = await response.Content.ReadAsJsonAsync<SetAttributesResponse>();
+
+			Assert.NotNull(result);
+			Assert.NotNull(result.AttributeValues);
+			Assert.True(result.AttributeValues.Count() == setAttributeRequest.AttributeValues.Count());
+			Assert.True(result.AttributeValues.Any(av => av.Attribute == "Title" && av.IsOk == true));
+
+		}
 
 
 

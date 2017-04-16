@@ -34,6 +34,7 @@ namespace T2D.Entities
 		LocationType,
 		Location_Timestamp,
 		Location_GPS,
+		IsGpsPublic,
 		Location_StreetAddress,
 		Location,
 		PreferredLocationType,

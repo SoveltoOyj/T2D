@@ -174,11 +174,44 @@ namespace T2D.InventoryBL.Thing
 				return ret;
 			}
 
-			ret.TimeStamp = null;
 			ret.Value = GetAttributeValue(thing, attributeName);
 			ret.IsOk = true;
 			return ret;
 
+		}
+
+		public AttributeValue SetAttribute(string attributeName, int roleId, string thingId, object value)
+		{
+			BaseThing thing =
+				_dbc.ThingQuery(thingId)
+					.Include(t => t.ThingAttributes)
+					.FirstOrDefault()
+					;
+
+			var ret = new AttributeValue
+			{
+				Attribute = attributeName,
+			};
+			if (thing == null)
+			{
+				ret.IsOk = false;
+				ret.ErrorDescription = $"Thing '{thingId}' do not exists.";
+				return ret;
+			}
+
+			var enumBL = new EnumBL();
+			int? attributeId = enumBL.EnumIdFromApiString<AttributeEnum>(attributeName);
+			if (attributeId == null)
+			{
+				ret.IsOk = false;
+				ret.ErrorDescription = $"Attribute do not exists.";
+				return ret;
+			}
+
+			ret.ErrorDescription = SetAttributeValue(thing, attributeName, value);
+			ret.IsOk = (ret.ErrorDescription == null);
+			ret.Value = GetAttributeValue(thing, attributeName);
+			return ret;
 		}
 
 		public QueryMyRolesResponse QueryMyRoles(out string errMsg, string thingId)
@@ -421,6 +454,31 @@ namespace T2D.InventoryBL.Thing
 			}				
 			return null;
 		}
+
+		private string SetAttributeValue(IThing thing, string attributeName, object value)
+		{
+			try
+			{
+				BindingFlags bf = BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance;
+				var typeInfo = thing.GetType().GetTypeInfo();
+				if (typeInfo.GetProperties(bf).Any(p => p.Name == attributeName))
+				{
+					var propertyInfo = typeInfo.GetProperty(attributeName, bf);
+					object changedType = propertyInfo.PropertyType == typeof(DateTime) || propertyInfo.PropertyType == typeof(DateTime?)
+					? DateTime.Parse(value.ToString())
+					: Convert.ChangeType(value, propertyInfo.PropertyType);
+
+					propertyInfo.SetValue(thing, changedType, null);
+					return null;
+				}
+				return $"Attribute {attributeName} do not exists";
+			}
+			catch (Exception ex)
+			{
+				return $"Attribute {attributeName} value could not be set, error: {ex.Message}";
+			}
+		}
+
 
 		public bool SetRoleMemberList(out string errMsg, int roleId, int roleToSetId, string thingId, List<string> memberThingIds)
 		{

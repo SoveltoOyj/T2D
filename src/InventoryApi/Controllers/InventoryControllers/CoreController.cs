@@ -107,6 +107,33 @@ namespace InventoryApi.Controllers.InventoryControllers
 		}
 
 		/// <summary>
+		/// Set Attributes.
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <response code="200">Returns current attribute values, where you can find out which settings were successfull.</response>
+		/// <response code="400">Bad request, like Thing do not exists or not enough priviledges.</response>
+		[HttpPost, ActionName("SetAttributes")]
+		[Produces(typeof(SetAttributesResponse))]
+		public IActionResult SetAttributes([FromBody]SetAttributesRequest value)
+		{
+			ProcessBaseRequest(value);
+			var baseResponse = ProcessBaseRequest(value);
+			if (baseResponse != null) return baseResponse;
+
+			var ret = new SetAttributesResponse
+			{
+				AttributeValues = new List<AttributeValue>(value.AttributeValues.Count()),
+			};
+			foreach (var item in value.AttributeValues)
+			{
+				ret.AttributeValues.Add(_thingBl.SetAttribute(item.Attribute, _roleId, value.ThingId, item.Value));
+			}
+			_dbc.SaveChanges();
+			return Ok(ret);
+		}
+
+
+		/// <summary>
 		/// Create a new local Thing.
 		/// </summary>
 		/// <param name="value">Request argument</param>
