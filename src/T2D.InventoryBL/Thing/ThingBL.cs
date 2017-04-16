@@ -39,7 +39,7 @@ namespace T2D.InventoryBL.Thing
 			BaseThing omnipotent = _dbc.FindThing<BaseThing>(omnipotent_ThingID);
 			if (omnipotent == null)
 			{
-				errorMsg = $"Can't find omnipotent thing '{omnipotent_ThingID}'";
+				errorMsg = $"Can't find creator thing '{omnipotent_ThingID}'";
 				return false;
 			}
 
@@ -97,7 +97,69 @@ namespace T2D.InventoryBL.Thing
 			return true;
 		}
 
+		public QueryMyRolesResponse QueryMyRoles(out string errMsg, string thingId)
+		{
+			errMsg = null;
 
+			BaseThing thing =
+			_dbc.ThingQuery(thingId)
+				.Include(t => t.ThingRoles)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+			{
+				errMsg = $"Thing '{thingId}' do not exists.";
+				return null;
+			}
+
+			//TODO: check that session has right to 
+
+			// explicit loading - select those thingRoleMembers, where ThingRoleMember is one of things in session
+			// have to use Lists
+			List<Guid> sessionThings = new List<Guid>();
+			sessionThings.Add(_session.Session.EntryPoint_ThingId);
+
+			foreach (var item in _session.Session.SessionAccesses)
+			{
+				if (!sessionThings.Contains(item.ThingId))
+					sessionThings.Add(item.ThingId);
+			}
+			List<Guid> thingRoles = new List<Guid>();
+			thingRoles.AddRange(thing.ThingRoles.Select(tr => tr.Id));
+
+			var thingRoleMembers =
+				_dbc.ThingRoleMembers
+					.Where(trm => sessionThings.Contains(trm.ThingId) && thingRoles.Contains(trm.ThingRoleId))
+					.ToList()
+					;
+
+			var ret = new QueryMyRolesResponse
+			{
+				Roles = new List<string>(),
+			};
+			var roleIds = new List<int>();
+
+			// add roles and add to SessionAccess
+			foreach (var item in thingRoleMembers)
+			{
+				if (item.ThingRole != null)
+				{
+					int roleId = item.ThingRole.RoleId;
+					if (!roleIds.Contains(roleId)) roleIds.Add(roleId);
+
+					_session.AddSessionAccess(roleId, thing.Id);
+				}
+			}
+			ret.Roles.AddRange(
+				_dbc.Roles
+					.Where(r => roleIds.Contains(r.Id))
+					.Select(r => r.Name)
+					.ToList()
+				);
+
+			return ret;
+		}
 
 		public ThingRoleMember AddRoleMember(Guid toId, Guid fromId, int roleId)
 		{
@@ -261,6 +323,77 @@ namespace T2D.InventoryBL.Thing
 				_dbc.SaveChanges();
 			}
 			return thingRole;
+
+		}
+
+		public bool SetRoleMemberList(out string errMsg, int roleId, int roleToSetId, string thingId, List<string> memberThingIds)
+		{
+			//todo: security Check
+			errMsg = "";
+
+			//Check that Thing is available
+			BaseThing thing = _dbc.FindThing<BaseThing>(thingId);
+			if (thing == null)
+			{
+				errMsg = $"Can't find thing '{thingId}'";
+				return false;
+			}
+
+			//create new ThingRole if not exists
+			var thingRole = RetrieveThingRole(roleToSetId, thing.Id);
+
+			// remove existing ThingRoleMembers
+			_dbc.ThingRoleMembers.RemoveRange(_dbc.ThingRoleMembers.Where(trm => trm.ThingRoleId == thingRole.Id));
+			_dbc.SaveChanges();
+
+			foreach (var item in memberThingIds)
+			{
+				//Check that Thing is available
+				BaseThing memberThing = _dbc.FindThing<BaseThing>(item);
+				if (memberThing == null)
+				{
+					errMsg = $"Can't find memberThing '{item}', continueing to add members. ";
+					return false;
+				}
+				// add ThingRoleMembers
+				var thingRoleMember = new ThingRoleMember
+				{
+					ThingId = memberThing.Id,
+					ThingRoleId = thingRole.Id,
+				};
+				_dbc.ThingRoleMembers.Add(thingRoleMember);
+			}
+			_dbc.SaveChanges();
+			return true;
+
+		}
+
+		public List<string> GetRoleMemberList(out string errMsg, int roleId, int roleForMemberListId, string thingId)
+		{
+			errMsg = null;
+			//Check that Thing is available
+			BaseThing thing = _dbc.FindThing<BaseThing>(thingId);
+			if (thing == null)
+			{
+				errMsg = $"Can't find thing '{thingId}'";
+				return null;
+			}
+			var ret = new List<string>();
+			//create new ThingRole if not exists
+			var thingRole = RetrieveThingRole(roleForMemberListId, thing.Id);
+
+			var q =
+			_dbc.ThingRoleMembers
+				.Include(trm => trm.Thing)
+				.Where(trm => trm.ThingRoleId == thingRole.Id)
+				.Select(trm => new { Fqdn= trm.Thing.Fqdn, US=trm.Thing.US })
+				;
+
+			foreach (var item in q)
+			{
+				ret.Add(ThingIdHelper.Create(item.Fqdn, item.US));
+			}
+			return ret;
 
 		}
 	}

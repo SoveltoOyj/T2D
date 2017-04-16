@@ -64,13 +64,16 @@ namespace T2D.InventoryBL
 
 		public bool AddSessionAccess(int roleId, Guid thingId)
 		{
-			_dbc.SessionAccesses.Add(new SessionAccess
+			if (_dbc.SessionAccesses.Any(sa => sa.RoleId == roleId && sa.ThingId == thingId))
 			{
-				SessionId=Session.Id,
-				RoleId=roleId,
-				ThingId = thingId,
-			});
-			_dbc.SaveChanges();
+				_dbc.SessionAccesses.Add(new SessionAccess
+				{
+					SessionId = Session.Id,
+					RoleId = roleId,
+					ThingId = thingId,
+				});
+				_dbc.SaveChanges();
+			}
 			return true;
 		}
 	}

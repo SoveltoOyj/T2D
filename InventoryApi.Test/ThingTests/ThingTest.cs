@@ -96,6 +96,74 @@ namespace InventoryApi.Test
 			}
 		}
 
+		[Fact]
+		public async void SetAndGetRoleMemberList_NewThing_ShouldBeOK()
+		{
+			string thingId = await CreateATestThing();
+			var setRoleMemberListRequest = new SetRoleMemberListRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = thingId,
+				Role = "Omnipotent",
+				RoleForMemberList = "Owner",
+				MemberThingIds = new List<string>
+				{
+					$"{cfqdn}/M100",
+					$"{cfqdn}/AnonymousUser",
+				}
+			};
+			var jsonContent = new JsonContent(setRoleMemberListRequest);
+			var response = await _client.PostAsync($"{_url}/SetRoleMemberList", jsonContent);
+			response.EnsureSuccessStatusCode();
+
+			//get
+			jsonContent = new JsonContent(new GetRoleMemberListRequest
+			{
+				Session = setRoleMemberListRequest.Session,
+				ThingId = setRoleMemberListRequest.ThingId,
+				Role = setRoleMemberListRequest.Role,
+				RoleForMemberList = setRoleMemberListRequest.RoleForMemberList,
+			});
+			response = await _client.PostAsync($"{_url}/GetRoleMemberList", jsonContent);
+			response.EnsureSuccessStatusCode();
+			var result = await response.Content.ReadAsJsonAsync<GetRoleMemberListResponse>();
+
+			Assert.NotNull(result);
+			Assert.NotNull(result.ThingIds);
+			Assert.NotEmpty(result.ThingIds);
+			Assert.True(result.ThingIds.Count() == setRoleMemberListRequest.MemberThingIds.Count());
+			foreach (var item in setRoleMemberListRequest.MemberThingIds)
+			{
+				var arr = result.ThingIds.SingleOrDefault(r => r == item);
+				Assert.True(arr != null);
+			}
+		}
+
+
+		[Fact]
+		public async void QueryMyRoles_M100_ShouldReturnOmnipotent()
+		{
+			var queryMyRolesRequest = new QueryMyRolesRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = $"{cfqdn}/M100",
+			};
+			var jsonContent = new JsonContent(queryMyRolesRequest);
+			var response = await _client.PostAsync($"{_url}/QueryMyRoles", jsonContent);
+			response.EnsureSuccessStatusCode();
+
+			var result = await response.Content.ReadAsJsonAsync<QueryMyRolesResponse>();
+
+			Assert.NotNull(result);
+			Assert.NotNull(result.Roles);
+			Assert.True(result.Roles.Contains("Omnipotent"));
+		}
+
+
+
+
+
+
 		//		[Fact]
 		//		public async void GetT2_ShouldReturnData()
 		//		{
@@ -107,74 +175,6 @@ namespace InventoryApi.Test
 		//			//	Assert.NotNull(result);
 		//			//	Assert.Equal("inv1.sovelto.fi/T2", result.Id);
 		//			//	Assert.NotNull(result.Title);
-		//			//}
-		//		}
-
-
-		//		[Fact]
-		//		public async void Post_ShouldAddOneThing()
-		//		{
-		//			//using (var client = _server.CreateClient().AcceptJson())
-		//			//{
-		//			//	var created = await this.CreateATestThing(client);
-		//			//	await this.DeleteATestThing(created.Id, client);
-		//			//}
-		//		}
-
-		//		[Fact]
-		//		public async void Put_ShouldModifyAllFields()
-		//		{
-
-		//			//using (var client = _server.CreateClient().AcceptJson())
-		//			//{
-		//			//	var newThing= await this.CreateATestThing(client);
-
-		//			//	//test PUT
-		//			//	newThing.Title = "Modified";
-		//			//	var putResponse = await client.PutAsJsonAsync($"{_url}", newThing);
-		//			//	var modified = await putResponse.Content.ReadAsJsonAsync<BaseThing>();
-		//			//	Assert.NotNull(modified);
-		//			//	Assert.Equal(newThing.Id, modified.Id);
-		//			//	Assert.Equal("Modified", modified.Title);
-
-
-		//			//	//and then delete it
-		//			//	await this.DeleteATestThing(newThing.Id, client);
-		//			//}
-		//		}
-
-		//		[Fact]
-		//		public async void Patch_ShouldModify()
-		//		{
-		//			string patchContent = @"
-		//[
-		// {
-		//	'value': 'Modified',
-		//   'path': 'title',
-		//   'op': 'replace'
-		//		}
-		//]";
-
-		//			//using (var client = _server.CreateClient().AcceptJson())
-		//			//{
-		//			//	var newThing = await this.CreateATestThing(client);
-
-		//			//	//test PATCH
-		//			//	var req = new HttpRequestMessage
-		//			//	{
-		//			//		Method = new HttpMethod("PATCH"),
-		//			//		RequestUri = new Uri($"{_url}{GetThingIdQueryString(newThing.Id)}", UriKind.Relative),
-		//			//		Content = new StringContent(patchContent, Encoding.UTF8, "application/json")
-		//			//	};
-		//			//	var response = await client.SendAsync(req);
-		//			//	var modified = await response.Content.ReadAsJsonAsync<BaseThing>();
-		//			//	Assert.NotNull(modified);
-		//			//	Assert.Equal(newThing.Id, modified.Id);
-		//			//	Assert.Equal("Modified", modified.Title);
-
-
-		//			//	//and then delete it
-		//			//	await this.DeleteATestThing(newThing.Id, client);
 		//			//}
 		//		}
 

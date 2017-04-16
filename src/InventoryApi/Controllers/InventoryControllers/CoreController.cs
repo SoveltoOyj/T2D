@@ -28,6 +28,36 @@ namespace InventoryApi.Controllers.InventoryControllers
 		protected ThingBL _thingBl;
 		protected int _roleId ;
 
+		/// <summary>
+		/// Query my roles.
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <returns>Available roles.</returns>
+		/// <response code="200">Returns available roles.</response>
+		/// <response code="400">Bad request, like Thing do not exists or not enough priviledges.</response>
+		[HttpPost, ActionName("QueryMyRoles")]
+		[Produces(typeof(QueryMyRolesResponse))]
+		public IActionResult QueryMyRoles([FromBody]QueryMyRolesRequest value)
+		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
+
+			_sessionBl = SessionBL.CreateSessionBLForExistingSession(_dbc, value.Session);
+			if (_sessionBl == null) return BadRequest("Session is not correct.");
+
+			_thingBl = ThingBL.CreateThingBL(_dbc, _sessionBl);
+			if (_thingBl == null) return BadRequest("Something went wrong.");
+
+			string errMsg = null;
+			var ret = _thingBl.QueryMyRoles(out errMsg, value.ThingId);
+
+			if (ret != null)
+				return Ok(ret);
+
+			return BadRequest(errMsg);
+		}
+
+
+
 		#region vanhaa
 		///// <summary>
 		///// Query my roles.
@@ -180,7 +210,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 		//	};
 		//	return Ok(ret);
 		//}
-#endregion
+		#endregion
 
 		/// <summary>
 		/// Create a new local Thing.
@@ -214,7 +244,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 		/// <response code="200">Right set was done, there can be errors (look at return body).</response>
 		/// <response code="400">Bad request, like Thing Id is OK or not enough priviledges.</response>
 		[HttpPost, ActionName("SetRoleAccessRight")]
-		[Produces(typeof(bool))]
+		[Produces(typeof(string))]
 		public IActionResult SetRoleAccessRight([FromBody]SetRoleAccessRightsRequest value)
 		{
 			var baseResponse = ProcessBaseRequest(value);
@@ -229,7 +259,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 				int? attributeId = _enumBL.EnumIdFromApiString<AttributeEnum>(item.Attribute);
 				if (attributeId == null)
 				{
-					allErrorMessages += $"Attribute {item.Attribute} is not correct, continue with other attributes. ";
+					allErrorMessages += $"Attribute {item.Attribute} is not correct, continueing with other attributes. ";
 					continue;
 				}
 				_thingBl.SetRoleAccessRights(out errMsg, _roleId,  roleForRightId.Value,  attributeId.Value,   value.ThingId, item.RoleAccessRights);
@@ -260,8 +290,60 @@ namespace InventoryApi.Controllers.InventoryControllers
 			var ret = new GetRoleAccessRightsResponse();
 			ret.AttributeRoleRights = _thingBl.GetRoleAccessRights(out errMsg, _roleId, roleForRightId.Value, value.ThingId);
 
+			if (ret.AttributeRoleRights == null) return BadRequest(errMsg);
 			return Ok(ret);
 		}
+
+
+		/// <summary>
+		/// Set the thing role memberlist.
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <response code="200">Memberlist is set, there can be errors (look at return body).</response>
+		/// <response code="400">Bad request, like Thing Id is OK or not enough priviledges.</response>
+		[HttpPost, ActionName("SetRoleMemberList")]
+		[Produces(typeof(string))]
+		public IActionResult SetRoleMemberList([FromBody]SetRoleMemberListRequest value)
+		{
+			var baseResponse = ProcessBaseRequest(value);
+			if (baseResponse != null) return baseResponse;
+
+			string errMsg = null;
+			int? roleToSetId = _enumBL.EnumIdFromApiString<RoleEnum>(value.RoleForMemberList);
+			if (roleToSetId == null) return BadRequest($"Role for right '{value.RoleForMemberList}' is not correct.");
+
+			if (_thingBl.SetRoleMemberList(out errMsg, _roleId, roleToSetId.Value, value.ThingId, value.MemberThingIds))
+			{
+				return Ok(errMsg);
+			}
+			return BadRequest(errMsg);
+		}
+
+		/// <summary>
+		/// Get thing role Members
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <response code="200">Get arguments were OK.</response>
+		/// <response code="400">Bad request, like Thing Id is OK or not enough priviledges.</response>
+		[HttpPost, ActionName("GetRoleMemberList")]
+		[Produces(typeof(GetRoleMemberListResponse))]
+		public IActionResult GetRoleMemberList([FromBody]GetRoleMemberListRequest value)
+		{
+			var baseResponse = ProcessBaseRequest(value);
+			if (baseResponse != null) return baseResponse;
+
+			string errMsg = null;
+			int? roleForMemberListId = _enumBL.EnumIdFromApiString<RoleEnum>(value.RoleForMemberList);
+			if (roleForMemberListId == null) return BadRequest($"Role for right '{value.RoleForMemberList}' is not correct.");
+
+			var ret = new GetRoleMemberListResponse();
+			ret.ThingIds = _thingBl.GetRoleMemberList(out errMsg, _roleId, roleForMemberListId.Value, value.ThingId);
+
+			if (ret.ThingIds == null) return BadRequest(errMsg);
+			return Ok(ret);
+		}
+
+
 
 		[NonAction]
 		protected BadRequestObjectResult ProcessBaseRequest(BaseRequest value)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,13 +12,17 @@ namespace T2D.Model.InventoryApi
 	public class QueryMyRolesRequest
 	{
 		/// <summary>
-		/// Session ID
+		/// Session that will be used in this request
 		/// </summary>
+		[Required]
 		public string Session { get; set; }
+
 		/// <summary>
-		/// Thing ID: CreatorFQDN/UniqueString
+		/// ThingID that which roles are got.
 		/// </summary>
+		[Required]
 		public string ThingId { get; set; }
+
 	}
 	/// <summary>
 	/// Query My Roles Response
