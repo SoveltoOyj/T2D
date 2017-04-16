@@ -24,9 +24,9 @@ namespace InventoryApi.Controllers.InventoryControllers
 	{
 
 		//these are got from BaseRequest
-		protected SessionBL _sessionBl ;
+		protected SessionBL _sessionBl;
 		protected ThingBL _thingBl;
-		protected int _roleId ;
+		protected int _roleId;
 
 		/// <summary>
 		/// Query my roles.
@@ -72,42 +72,39 @@ namespace InventoryApi.Controllers.InventoryControllers
 			if (baseResponse != null) return baseResponse;
 
 			string errMsg = null;
-			var ret = _thingBl.GetRelations(out errMsg, _roleId, value.ThingId); 
+			var ret = _thingBl.GetRelations(out errMsg, _roleId, value.ThingId);
 
 			if (ret != null) return Ok(ret);
 			return BadRequest(errMsg);
 
 		}
 
-		#region vanhaa
+		/// <summary>
+		/// Get Attributes.
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <returns>Attribute values.</returns>
+		/// <response code="200">Returns attribute values.</response>
+		/// <response code="400">Bad request, like Thing do not exists or not enough priviledges.</response>
+		[HttpPost, ActionName("GetAttributes")]
+		[Produces(typeof(GetAttributesResponse))]
+		public IActionResult GetAttributes([FromBody]GetAttributesRequest value)
+		{
+			ProcessBaseRequest(value);
+			var baseResponse = ProcessBaseRequest(value);
+			if (baseResponse != null) return baseResponse;
 
-		//[HttpPost, ActionName("GetAttribute")]
-		//[Produces(typeof(GetAttributeResponse))]
-		//public IActionResult GetAttribute([FromBody]GetAttributeRequest value)
-		//{
-		//	var session = this.GetSession(value.Session, true);
+			var ret = new GetAttributesResponse
+			{
+				AttributeValues = new List<AttributeValue>(value.Attributes.Count()),
+			};
+			foreach (var item in value.Attributes)
+			{
+				ret.AttributeValues.Add(_thingBl.GetAttribute(item, _roleId, value.ThingId));
+			}
 
-		//	T2D.Entities.BaseThing thing =
-		//		this.Find<T2D.Entities.BaseThing>(value.ThingId)
-		//		.Include(t => t.ThingAttributes)
-		//		.FirstOrDefault()
-		//		;
-
-		//	if (thing == null)
-		//		return BadRequest($"Thing '{value.ThingId}' do not exists.");
-
-		//	var role = this.RoleMapper.EnumToEntity(value.Role);
-		//	var attribute = this.AttributeMapper.EnumToEntity(value.Attribute);
-
-		//	GetAttributeResponse ret = new GetAttributeResponse
-		//	{
-		//		Attribute = attribute.Name,
-		//		TimeStamp = DateTime.UtcNow,
-		//		Value=GetPropertyValue(thing,attribute.Name)
-		//	};
-		//	return Ok(ret);
-		//}
-		#endregion
+			return Ok(ret);
+		}
 
 		/// <summary>
 		/// Create a new local Thing.
@@ -150,7 +147,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 			string errMsg = null;
 			string allErrorMessages = "";
 			int? roleForRightId = _enumBL.EnumIdFromApiString<RoleEnum>(value.RoleForRights);
-			if (roleForRightId==null) return BadRequest($"Role for right '{value.RoleForRights}' is not correct.");
+			if (roleForRightId == null) return BadRequest($"Role for right '{value.RoleForRights}' is not correct.");
 			foreach (var item in value.AttributeRoleRights)
 			{
 				int? attributeId = _enumBL.EnumIdFromApiString<AttributeEnum>(item.Attribute);
@@ -159,7 +156,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 					allErrorMessages += $"Attribute {item.Attribute} is not correct, continueing with other attributes. ";
 					continue;
 				}
-				_thingBl.SetRoleAccessRights(out errMsg, _roleId,  roleForRightId.Value,  attributeId.Value,   value.ThingId, item.RoleAccessRights);
+				_thingBl.SetRoleAccessRights(out errMsg, _roleId, roleForRightId.Value, attributeId.Value, value.ThingId, item.RoleAccessRights);
 				allErrorMessages += errMsg;
 				errMsg = null;
 			}
@@ -255,7 +252,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 			int? roleId = _enumBL.EnumIdFromApiString<RoleEnum>(value.Role);
 			if (roleId == null) return BadRequest($"Role '{value.Role}' is not correct.");
-
+			_roleId = roleId.Value;
 			return null;
 		}
 	}

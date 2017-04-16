@@ -10,6 +10,7 @@ using T2D.InventoryBL.Metadata;
 using T2D.Model.Enums;
 using T2D.Model.Helpers;
 using T2D.Model.InventoryApi;
+using System.Reflection;
 
 namespace T2D.InventoryBL.Thing
 {
@@ -141,6 +142,41 @@ namespace T2D.InventoryBL.Thing
 				ret.RelationThings.Add(rt);
 			}
 
+			return ret;
+
+		}
+
+		public AttributeValue GetAttribute(string attributeName, int roleId, string thingId)
+		{
+			BaseThing thing =
+				_dbc.ThingQuery(thingId)
+					.Include(t => t.ThingAttributes)
+					.FirstOrDefault()
+					;
+
+			var ret = new AttributeValue
+			{
+				Attribute = attributeName,
+			};
+			if (thing == null)
+			{
+				ret.IsOk=false;
+				ret.ErrorDescription =  $"Thing '{thingId}' do not exists.";
+				return ret;
+			}
+
+			var enumBL = new EnumBL();
+			int? attributeId = enumBL.EnumIdFromApiString<AttributeEnum>(attributeName);
+			if (attributeId==null)
+			{
+				ret.IsOk = false;
+				ret.ErrorDescription = $"Attribute do not exists.";
+				return ret;
+			}
+
+			ret.TimeStamp = null;
+			ret.Value = GetAttributeValue(thing, attributeName);
+			ret.IsOk = true;
 			return ret;
 
 		}
@@ -300,7 +336,7 @@ namespace T2D.InventoryBL.Thing
 			//get all ThingRoles
 			BaseThing thing =
 				_dbc.ThingQuery(thingId)
-				.Include(t=>t.ThingRoles)
+				.Include(t => t.ThingRoles)
 				.SingleOrDefault()
 				;
 			if (thing == null)
@@ -317,15 +353,15 @@ namespace T2D.InventoryBL.Thing
 				.Where(tr => tr.RoleId == roleForRightId)
 				.SingleOrDefault()
 				;
-			if (thingRole==null)
+			if (thingRole == null)
 			{
 				return ret;
 			}
 
 			var thingAttribureRoleRights =
 				_dbc.ThingAttributeRoleRights
-				.Include(tarr=>tarr.ThingAttribute)
-					.ThenInclude(ta=>ta.Attribute)
+				.Include(tarr => tarr.ThingAttribute)
+					.ThenInclude(ta => ta.Attribute)
 				.Where(tarr => tarr.ThingRoleId == thingRole.Id)
 				;
 
@@ -372,6 +408,18 @@ namespace T2D.InventoryBL.Thing
 			}
 			return thingRole;
 
+		}
+
+
+		private object GetAttributeValue(IThing thing, string attributeName)
+		{
+			BindingFlags bf = BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance;
+			var typeInfo = thing.GetType().GetTypeInfo();
+			if (typeInfo.GetProperties(bf).Any(p=>p.Name==attributeName))
+			{
+				return typeInfo.GetProperty(attributeName, bf).GetValue(thing);
+			}				
+			return null;
 		}
 
 		public bool SetRoleMemberList(out string errMsg, int roleId, int roleToSetId, string thingId, List<string> memberThingIds)
@@ -434,7 +482,7 @@ namespace T2D.InventoryBL.Thing
 			_dbc.ThingRoleMembers
 				.Include(trm => trm.Thing)
 				.Where(trm => trm.ThingRoleId == thingRole.Id)
-				.Select(trm => new { Fqdn= trm.Thing.Fqdn, US=trm.Thing.US })
+				.Select(trm => new { Fqdn = trm.Thing.Fqdn, US = trm.Thing.US })
 				;
 
 			foreach (var item in q)

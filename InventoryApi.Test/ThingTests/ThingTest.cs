@@ -179,6 +179,32 @@ namespace InventoryApi.Test
 			Assert.True(result.RelationThings.Count() >= 2);
 		}
 
+		[Fact]
+		public async void GetAttributes_T1_ShouldReturn()
+		{
+			var getAttributeRequest = new GetAttributesRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = $"{cfqdn}/T1",
+				Role = "Owner",
+				Attributes = new List<string>
+				{
+					"Title",
+					"Modified",
+				}
+			};
+			var jsonContent = new JsonContent(getAttributeRequest);
+			var response = await _client.PostAsync($"{_url}/GetAttributes", jsonContent);
+			response.EnsureSuccessStatusCode();
+
+			var result = await response.Content.ReadAsJsonAsync<GetAttributesResponse>();
+
+			Assert.NotNull(result);
+			Assert.NotNull(result.AttributeValues);
+			Assert.True(result.AttributeValues.Count() == getAttributeRequest.Attributes.Count());
+			Assert.True(result.AttributeValues.Any(av=>av.Attribute == "Title" && av.IsOk==true));
+
+		}
 
 
 
