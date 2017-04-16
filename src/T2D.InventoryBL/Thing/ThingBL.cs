@@ -97,6 +97,54 @@ namespace T2D.InventoryBL.Thing
 			return true;
 		}
 
+		public GetRelationsResponse GetRelations(out string errMsg, int roleId, string thingId)
+		{
+			errMsg = null;
+
+			BaseThing thing =
+			_dbc.ThingQuery(thingId)
+				.Include(t => t.ThingAttributes)
+				.Include(t => t.ToThingRelations)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+			{
+				errMsg = $"Thing '{thingId}' do not exists.";
+				return null;
+			}
+
+			_session.AddSessionAccess(roleId, thing.Id);
+
+			var ret = new GetRelationsResponse();
+			ret.RelationThings = new List<GetRelationsResponse.RelationsThings>();
+			var enumBL = new EnumBL();
+
+			foreach (var group in thing.ToThingRelations.GroupBy(tr => tr.RelationId))
+			{
+				var rt = new GetRelationsResponse.RelationsThings
+				{
+					Relation = enumBL.EnumNameFromInt<RelationEnum>(group.Key),
+					Things = new List<GetRelationsResponse.RelationsThings.IdTitle>(),
+				};
+				foreach (var th in group)
+				{
+					var thing2 = _dbc.FindThing<BaseThing>(th.ToThingId);
+					var thingIdTitle = new GetRelationsResponse.RelationsThings.IdTitle
+					{
+						ThingId = ThingIdHelper.Create(thing2.Fqdn, thing2.US)
+					};
+					if (thing2 != null && thing2 is IInventoryThing)
+						thingIdTitle.Title = ((IInventoryThing)thing2).Title;
+					rt.Things.Add(thingIdTitle);
+				}
+				ret.RelationThings.Add(rt);
+			}
+
+			return ret;
+
+		}
+
 		public QueryMyRolesResponse QueryMyRoles(out string errMsg, string thingId)
 		{
 			errMsg = null;

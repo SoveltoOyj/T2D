@@ -159,6 +159,26 @@ namespace InventoryApi.Test
 			Assert.True(result.Roles.Contains("Omnipotent"));
 		}
 
+		[Fact]
+		public async void GetRelations_T1_ShouldReturn()
+		{
+			var getRelationsRequest = new GetRelationsRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = $"{cfqdn}/T1",
+				Role = "Owner",
+			};
+			var jsonContent = new JsonContent(getRelationsRequest);
+			var response = await _client.PostAsync($"{_url}/GetRelations", jsonContent);
+			response.EnsureSuccessStatusCode();
+
+			var result = await response.Content.ReadAsJsonAsync<GetRelationsResponse>();
+
+			Assert.NotNull(result);
+			Assert.NotNull(result.RelationThings);
+			Assert.True(result.RelationThings.Count() >= 2);
+		}
+
 
 
 

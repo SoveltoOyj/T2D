@@ -15,6 +15,11 @@ namespace T2D.InventoryBL
 		{
 			return dbc.Things.SingleOrDefault(t => t.Fqdn == ThingIdHelper.GetFQDN(thingId) && t.US == ThingIdHelper.GetUniqueString(thingId)) as T;
 		}
+		public static T FindThing<T>(this EfContext dbc, Guid id)
+			where T : class, T2D.Entities.IThing
+		{
+			return dbc.Things.Find(id) as T;
+		}
 
 		public static IQueryable<BaseThing> ThingQuery(this EfContext dbc, string thingId)
 		{
