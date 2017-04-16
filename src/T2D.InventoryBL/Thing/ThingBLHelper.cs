@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using T2D.Entities;
 using T2D.Infra;
 using T2D.Model.Helpers;
 
@@ -14,5 +15,16 @@ namespace T2D.InventoryBL
 		{
 			return dbc.Things.SingleOrDefault(t => t.Fqdn == ThingIdHelper.GetFQDN(thingId) && t.US == ThingIdHelper.GetUniqueString(thingId)) as T;
 		}
+
+		public static IQueryable<BaseThing> ThingQuery(this EfContext dbc, string thingId)
+		{
+			return dbc.Things
+				.Where(t => t.Fqdn == ThingIdHelper.GetFQDN(thingId) && t.US == ThingIdHelper.GetUniqueString(thingId))
+				.AsQueryable()
+				;
+		}
+
+
+
 	}
 }

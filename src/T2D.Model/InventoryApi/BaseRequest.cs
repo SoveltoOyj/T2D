@@ -13,13 +13,13 @@ namespace T2D.Model.InventoryApi
 		[Required]
 		public string Session { get; set; }
 		/// <summary>
-		/// ThingID that will be used in this request
+		/// ThingID that is the executing Thing during this request.
 		/// </summary>
 		[Required]
 		public string ThingId { get; set; }
 
 		/// <summary>
-		/// This request will be done in this role
+		/// This request will be done under this role.
 		/// </summary>
 		[Required]
 		public string Role { get; set; }

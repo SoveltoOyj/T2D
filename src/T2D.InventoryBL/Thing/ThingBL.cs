@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
 using System.Text;
 using T2D.Entities;
 using T2D.Infra;
 using T2D.InventoryBL.Metadata;
 using T2D.Model.Enums;
 using T2D.Model.Helpers;
+using T2D.Model.InventoryApi;
 
 namespace T2D.InventoryBL.Thing
 {
@@ -115,7 +117,7 @@ namespace T2D.InventoryBL.Thing
 			return thingRoleMember;
 		}
 
-		public bool SetRoleAccessRights(out string errMsg, int roleId, int attributeId, string thingId, string[] roleAccessRights)
+		public bool SetRoleAccessRights(out string errMsg, int executingRole, int roleForAccessRightsId, int attributeId, string thingId, IEnumerable<string> roleAccessRights)
 		{
 			//todo: security Check
 			errMsg = "";
@@ -139,21 +141,21 @@ namespace T2D.InventoryBL.Thing
 			}
 
 			//create a new ThingRole if it does not exists
-			ThingRole tr = RetrieveThingRole(roleId, thing.Id);
+			ThingRole tr = RetrieveThingRole(roleForAccessRightsId, thing.Id);
 
 			//create a new ThingAttribute if it does not exists
 			ThingAttribute ta =
 				_dbc.ThingAttributes
-				.Include(tatt=>tatt.ThingAttributeRoleRights)
+				.Include(tatt => tatt.ThingAttributeRoleRights)
 				.SingleOrDefault(tatt => tatt.AttributeId == attributeId && tatt.ThingId == thing.Id)
 				;
 			if (ta == null)
 			{
 				ta = new ThingAttribute
 				{
-					AttributeId=attributeId,
-					ThingId=thing.Id,
-					Logging=false,
+					AttributeId = attributeId,
+					ThingId = thing.Id,
+					Logging = false,
 				};
 				_dbc.ThingAttributes.Add(ta);
 			}
@@ -164,7 +166,7 @@ namespace T2D.InventoryBL.Thing
 			{
 				tarl = new ThingAttributeRoleRight
 				{
-					ThingAttributeId=ta.Id,
+					ThingAttributeId = ta.Id,
 					ThingRoleId = tr.Id,
 					Rights = accessRight,
 				};
@@ -179,7 +181,72 @@ namespace T2D.InventoryBL.Thing
 			return true;
 		}
 
-		private ThingRole RetrieveThingRole(int roleId, Guid thingId) {
+
+		public List<AttributeRoleRight> GetRoleAccessRights(out string errMsg, int roleId, int roleForRightId, string thingId)
+		{
+			//todo: security Check
+			errMsg = "";
+
+			//get all ThingRoles
+			BaseThing thing =
+				_dbc.ThingQuery(thingId)
+				.Include(t=>t.ThingRoles)
+				.SingleOrDefault()
+				;
+			if (thing == null)
+			{
+				errMsg = $"ThingId {thingId} do not exists.";
+				return null;
+			}
+
+			var ret = new List<AttributeRoleRight>();
+
+			//get thingAttributeRoleRights for asked role
+			var thingRole =
+				thing.ThingRoles
+				.Where(tr => tr.RoleId == roleForRightId)
+				.SingleOrDefault()
+				;
+			if (thingRole==null)
+			{
+				return ret;
+			}
+
+			var thingAttribureRoleRights =
+				_dbc.ThingAttributeRoleRights
+				.Include(tarr=>tarr.ThingAttribute)
+					.ThenInclude(ta=>ta.Attribute)
+				.Where(tarr => tarr.ThingRoleId == thingRole.Id)
+				;
+
+			foreach (var item in thingAttribureRoleRights)
+			{
+				// Todo: .ThenInclude seems to not working, that's we are using Enum directly.
+				// Explicit loading do not work either. Some problem in navigation property?
+				//var reference = _dbc.Entry(item.ThingAttribute).Reference(ta => ta.Attribute);
+				//if (!reference.IsLoaded) reference.Load();
+				string attrName;
+				EnumBL enumBL = new EnumBL();
+				if (item.ThingAttribute.Attribute != null) attrName = item.ThingAttribute.Attribute.Title;
+				else attrName = enumBL.EnumNameFromInt<AttributeEnum>(item.ThingAttribute.AttributeId);
+
+				AttributeRoleRight newRoleRight = new AttributeRoleRight
+				{
+					Attribute = attrName,
+					RoleAccessRights = new List<string>(),
+				};
+				string rights = item.Rights.ToString();
+				foreach (string right in rights.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					newRoleRight.RoleAccessRights.Add(right);
+				}
+				ret.Add(newRoleRight);
+			}
+			return ret;
+		}
+
+		private ThingRole RetrieveThingRole(int roleId, Guid thingId)
+		{
 			//create new ThingRole if not exists
 			var thingRole = _dbc.ThingRoles.SingleOrDefault(tr => tr.ThingId == thingId && tr.RoleId == roleId);
 			if (thingRole == null)

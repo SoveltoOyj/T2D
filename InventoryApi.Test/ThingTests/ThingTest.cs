@@ -23,10 +23,11 @@ namespace InventoryApi.Test
 		{
 			var jsonContent = new JsonContent(new CreateLocalThingRequest {
 				Session = "00000000-0000-0000-0000-000000000001",
-				ThingId =  $"{cfqdn}/Test@{DateTime.Now.ToString()}",
+				ThingId = $"{cfqdn}/M100",
+				Role="Omnipotent",
+				NewThingId =  $"{cfqdn}/Test@{DateTime.Now.ToString()}",
 				Title = "joku title",
 				ThingType = T2D.Model.Enums.ThingType.RegularThing,
-				OmnipotentThingId = $"{cfqdn}/M100"
 			});
 			var response = await _client.PostAsync($"{_url}/CreateLocalThing", jsonContent );
 
@@ -35,36 +36,64 @@ namespace InventoryApi.Test
 
 
 		[Fact]
-		public async void SetRoleRights_NewThing_ShouldBeOK()
+		public async void SetAndGetRoleRights_NewThing_ShouldBeOK()
 		{
 			string thingId = await CreateATestThing();
-			var jsonContent = new JsonContent(new SetRoleAccessRighsRequest
+			var setRoleAccessRightsRequest = new SetRoleAccessRightsRequest
 			{
 				Session = "00000000-0000-0000-0000-000000000001",
 				ThingId = thingId,
-				Role = "Owner",
+				Role = "Omnipotent",
+				RoleForRights = "Owner",
 				AttributeRoleRights = new List<AttributeRoleRight>
 				{
 					new AttributeRoleRight
 					{
 						Attribute = "Description",
-						RoleAccessRights = new string[] { "Create", "Read", "Update" },
+						RoleAccessRights = new List<string> { "Create", "Read", "Update" },
 					},
 					new AttributeRoleRight
 					{
 						Attribute = "Created",
-						RoleAccessRights = new string[] { "Create", "Read" },
+						RoleAccessRights = new List<string> { "Create", "Read" },
 					},
 					new AttributeRoleRight
 					{
 						Attribute = "Location",
-						RoleAccessRights = new string[] { "Create", "Update" },
+						RoleAccessRights = new List<string> { "Create", "Update" },
 					},
-				}
-			});
+				},
+			};
+			var jsonContent = new JsonContent(setRoleAccessRightsRequest);
 			var response = await _client.PostAsync($"{_url}/SetRoleAccessRight", jsonContent);
-
 			response.EnsureSuccessStatusCode();
+
+			//get
+			jsonContent = new JsonContent(new GetRoleAccessRightsRequest
+			{
+				Session = setRoleAccessRightsRequest.Session,
+				ThingId = setRoleAccessRightsRequest.ThingId,
+				Role = setRoleAccessRightsRequest.Role,
+				RoleForRights = setRoleAccessRightsRequest.RoleForRights,
+			});
+			response = await _client.PostAsync($"{_url}/GetRoleAccessRight", jsonContent);
+			response.EnsureSuccessStatusCode();
+			var result = await response.Content.ReadAsJsonAsync<GetRoleAccessRightsResponse>();
+
+			Assert.NotNull(result);
+			Assert.NotNull(result.AttributeRoleRights);
+			Assert.NotEmpty(result.AttributeRoleRights);
+			Assert.True(result.AttributeRoleRights.Count() == setRoleAccessRightsRequest.AttributeRoleRights.Count());
+			foreach (var item in setRoleAccessRightsRequest.AttributeRoleRights)
+			{
+				var arr = result.AttributeRoleRights.SingleOrDefault(r => r.Attribute == item.Attribute);
+				Assert.True( arr != null);
+				Assert.True(arr.RoleAccessRights.Count() == item.RoleAccessRights.Count());
+				foreach (var rar in arr.RoleAccessRights)
+				{
+					Assert.True(arr.RoleAccessRights.Contains(rar));
+				}
+			}
 		}
 
 		//		[Fact]
@@ -156,10 +185,11 @@ namespace InventoryApi.Test
 			var jsonContent = new JsonContent(new CreateLocalThingRequest
 			{
 				Session = "00000000-0000-0000-0000-000000000001",
-				ThingId = thingId,
+				ThingId = $"{cfqdn}/M100",
+				Role= "Omnipotent",
+				NewThingId = thingId,
 				Title = "Test thing",
 				ThingType = T2D.Model.Enums.ThingType.RegularThing,
-				OmnipotentThingId = $"{cfqdn}/M100"
 			});
 			var response = await _client.PostAsync($"{_url}/CreateLocalThing", jsonContent);
 			response.EnsureSuccessStatusCode();

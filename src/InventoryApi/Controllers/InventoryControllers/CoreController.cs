@@ -22,6 +22,13 @@ namespace InventoryApi.Controllers.InventoryControllers
 	[Route("api/inventory/[controller]/[action]")]
 	public class CoreController : ApiBaseController
 	{
+
+		//these are got from BaseRequest
+		protected SessionBL _sessionBl ;
+		protected ThingBL _thingBl;
+		protected int _roleId ;
+
+		#region vanhaa
 		///// <summary>
 		///// Query my roles.
 		///// </summary>
@@ -67,7 +74,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 		//			.Where(trm => sessionThings.Contains(trm.ThingId) && thingRoles.Contains(trm.ThingRoleId))
 		//			.ToList()
 		//			;
-										
+
 		//	var ret = new QueryMyRolesResponse
 		//	{
 		//		Roles = new List<string>(),
@@ -173,7 +180,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 		//	};
 		//	return Ok(ret);
 		//}
-
+#endregion
 
 		/// <summary>
 		/// Create a new local Thing.
@@ -184,20 +191,16 @@ namespace InventoryApi.Controllers.InventoryControllers
 		[HttpPost, ActionName("CreateLocalThing")]
 		public IActionResult CreateLocalThing([FromBody]CreateLocalThingRequest value)
 		{
-			if (!ModelState.IsValid) return BadRequest(ModelState);
-			SessionBL sessionBl = SessionBL.CreateSessionBLForExistingSession(_dbc, value.Session);
-			if (sessionBl == null) return BadRequest("Session is not correct.");
-
-			ThingBL thingBl = ThingBL.CreateThingBL(_dbc, sessionBl);
-			if (thingBl == null) return BadRequest();
+			var baseResponse = ProcessBaseRequest(value);
+			if (baseResponse != null) return baseResponse;
 
 			string errMsg = null;
-			bool ret = thingBl.CreateNewThing(
+			bool ret = _thingBl.CreateNewThing(
 				out errMsg,
-				value.ThingId,
+				value.NewThingId,
 				value.Title,
 				value.ThingType,
-				value.OmnipotentThingId
+				value.ThingId
 				);
 
 			if (ret) return Ok();
@@ -208,23 +211,19 @@ namespace InventoryApi.Controllers.InventoryControllers
 		/// Set thing role access rights
 		/// </summary>
 		/// <param name="value">Request argument</param>
-		/// <response code="200">Right set was succesfull.</response>
+		/// <response code="200">Right set was done, there can be errors (look at return body).</response>
 		/// <response code="400">Bad request, like Thing Id is OK or not enough priviledges.</response>
 		[HttpPost, ActionName("SetRoleAccessRight")]
 		[Produces(typeof(bool))]
-		public IActionResult SetRoleAccessRight([FromBody]SetRoleAccessRighsRequest value)
+		public IActionResult SetRoleAccessRight([FromBody]SetRoleAccessRightsRequest value)
 		{
-			if (!ModelState.IsValid) return BadRequest(ModelState);
-			SessionBL sessionBl = SessionBL.CreateSessionBLForExistingSession(_dbc, value.Session);
-			if (sessionBl == null) return BadRequest("Session is not correct.");
-
-			ThingBL thingBl = ThingBL.CreateThingBL(_dbc, sessionBl);
-			if (thingBl == null) return BadRequest();
+			var baseResponse = ProcessBaseRequest(value);
+			if (baseResponse != null) return baseResponse;
 
 			string errMsg = null;
 			string allErrorMessages = "";
-			int? roleId = _enumBL.EnumIdFromApiString<RoleEnum>(value.Role);
-			if (roleId==null) return BadRequest($"Role is not correct.");
+			int? roleForRightId = _enumBL.EnumIdFromApiString<RoleEnum>(value.RoleForRights);
+			if (roleForRightId==null) return BadRequest($"Role for right '{value.RoleForRights}' is not correct.");
 			foreach (var item in value.AttributeRoleRights)
 			{
 				int? attributeId = _enumBL.EnumIdFromApiString<AttributeEnum>(item.Attribute);
@@ -233,7 +232,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 					allErrorMessages += $"Attribute {item.Attribute} is not correct, continue with other attributes. ";
 					continue;
 				}
-				thingBl.SetRoleAccessRights(out errMsg,  roleId.Value,  attributeId.Value,   value.ThingId, item.RoleAccessRights);
+				_thingBl.SetRoleAccessRights(out errMsg, _roleId,  roleForRightId.Value,  attributeId.Value,   value.ThingId, item.RoleAccessRights);
 				allErrorMessages += errMsg;
 				errMsg = null;
 			}
@@ -241,5 +240,44 @@ namespace InventoryApi.Controllers.InventoryControllers
 			return Ok(allErrorMessages);
 		}
 
+		/// <summary>
+		/// Get thing role access rights
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <response code="200">Get arguments were OK.</response>
+		/// <response code="400">Bad request, like Thing Id is OK or not enough priviledges.</response>
+		[HttpPost, ActionName("GetRoleAccessRight")]
+		[Produces(typeof(GetRoleAccessRightsResponse))]
+		public IActionResult GetRoleAccessRight([FromBody]GetRoleAccessRightsRequest value)
+		{
+			var baseResponse = ProcessBaseRequest(value);
+			if (baseResponse != null) return baseResponse;
+
+			string errMsg = null;
+			int? roleForRightId = _enumBL.EnumIdFromApiString<RoleEnum>(value.RoleForRights);
+			if (roleForRightId == null) return BadRequest($"Role for right '{value.RoleForRights}' is not correct.");
+
+			var ret = new GetRoleAccessRightsResponse();
+			ret.AttributeRoleRights = _thingBl.GetRoleAccessRights(out errMsg, _roleId, roleForRightId.Value, value.ThingId);
+
+			return Ok(ret);
+		}
+
+		[NonAction]
+		protected BadRequestObjectResult ProcessBaseRequest(BaseRequest value)
+		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
+
+			_sessionBl = SessionBL.CreateSessionBLForExistingSession(_dbc, value.Session);
+			if (_sessionBl == null) return BadRequest("Session is not correct.");
+
+			_thingBl = ThingBL.CreateThingBL(_dbc, _sessionBl);
+			if (_thingBl == null) return BadRequest("Something went wrong.");
+
+			int? roleId = _enumBL.EnumIdFromApiString<RoleEnum>(value.Role);
+			if (roleId == null) return BadRequest($"Role '{value.Role}' is not correct.");
+
+			return null;
+		}
 	}
 }

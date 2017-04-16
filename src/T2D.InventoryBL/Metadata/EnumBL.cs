@@ -78,5 +78,17 @@ namespace T2D.InventoryBL.Metadata
 			return ((IConvertible)value).ToInt32(System.Globalization.CultureInfo.InvariantCulture);
 		}
 
+		public string EnumNameFromInt<TEnum>(int intValue)
+	where TEnum : struct
+		{
+			if (!typeof(TEnum).GetTypeInfo().IsEnum)
+			{
+				throw new ArgumentException("TEnum must be of type System.Enum");
+			}
+
+			return Enum.GetName(typeof(TEnum), intValue);
+
+		}
+
 	}
 }
