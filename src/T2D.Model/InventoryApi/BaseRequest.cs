@@ -13,7 +13,7 @@ namespace T2D.Model.InventoryApi
 		[Required]
 		public string Session { get; set; }
 		/// <summary>
-		/// ThingID that is the executing Thing during this request.
+		/// The ThingID to which this request is exuecuted.
 		/// </summary>
 		[Required]
 		public string ThingId { get; set; }

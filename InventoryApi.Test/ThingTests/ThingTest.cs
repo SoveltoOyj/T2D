@@ -14,7 +14,6 @@ namespace InventoryApi.Test
 	public class ThingTest : InventoryApiBase
 	{
 		private string _url = "api/inventory/core";
-		private string cfqdn = "inv1.sovelto.fi";
 
 		public ThingTest(ITestOutputHelper output) : base(output){ }
 
@@ -23,9 +22,9 @@ namespace InventoryApi.Test
 		{
 			var jsonContent = new JsonContent(new CreateLocalThingRequest {
 				Session = "00000000-0000-0000-0000-000000000001",
-				ThingId = $"{cfqdn}/M100",
+				ThingId = $"{_cfqdn}/M100",
 				Role="Omnipotent",
-				NewThingId =  $"{cfqdn}/Test@{DateTime.Now.ToString()}",
+				NewThingId =  $"{_cfqdn}/Test@{DateTime.Now.ToString()}",
 				Title = "joku title",
 				ThingType = T2D.Model.Enums.ThingType.RegularThing,
 			});
@@ -108,8 +107,8 @@ namespace InventoryApi.Test
 				RoleForMemberList = "Owner",
 				MemberThingIds = new List<string>
 				{
-					$"{cfqdn}/M100",
-					$"{cfqdn}/AnonymousUser",
+					$"{_cfqdn}/M100",
+					$"{_cfqdn}/AnonymousUser",
 				}
 			};
 			var jsonContent = new JsonContent(setRoleMemberListRequest);
@@ -146,7 +145,7 @@ namespace InventoryApi.Test
 			var queryMyRolesRequest = new QueryMyRolesRequest
 			{
 				Session = "00000000-0000-0000-0000-000000000001",
-				ThingId = $"{cfqdn}/M100",
+				ThingId = $"{_cfqdn}/M100",
 			};
 			var jsonContent = new JsonContent(queryMyRolesRequest);
 			var response = await _client.PostAsync($"{_url}/QueryMyRoles", jsonContent);
@@ -165,7 +164,7 @@ namespace InventoryApi.Test
 			var getRelationsRequest = new GetRelationsRequest
 			{
 				Session = "00000000-0000-0000-0000-000000000001",
-				ThingId = $"{cfqdn}/T1",
+				ThingId = $"{_cfqdn}/T1",
 				Role = "Owner",
 			};
 			var jsonContent = new JsonContent(getRelationsRequest);
@@ -185,7 +184,7 @@ namespace InventoryApi.Test
 			var getAttributeRequest = new GetAttributesRequest
 			{
 				Session = "00000000-0000-0000-0000-000000000001",
-				ThingId = $"{cfqdn}/T1",
+				ThingId = $"{_cfqdn}/T1",
 				Role = "Owner",
 				Attributes = new List<string>
 				{
@@ -246,54 +245,6 @@ namespace InventoryApi.Test
 			Assert.True(result.AttributeValues.Any(av => av.Attribute == "Title" && av.IsOk == true));
 
 		}
-
-
-
-
-		//		[Fact]
-		//		public async void GetT2_ShouldReturnData()
-		//		{
-		//			//using (var client = _server.CreateClient().AcceptJson())
-		//			//{
-		//			//	var response = await client.GetAsync($"{_url}/id?c={cfqdn}&u=T2");
-		//			//	var result = await response.Content.ReadAsJsonAsync<BaseThing>();
-
-		//			//	Assert.NotNull(result);
-		//			//	Assert.Equal("inv1.sovelto.fi/T2", result.Id);
-		//			//	Assert.NotNull(result.Title);
-		//			//}
-		//		}
-
-
-		private async Task<string> CreateATestThing()
-		{
-			string thingId = $"{cfqdn}/Test@{DateTime.Now.ToString()} - {Guid.NewGuid()}";
-			var jsonContent = new JsonContent(new CreateLocalThingRequest
-			{
-				Session = "00000000-0000-0000-0000-000000000001",
-				ThingId = $"{cfqdn}/M100",
-				Role= "Omnipotent",
-				NewThingId = thingId,
-				Title = "Test thing",
-				ThingType = T2D.Model.Enums.ThingType.RegularThing,
-			});
-			var response = await _client.PostAsync($"{_url}/CreateLocalThing", jsonContent);
-			response.EnsureSuccessStatusCode();
-			return thingId;
-		}
 		
-		//		private async Task<System.Net.HttpStatusCode> DeleteATestThing(string id, HttpClient client)
-		//		{
-		//			var deleteResponse = await client.DeleteAsync($"{_url}{GetThingIdQueryString(id)}");
-		//			var result = deleteResponse.StatusCode;
-		//			Assert.Equal(System.Net.HttpStatusCode.OK, result);
-
-		//			return result;
-		//		}
-
-		//		private string GetThingIdQueryString(string thingId)
-		//		{
-		//			return $"?c={cfqdn}&u={thingId.Split(new char[] { '/' })[1]}";
-		//		}
 	}
 }

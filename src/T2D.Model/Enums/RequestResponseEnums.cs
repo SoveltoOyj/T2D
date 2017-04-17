@@ -23,4 +23,16 @@ namespace T2D.Model.Enums
 		IoTThing,
 		WalletThing,
 	}
+
+	/// <summary>
+	/// All non-abstract ActionTypes (inheritance) that are used in the API
+	/// </summary>
+	public enum ActionType
+	{
+		GenericAction = 1,
+		//PaymentRequestAction,
+		//ReceiptRequestAction,
+		//IoTBotRequestAction,
+		//ServiceRequestAction,
+	}
 }

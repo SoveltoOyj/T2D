@@ -27,6 +27,7 @@ namespace T2D.InventoryBL.Metadata
 				"Attribute",
 				"AuthenticationType",
 				"ThingType",
+				"ActionType",
 			};
 		}
 

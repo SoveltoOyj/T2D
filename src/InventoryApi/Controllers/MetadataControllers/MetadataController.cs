@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using T2D.InventoryBL.Mappers;
 using InventoryApi.Controllers.BaseControllers;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
@@ -127,6 +126,8 @@ namespace InventoryApi.Controllers.MetadataControllers
 					return Ok(_enumBL.ApiEnumValuesFromEnum<T2D.Model.Enums.AuthenticationType>());
 				case "thingtype":
 					return Ok(_enumBL.ApiEnumValuesFromEnum<T2D.Model.Enums.ThingType>());
+				case "actiontype":
+					return Ok(_enumBL.ApiEnumValuesFromEnum<T2D.Model.Enums.ActionType>());
 			}
 			return BadRequest($"Can't find values for enum '{enumName}'");
 

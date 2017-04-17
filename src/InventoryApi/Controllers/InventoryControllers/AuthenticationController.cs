@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using T2D.InventoryBL.Mappers;
 using InventoryApi.Controllers.BaseControllers;
 using T2D.Model.InventoryApi;
 using T2D.Model.Helpers;
