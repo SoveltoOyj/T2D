@@ -11,6 +11,9 @@ namespace T2D.Model.ServiceApi
 
 	public class GetServicesResponse
 	{
+		/// <summary>
+		/// Titles of Services this Thing has.
+		/// </summary>
 		public List<string> Services { get; set; }
 	}
 

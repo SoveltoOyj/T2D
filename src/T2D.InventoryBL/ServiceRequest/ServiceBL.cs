@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using T2D.Entities;
 using T2D.Infra;
@@ -134,5 +136,81 @@ namespace T2D.InventoryBL.ServiceRequest
 			return true;
 			}
 
+		public bool ActivateService(out string errMsg, string thingId, int roleId, string service)
+		{
+			errMsg = null;
+
+			GenericThing thing =
+				_dbc.ThingQuery<GenericThing>(thingId)
+				.Include(t => t.ThingRoles)
+				.Include(t => t.ServiceDefinitions)
+					.ThenInclude(sd => sd.Actions)
+				.Where(t => t.ServiceDefinitions.Any(sd => sd.Title == service))
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+			{
+				errMsg = $"Thing '{thingId}' do not exists or do not have service {service}.";
+			}
+			//have to read again, navigation properties did not work as exptected
+			ServiceDefinition serviceDefinition = thing.ServiceDefinitions
+					.Where(sd => sd.Title == service)
+					.SingleOrDefault()
+					;
+
+
+			// create ServiceStatus
+			ServiceStatus ss = new ServiceStatus
+			{
+				ServiceDefinitionId = serviceDefinition.Id,
+				SessionId = _session.Session.Id,
+				StartedAt = DateTime.UtcNow,
+				State = ServiceAndActitivityState.NotStarted,
+				ThingId = _session.Session.EntryPoint_ThingId,
+				CompletedAt = null,
+			};
+			_dbc.ServiceStatuses.Add(ss);
+
+			//create ActionStatuses
+			foreach (var item in thing.ServiceDefinitions.First().Actions)
+			{
+				var actionStatus = new ActionStatus
+				{
+					ActionDefinitionId = item.Id,
+					DeadLine = item.TimeSpan!=null? ss.StartedAt.Add(item.TimeSpan.Value):(DateTime?) null,
+					ServiceStatus = ss,
+					State = ServiceAndActitivityState.NotStarted,
+					AddedAt = DateTime.UtcNow,
+					CompletedAt = null,
+				};
+				ss.ActionStatuses.Add(actionStatus);
+			}
+
+			_dbc.SaveChanges();
+			return true;
+
 		}
+
+		public List<string> GetServices(out string errMsg, string thingId, int roleId)
+		{
+			errMsg = null;
+			var thing = _dbc.FindThing<BaseThing>(thingId);
+			if (thing == null)
+			{
+				errMsg = $"The thing '{thingId}'to which ServiceType was created do not exists.";
+				return null;
+			}
+
+			//TODO: check that session has right to 
+
+			var q = _dbc.ServiceDefinitions
+							.Where(sd => sd.ThingId == thing.Id)
+							.Select(sd => sd.Title)
+							;
+
+			return q.ToList();
+
+		}
+	}
 	}

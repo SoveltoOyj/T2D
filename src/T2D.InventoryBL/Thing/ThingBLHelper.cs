@@ -29,6 +29,15 @@ namespace T2D.InventoryBL
 				;
 		}
 
+		public static IQueryable<TThing> ThingQuery<TThing>(this EfContext dbc, string thingId)
+			where TThing : class, T2D.Entities.IThing
+		{
+			return dbc.Things
+				.OfType<TThing>()
+				.Where(t => t.Fqdn == ThingIdHelper.GetFQDN(thingId) && t.US == ThingIdHelper.GetUniqueString(thingId))
+				.AsQueryable<TThing>()
+				;
+		}
 
 
 	}

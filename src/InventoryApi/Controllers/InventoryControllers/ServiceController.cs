@@ -51,94 +51,50 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 
 
+		/// <summary>
+		/// Get Services if one Thing.
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <response code="200">Returns all Services of a thing</response>
+		/// <response code="400">Bad request, like Thing do not exists or not enough priviledges.</response>
+		[HttpPost, ActionName("GetServices")]
+		[Produces(typeof(GetServicesResponse))]
+		public IActionResult GetServices([FromBody]GetServicesRequest value)
+		{
+			ProcessBaseRequest(value);
+			var baseResponse = ProcessBaseRequest(value);
+			if (baseResponse != null) return baseResponse;
+
+			string errMsg = null;
+			GetServicesResponse ret = new GetServicesResponse();
+
+			ret.Services = _serviceBl.GetServices(out errMsg, value.ThingId, _roleId); 
+			if (errMsg==null)	return Ok(ret);
+			return BadRequest(errMsg);
+
+		}
+		/// <summary>
+		/// Activates a service.
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <response code="200">Service was activated.</response>
+		/// <response code="400">Bad request, like Thing do not exists or not enough priviledges.</response>
+		[HttpPost, ActionName("ServiceRequest")]
+		public IActionResult ServiceRequest([FromBody]ServiceRequestRequest value)
+		{
+			ProcessBaseRequest(value);
+			var baseResponse = ProcessBaseRequest(value);
+			if (baseResponse != null) return baseResponse;
+
+			string errMsg = null;
+
+			if (_serviceBl.ActivateService(out errMsg, value.ThingId, _roleId, value.Service))
+				return Ok();
+
+			return BadRequest(errMsg);
+
+		}
 		#region vanha
-		//[HttpPost, ActionName("GetServices")]
-		//[Produces(typeof(GetServicesResponse))]
-		//public IActionResult GetServices([FromBody]GetServicesRequest value)
-		//{
-		//	var session = this.GetSession(value.Session, true);
-
-		//	T2D.Entities.BaseThing thing =
-		//		this.Find<T2D.Entities.BaseThing>(value.ThingId)
-		//		.Include(t => t.ThingRoles)
-		//		.FirstOrDefault()
-		//		;
-
-		//	if (thing == null)
-		//		return BadRequest($"Thing '{value.ThingId}' do not exists.");
-
-		//	var role = this.RoleMapper.EnumToEntity(value.Role);
-		//	//TODO: check that session has right to 
-		//	if (!AttributeSecurity.QueryServiceRequestRight(thing, session, role))
-		//		return BadRequest($"Not enough priviledges to query Services of {value.ThingId}.");
-
-		//	var q = dbc.ServiceDefinitions
-		//					.Where(sd => sd.ThingId == thing.Id)
-		//					.Select(sd => sd.Title)
-		//					;
-
-		//	GetServicesResponse ret = new GetServicesResponse
-		//	{
-		//		Services = q.ToList(),
-		//	};
-		//	return Ok(ret);
-		//}
-
-		//[HttpPost, ActionName("ServiceRequest")]
-		//public IActionResult ServiceRequest([FromBody]ServiceRequestRequest value)
-		//{
-		//	var session = this.GetSession(value.Session, true);
-
-		//	T2D.Entities.GenericThing thing =
-		//		this.Find< T2D.Entities.GenericThing>(value.ThingId)
-		//		.Include(t => t.ThingRoles)
-		//		.Include(t => t.ServiceDefinitions)
-		//			.ThenInclude(sd => sd.Actions)
-		//		.Where(t=>t.ServiceDefinitions.Any(sd=>sd.Title==value.Service))
-		//		.FirstOrDefault()
-		//		;
-
-		//	if (thing == null)
-		//		return BadRequest($"Thing '{value.ThingId}' do not exists or do not have service {value.Service}.");
-
-		//	//have to read again, navigation properties did not work as exptected
-		//	ServiceDefinition serviceDefinition =	thing.ServiceDefinitions
-		//			.Where(sd => sd.Title == value.Service)
-		//			.SingleOrDefault()
-		//			;
-
-
-		//	// create ServiceStatus
-		//	ServiceStatus ss = new ServiceStatus
-		//	{
-		//		ServiceDefinitionId = serviceDefinition.Id,
-		//		SessionId = session.Id,
-		//		StartedAt = DateTime.UtcNow,
-		//		State = ServiceAndActitivityState.NotStarted,
-		//		ThingId = session.EntryPoint_ThingId,
-		//		CompletedAt=null,
-		//	};
-		//	dbc.ServiceStatuses.Add(ss);
-
-		//	//create ActionStatuses
-		//	foreach (var item in thing.ServiceDefinitions.First().Actions)
-		//	{
-		//		var actionStatus = new ActionStatus
-		//		{
-		//			ActionDefinitionId = item.Id,
-		//			DeadLine = ss.StartedAt.Add(item.TimeSpan),
-		//			ServiceStatus = ss,
-		//			State = ServiceAndActitivityState.NotStarted,
-		//			AddedAt = DateTime.UtcNow,
-		//			CompletedAt=null,
-		//		};
-		//		ss.ActionStatuses.Add(actionStatus);
-		//	}
-
-		//	dbc.SaveChanges();
-
-		//	return Ok();
-		//}
 
 		//[HttpPost, ActionName("GetServiceStatus")]
 		//[Produces(typeof(GetServiceStatusResponse))]

@@ -16,18 +16,18 @@ namespace InventoryApi.Test
 	{
 		private string _url = "api/inventory/service";
 
-		public ServiceTests(ITestOutputHelper output) : base(output){ }
+		public ServiceTests(ITestOutputHelper output) : base(output) { }
 
 		[Fact]
-		public async void CreateServiceDefinition_OK()
+		public async void CreateGetAndActivateServiceDefinition_OK()
 		{
 			string thingId = await CreateATestThing();
 
-			var jsonContent = new JsonContent(new CreateServiceTypeRequest
+			var createServiceTypeRequest = new CreateServiceTypeRequest
 			{
 				Session = "00000000-0000-0000-0000-000000000001",
 				ThingId = thingId,
-				Role="Owner",
+				Role = "Owner",
 				Title = $"New ServiceDef@{DateTime.Now.ToString()}",
 				MandatoryActions = new List<ActionDefinition>
 				{
@@ -50,13 +50,44 @@ namespace InventoryApi.Test
 						Title="Homma 2"
 					},
 				},
-			});
-			var response = await _client.PostAsync($"{_url}/CreateService", jsonContent );
+			};
+
+			var jsonContent = new JsonContent(createServiceTypeRequest);
+
+
+			var response = await _client.PostAsync($"{_url}/CreateService", jsonContent);
 			response.EnsureSuccessStatusCode();
+
+			//get
+			jsonContent = new JsonContent(new GetServicesRequest
+			{
+				Session = createServiceTypeRequest.Session,
+				ThingId = createServiceTypeRequest.ThingId,
+				Role = createServiceTypeRequest.Role,
+			});
+			response = await _client.PostAsync($"{_url}/GetServices", jsonContent);
+			response.EnsureSuccessStatusCode();
+			var result = await response.Content.ReadAsJsonAsync<GetServicesResponse>();
+
+			Assert.NotNull(result);
+			Assert.NotNull(result.Services);
+			Assert.NotEmpty(result.Services);
+			Assert.True(result.Services.Count() == 1);
+			Assert.True(result.Services[0] == createServiceTypeRequest.Title);
+
+			//activate
+			jsonContent = new JsonContent(new ServiceRequestRequest
+			{
+				Session = createServiceTypeRequest.Session,
+				ThingId = createServiceTypeRequest.ThingId,
+				Role = createServiceTypeRequest.Role,
+				Service = createServiceTypeRequest.Title,
+			});
+			response = await _client.PostAsync($"{_url}/ServiceRequest", jsonContent);
+			response.EnsureSuccessStatusCode();
+
 		}
 
-		
-		
-	
 	}
+
 }

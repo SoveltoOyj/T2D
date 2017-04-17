@@ -18,7 +18,7 @@ namespace T2D.Entities
 		public Guid ActionDefinitionId { get; set; }
 		public ActionDefinition ActionDefinition { get; set; }
 
-		public DateTime	DeadLine { get; set; }
+		public DateTime?	DeadLine { get; set; }
 
 		public DateTime AddedAt { get; set; }
 		public DateTime? CompletedAt { get; set; }
