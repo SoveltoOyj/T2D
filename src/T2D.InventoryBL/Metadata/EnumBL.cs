@@ -79,6 +79,28 @@ namespace T2D.InventoryBL.Metadata
 			return ((IConvertible)value).ToInt32(System.Globalization.CultureInfo.InvariantCulture);
 		}
 
+		/// <summary>
+		/// Gets enum? of enum string
+		/// </summary>
+		/// <typeparam name="TEnum">Enum type</typeparam>
+		/// <param name="enumStr">Enum value as string.</param>
+		/// <returns>enum?, null if enum does not contain that value.</returns>
+		public TEnum? EnumFromApiString<TEnum>(string enumStr)
+			where TEnum : struct, IConvertible
+		{
+			if (!typeof(TEnum).GetTypeInfo().IsEnum)
+			{
+				throw new ArgumentException("TEnum must be of type System.Enum");
+			}
+
+			TEnum value;
+			if (!Enum.TryParse<TEnum>(enumStr, out value))
+			{
+				return null;
+			}
+			return value;
+		}
+
 		public string EnumNameFromInt<TEnum>(int intValue)
 	where TEnum : struct
 		{

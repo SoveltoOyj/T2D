@@ -56,5 +56,21 @@ namespace InventoryApi.Test
 			response.EnsureSuccessStatusCode();
 			return thingId;
 		}
+		protected async Task<string> CreateTestAuthenticatedThing()
+		{
+			string thingId = $"{_cfqdn}/Test@{DateTime.Now.ToString()} - {Guid.NewGuid()}";
+			var jsonContent = new JsonContent(new CreateLocalThingRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = $"{_cfqdn}/M100",
+				Role = "Omnipotent",
+				NewThingId = thingId,
+				Title = "Test Authenticated thing",
+				ThingType = T2D.Model.Enums.ThingType.AuthenticationThing,
+			});
+			var response = await _client.PostAsync($"api/inventory/core/CreateLocalThing", jsonContent);
+			response.EnsureSuccessStatusCode();
+			return thingId;
+		}
 	}
 }

@@ -6,6 +6,9 @@ using System.Text;
 using T2D.Entities;
 using T2D.Infra;
 using T2D.Model.ServiceApi;
+using T2D.Model;
+using T2D.Model.Helpers;
+using T2D.InventoryBL.Metadata;
 
 namespace T2D.InventoryBL.ServiceRequest
 {
@@ -192,6 +195,206 @@ namespace T2D.InventoryBL.ServiceRequest
 
 		}
 
+		public List<ActionStatusResponse> GetActionStatuses(out string errMsg, string thingId, int roleId)
+		{
+			errMsg = null;
+			Entities.BaseThing thing =
+				_dbc.ThingQuery<Entities.BaseThing>(thingId)
+				.Include(t => t.ThingRoles)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+			{
+				errMsg = $"Thing '{thingId}' do not exists.";
+				return null;
+			}
+
+			List<ActionStatusResponse> ret = new List<ActionStatusResponse>();
+
+			var query = _dbc.ActionStatuses
+				.Include(acs => acs.ServiceStatus)
+				.Include(acs => acs.ActionDefinition)
+				.Where(acs => acs.ActionDefinition.Operator_ThingId == thing.Id)  //action is assignt to this thing
+				.OrderBy(acs => acs.State)
+				.ThenByDescending(acs => acs.DeadLine)
+				;
+
+			foreach (var item in query)
+			{
+				ret.Add(new ActionStatusResponse
+				{
+					ActionId = item.Id,
+					Title = item.ActionDefinition.Title,
+					AddedAt = item.AddedAt,
+					State = item.State.ToString(),
+					ActionClass = item.ActionDefinition.GetType().Name,
+					ActionType = item.ActionDefinition.ActionListType.ToString(),
+				});
+			}
+			return ret;
+		}
+
+		public Model.Action GetActionStatus(out string errMsg, string thingId, int roleId, Guid actionId)
+		{
+
+			errMsg = null;
+			Entities.BaseThing thing =
+				_dbc.ThingQuery<Entities.BaseThing>(thingId)
+				.Include(t => t.ThingRoles)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+			{
+				errMsg = $"Thing '{thingId}' do not exists.";
+				return null;
+			}
+
+	
+			
+			var actionStatus = _dbc.ActionStatuses
+				.Include(acs => acs.ActionDefinition)
+					.ThenInclude(ad => ad.Alarm_Thing)
+				.SingleOrDefault(acs => acs.Id == actionId);
+
+			if (actionStatus == null)
+			{
+				errMsg = $"Action '{actionId}' do not exists.";
+				return null;
+			}
+
+			//get Status and update status if needed
+			var serviceStatus = UpdateServiceRequestState(actionStatus, null);
+
+			Model.Action ret = new Model.Action
+			{
+					Id = actionId,
+					Title = actionStatus.ActionDefinition.Title,
+					ActionClass = actionStatus.ActionDefinition.GetType().Name,
+					ActionType = actionStatus.ActionDefinition.ActionListType.ToString(),
+					Alarm_ThingId =  _dbc.GetThingStrId(actionStatus.ActionDefinition.Alarm_Thing),
+					DeadLine = actionStatus.DeadLine,
+					State = actionStatus.State.ToString(),
+					ThingId = _dbc.GetThingStrId(actionStatus.ActionDefinition.Operator_Thing),
+					Service = new Service
+					{
+						ThingId = _dbc.GetThingStrId(serviceStatus.ServiceDefinition.Thing),
+						AddedAt = serviceStatus.StartedAt,
+						Id = serviceStatus.Id,
+						RequestorThingId = _dbc.GetThingStrId(serviceStatus.Thing),
+						SessionId = serviceStatus.SessionId,
+						State = serviceStatus.State.ToString(),
+						Title = serviceStatus.ServiceDefinition.Title,
+					}
+			};
+
+			return ret;
+
+		}
+
+		public bool UpdateActionStatus(out string errMsg, string thingId, int roleId, Guid actionId, string state)
+		{
+			errMsg = null;
+			Entities.BaseThing thing =
+				_dbc.ThingQuery<Entities.BaseThing>(thingId)
+				.Include(t => t.ThingRoles)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+			{
+				errMsg = $"Thing '{thingId}' do not exists.";
+				return false;
+			}
+
+			var actionStatus = _dbc.ActionStatuses
+				.Include(acs => acs.ActionDefinition)
+					.ThenInclude(ad => ad.Alarm_Thing)
+				.SingleOrDefault(acs => acs.Id == actionId);
+
+
+			if (actionStatus == null)
+			{
+				errMsg = $"Action '{actionId}' do not exists.";
+				return false;
+			}
+
+			EnumBL enumBl = new EnumBL();
+			int? newState = enumBl.EnumIdFromApiString<ServiceAndActitivityState>(state);
+			if (newState==null)
+			{
+				errMsg = $"Unknown state {state}.";
+				return false;
+			}
+				UpdateServiceRequestState(actionStatus, enumBl.EnumFromApiString<ServiceAndActitivityState>(state).Value);
+			return true;
+
+		}
+
+		public List<ServiceStatusResponse> GetServiceStatuses(out string errMsg, string thingId, int roleId, Guid? serviceId)
+		{
+			errMsg = null;
+			GenericThing thing =
+								_dbc.ThingQuery<GenericThing>(thingId)
+				.Include(t => t.ThingRoles)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+			{
+				errMsg = $"Thing '{thingId}' do not exists.";
+				return null;
+			}
+
+			List<ServiceStatusResponse> ret = new List<ServiceStatusResponse>();
+
+			var baseQuery = _dbc.ServiceStatuses
+				.Include(ss => ss.ServiceDefinition)
+				.Where(ss => ss.ThingId == _session.Session .EntryPoint_ThingId)  //requestor is me
+				.Where(ss => ss.ServiceDefinition.ThingId == thing.Id)
+				;
+
+			if (serviceId == null)
+			{
+				var query = baseQuery
+					.OrderByDescending(ss => ss.StartedAt)
+					.Take(10)
+					;
+
+				foreach (var item in query)
+				{
+					ret.Add(new ServiceStatusResponse
+					{
+						ServiceId = item.Id,
+						Title = item.ServiceDefinition.Title,
+						RequestedAt = item.StartedAt,
+						State = item.State.ToString(),
+					});
+				}
+			}
+			else
+			{
+				var serviceStatus = baseQuery
+					.Where(ss => ss.Id == serviceId.Value)
+					.SingleOrDefault()
+					;
+
+				if (serviceStatus != null)
+				{
+					ret.Add(new ServiceStatusResponse
+					{
+						ServiceId = serviceStatus.Id,
+						Title = serviceStatus.ServiceDefinition.Title,
+						RequestedAt = serviceStatus.StartedAt,
+						State = serviceStatus.State.ToString(),
+					});
+				}
+			}
+			return ret;
+
+		}
+
 		public List<string> GetServices(out string errMsg, string thingId, int roleId)
 		{
 			errMsg = null;
@@ -212,5 +415,82 @@ namespace T2D.InventoryBL.ServiceRequest
 			return q.ToList();
 
 		}
+
+
+		private ServiceStatus UpdateServiceRequestState(ActionStatus actionStatus, ServiceAndActitivityState? newActionState)
+		{
+
+			var thisServiceStatus = _dbc.ServiceStatuses
+				.Include(ss => ss.Thing)
+				.Include(ss => ss.ActionStatuses)
+					.ThenInclude(acs => acs.ActionDefinition)
+				.Include(ss => ss.ServiceDefinition)
+					.ThenInclude(sd => sd.Thing)
+				.Single(ss => ss.Id == actionStatus.ServiceStatusId)
+				;
+
+			if (newActionState != null)
+			{
+				actionStatus.State = newActionState.Value;
+			}
+			if (IsStateNotFinneshed(thisServiceStatus.State))
+			{
+				//check if any mandatory action is over deadline
+				var q = thisServiceStatus.ActionStatuses
+					.Where(acs => acs.DeadLine < DateTime.UtcNow)
+					.Where(acs => IsStateNotFinneshed(acs.State))
+					;
+
+				foreach (var item in q)
+				{
+					item.State = ServiceAndActitivityState.NotDoneInTime;
+				}
+				if (q.Count() > 0)
+				{
+					thisServiceStatus.State = ServiceAndActitivityState.NotDoneInTime;
+				}
+			}
+
+			List<ServiceAndActitivityState> states;
+			// check if it service has been started
+			if (thisServiceStatus.State == ServiceAndActitivityState.NotStarted)
+			{
+				states = new List<ServiceAndActitivityState>
+				{
+					ServiceAndActitivityState.Done, ServiceAndActitivityState.Started,
+				};
+				var q = thisServiceStatus.ActionStatuses
+					.Where(acs => states.Contains(acs.State))
+					;
+				if (q.Count() > 0)
+				{
+					thisServiceStatus.State = ServiceAndActitivityState.Started;
+				}
+			}
+
+			// check if done, all mandatory done in time
+			if (thisServiceStatus.State == ServiceAndActitivityState.Started)
+			{
+				var q = thisServiceStatus.ActionStatuses
+					.Where(acs => acs.State != ServiceAndActitivityState.Done)
+					.Where(acs => acs.ActionDefinition.ActionListType == ActionListType.Mandatory)
+					;
+				if (q.Count() < 1)
+				{
+					thisServiceStatus.State = ServiceAndActitivityState.Done;
+				}
+			}
+
+
+			_dbc.SaveChanges();
+			return thisServiceStatus;
+		}
+
+		private bool IsStateNotFinneshed(ServiceAndActitivityState state)
+		{
+			return state == ServiceAndActitivityState.NotStarted || state == ServiceAndActitivityState.Started;
+		}
+
+
 	}
-	}
+}
