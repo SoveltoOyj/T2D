@@ -1,4 +1,13 @@
-﻿using System;
+﻿//#define AZURE
+//problems in Swagger Azure deployment.
+// You have to do the following
+// 1. Build locally (comment out #define AZURE and check EFContect.OnConfiguring)
+// 2. Start InventoryAPI and copy (using browser) /swagger/v1/swagger.json --> wwwroot/swagger.json
+// 3. uncomment  #define AZURE and change database in EFContect.OnConfiguring
+// 4. deploy to Azure
+// 5. comment out #define AZURE and change database in EFContect.OnConfiguring
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,7 +34,6 @@ namespace InventoryApi
 
 		public IConfigurationRoot Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
 			var basePath = PlatformServices.Default.Application.ApplicationBasePath;
@@ -44,8 +52,11 @@ namespace InventoryApi
 				});
 				c.DescribeAllParametersInCamelCase();
 				c.DescribeAllEnumsAsStrings();
+#if AZURE
+#else
 				c.IncludeXmlComments(System.IO.Path.Combine(basePath, "InventoryApi.xml"));
 				c.IncludeXmlComments(System.IO.Path.Combine(basePath, "T2D.Model.xml"));
+#endif
 			});
 		}
 
@@ -60,10 +71,15 @@ namespace InventoryApi
 			}
 			app.UseMvc();
 			app.UseSwagger();
-			app.UseSwaggerUI(c =>
-			{
-				c.SwaggerEndpoint("/swagger/v1/swagger.json", "ThingToData API V1");
-			});
+			app.UseSwaggerUI
+				(c =>
+				{
+#if AZURE
+					c.SwaggerEndpoint("/swagger.json", "ThingToData API V1");
+#else
+					c.SwaggerEndpoint("/swagger/v1/swagger.json", "ThingToData API V1");
+#endif
+				});
 
 			app.UseDefaultFiles();
 			app.UseStaticFiles();

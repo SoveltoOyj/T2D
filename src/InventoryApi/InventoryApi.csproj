@@ -16,6 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\swagger.json" />
+    <Content Include="wwwroot\test.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\T2D.Entities\T2D.Entities.csproj" />
     <ProjectReference Include="..\T2D.Infra\T2D.Infra.csproj" />
     <ProjectReference Include="..\T2D.Model\T2D.Model.csproj" />

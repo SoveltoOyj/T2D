@@ -1,0 +1,1217 @@
+﻿{
+	"swagger": "2.0",
+	"info": {
+		"version": "v1",
+		"title": "ThingToData",
+		"description": "Thing to data reference implementation",
+		"contact": {
+			"name": "Sovelto T2D Team",
+			"email": "ahti.haukilehto@sovelto.fi"
+		}
+	},
+	"basePath": "/",
+	"paths": {
+		"/api/inventory/Authentication/EnterAuthenticatedSession": {
+			"post": {
+				"tags": [ "Authentication" ],
+				"summary": "Enter authenticated session.\r\nNote: this is MOCK version, enter will allways succeed. New Authenticated user will be created if it does not exists.",
+				"operationId": "ApiInventoryAuthenticationEnterAuthenticatedSessionPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/AuthenticationRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A new Session was created and its id is returned.",
+						"schema": { "$ref": "#/definitions/AuthenticationResponse" }
+					},
+					"400": { "description": "Bad request, like Thing Id is not OK." }
+				}
+			}
+		},
+		"/api/inventory/Authentication/EnterAnonymousSession": {
+			"post": {
+				"tags": [ "Authentication" ],
+				"summary": "Enter Anonymous session.",
+				"operationId": "ApiInventoryAuthenticationEnterAnonymousSessionPost",
+				"consumes": [],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"responses": {
+					"200": {
+						"description": "A new Session was created and its id is returned.",
+						"schema": { "$ref": "#/definitions/AuthenticationResponse" }
+					}
+				}
+			}
+		},
+		"/api/inventory/Core/QueryMyRoles": {
+			"post": {
+				"tags": [ "Core" ],
+				"summary": "Query my roles.",
+				"operationId": "ApiInventoryCoreQueryMyRolesPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/QueryMyRolesRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns available roles.",
+						"schema": { "$ref": "#/definitions/QueryMyRolesResponse" }
+					},
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Core/GetRelations": {
+			"post": {
+				"tags": [ "Core" ],
+				"summary": "Get Relations.",
+				"operationId": "ApiInventoryCoreGetRelationsPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/GetRelationsRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns Relations.",
+						"schema": { "$ref": "#/definitions/GetRelationsResponse" }
+					},
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Core/GetAttributes": {
+			"post": {
+				"tags": [ "Core" ],
+				"summary": "Get Attributes.",
+				"operationId": "ApiInventoryCoreGetAttributesPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/GetAttributesRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns attribute values.",
+						"schema": { "$ref": "#/definitions/GetAttributesResponse" }
+					},
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Core/SetAttributes": {
+			"post": {
+				"tags": [ "Core" ],
+				"summary": "Set Attributes.",
+				"operationId": "ApiInventoryCoreSetAttributesPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/SetAttributesRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns current attribute values, where you can find out which settings were successfull.",
+						"schema": { "$ref": "#/definitions/SetAttributesResponse" }
+					},
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Core/CreateLocalThing": {
+			"post": {
+				"tags": [ "Core" ],
+				"summary": "Create a new local Thing.",
+				"operationId": "ApiInventoryCoreCreateLocalThingPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/CreateLocalThingRequest" }
+					}
+				],
+				"responses": {
+					"200": { "description": "A new Thing was created." },
+					"400": { "description": "Bad request, like Thing Id is not Unique or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Core/SetRoleAccessRight": {
+			"post": {
+				"tags": [ "Core" ],
+				"summary": "Set thing role access rights",
+				"operationId": "ApiInventoryCoreSetRoleAccessRightPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/SetRoleAccessRightsRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Right set was done, there can be errors (look at return body).",
+						"schema": { "type": "string" }
+					},
+					"400": { "description": "Bad request, like Thing Id is OK or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Core/GetRoleAccessRight": {
+			"post": {
+				"tags": [ "Core" ],
+				"summary": "Get thing role access rights",
+				"operationId": "ApiInventoryCoreGetRoleAccessRightPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/GetRoleAccessRightsRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Get arguments were OK.",
+						"schema": { "$ref": "#/definitions/GetRoleAccessRightsResponse" }
+					},
+					"400": { "description": "Bad request, like Thing Id is OK or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Core/SetRoleMemberList": {
+			"post": {
+				"tags": [ "Core" ],
+				"summary": "Set the thing role memberlist.",
+				"operationId": "ApiInventoryCoreSetRoleMemberListPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/SetRoleMemberListRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Memberlist is set, there can be errors (look at return body).",
+						"schema": { "type": "string" }
+					},
+					"400": { "description": "Bad request, like Thing Id is OK or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Core/GetRoleMemberList": {
+			"post": {
+				"tags": [ "Core" ],
+				"summary": "Get thing role Members",
+				"operationId": "ApiInventoryCoreGetRoleMemberListPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/GetRoleMemberListRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Get arguments were OK.",
+						"schema": { "$ref": "#/definitions/GetRoleMemberListResponse" }
+					},
+					"400": { "description": "Bad request, like Thing Id is OK or not enough priviledges." }
+				}
+			}
+		},
+		"/api/Metadata/ApiVersion": {
+			"get": {
+				"tags": [ "Metadata" ],
+				"summary": "Get Inventory API version number.",
+				"operationId": "ApiMetadataApiVersionGet",
+				"consumes": [],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"responses": {
+					"200": {
+						"description": "Returns version number.",
+						"schema": { "type": "string" }
+					}
+				}
+			}
+		},
+		"/api/Metadata/ApiCompatibility": {
+			"get": {
+				"tags": [ "Metadata" ],
+				"summary": "Get API compatibility to specific version. Not yet implemented!",
+				"operationId": "ApiMetadataApiCompatibilityGet",
+				"consumes": [],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "version",
+						"in": "query",
+						"description": "Version to which compatibility is compared to.",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns compatible functions.",
+						"schema": {
+							"type": "array",
+							"items": { "type": "string" }
+						}
+					},
+					"400": { "description": "Version is not correct." }
+				}
+			}
+		},
+		"/api/Metadata/EnumNames": {
+			"get": {
+				"tags": [ "Metadata" ],
+				"summary": "Get all enum names.",
+				"operationId": "ApiMetadataEnumNamesGet",
+				"consumes": [],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"responses": {
+					"200": {
+						"description": "Returns enum names.",
+						"schema": {
+							"type": "array",
+							"items": { "type": "string" }
+						}
+					}
+				}
+			}
+		},
+		"/api/Metadata/EnumValues": {
+			"get": {
+				"tags": [ "Metadata" ],
+				"summary": "Get enum values of an enum.",
+				"operationId": "ApiMetadataEnumValuesGet",
+				"consumes": [],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "enumName",
+						"in": "query",
+						"description": "Name of an enum.",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns enum values.",
+						"schema": {
+							"type": "array",
+							"items": { "$ref": "#/definitions/ModelEnum" }
+						}
+					},
+					"400": { "description": "If for example enumName is null or not an enum name." }
+				}
+			}
+		},
+		"/api/inventory/Service/CreateService": {
+			"post": {
+				"tags": [ "Service" ],
+				"summary": "Create a new Service.",
+				"operationId": "ApiInventoryServiceCreateServicePost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/CreateServiceTypeRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "if Service was created..",
+						"schema": { "type": "boolean" }
+					},
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Service/GetServices": {
+			"post": {
+				"tags": [ "Service" ],
+				"summary": "Get Services if one Thing.",
+				"operationId": "ApiInventoryServiceGetServicesPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/GetServicesRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Returns all Services of a thing",
+						"schema": { "$ref": "#/definitions/GetServicesResponse" }
+					},
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Service/ServiceRequest": {
+			"post": {
+				"tags": [ "Service" ],
+				"summary": "Activates a service.",
+				"operationId": "ApiInventoryServiceServiceRequestPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/ServiceRequestRequest" }
+					}
+				],
+				"responses": {
+					"200": { "description": "Service was activated." },
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Service/GetServiceStatus": {
+			"post": {
+				"tags": [ "Service" ],
+				"summary": "Get Service Status.",
+				"operationId": "ApiInventoryServiceGetServiceStatusPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument. If Service Guid is missing, last 10 servicerequest will be returned.",
+						"required": false,
+						"schema": { "$ref": "#/definitions/GetServiceStatusRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Service status(es) are returned.",
+						"schema": { "$ref": "#/definitions/GetServiceStatusResponse" }
+					},
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Service/GetActionStatuses": {
+			"post": {
+				"tags": [ "Service" ],
+				"summary": "Get Action Statuses for one OperatorThing.",
+				"operationId": "ApiInventoryServiceGetActionStatusesPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument.",
+						"required": false,
+						"schema": { "$ref": "#/definitions/GetActionStatusesRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Action statuses where Operator Thing is this request Thing.",
+						"schema": { "$ref": "#/definitions/GetActionStatusesResponse" }
+					},
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Service/GetActionStatus": {
+			"post": {
+				"tags": [ "Service" ],
+				"summary": "Get one Action Status.",
+				"operationId": "ApiInventoryServiceGetActionStatusPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument.",
+						"required": false,
+						"schema": { "$ref": "#/definitions/GetActionStatusRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Action status.",
+						"schema": { "$ref": "#/definitions/GetActionStatusResponse" }
+					},
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Service/UpdateActionStatus": {
+			"post": {
+				"tags": [ "Service" ],
+				"summary": "Update Action Status.",
+				"operationId": "ApiInventoryServiceUpdateActionStatusPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument.",
+						"required": false,
+						"schema": { "$ref": "#/definitions/UpdateActionStatusRequest" }
+					}
+				],
+				"responses": {
+					"200": { "description": "Action status updated." },
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		}
+	},
+	"definitions": {
+		"AuthenticationRequest": {
+			"description": "Authentication request",
+			"required": [ "thingId", "authenticationType" ],
+			"type": "object",
+			"properties": {
+				"thingId": {
+					"description": "The authenticated thing that will be the Session Thing.",
+					"type": "string"
+				},
+				"authenticationType": {
+					"description": "Authentication type, enum value.",
+					"enum": [ "Facebook", "Google" ],
+					"type": "string"
+				}
+			}
+		},
+		"AuthenticationResponse": {
+			"description": "Returns Session Id.\r\nNote. Session secret will be added, not implemented yet.",
+			"type": "object",
+			"properties": { "session": { "type": "string" } }
+		},
+		"QueryMyRolesRequest": {
+			"description": "Query my roles request",
+			"required": [ "session", "thingId" ],
+			"type": "object",
+			"properties": {
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "ThingID that which roles are got.",
+					"type": "string"
+				}
+			}
+		},
+		"QueryMyRolesResponse": {
+			"description": "Query My Roles Response",
+			"type": "object",
+			"properties": {
+				"roles": {
+					"description": "List of Roles.",
+					"type": "array",
+					"items": { "type": "string" }
+				}
+			}
+		},
+		"GetRelationsRequest": {
+			"required": [ "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"GetRelationsResponse": {
+			"type": "object",
+			"properties": {
+				"relationThings": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/RelationsThings" }
+				}
+			}
+		},
+		"RelationsThings": {
+			"type": "object",
+			"properties": {
+				"relation": { "type": "string" },
+				"things": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/IdTitle" }
+				}
+			}
+		},
+		"IdTitle": {
+			"type": "object",
+			"properties": {
+				"thingId": { "type": "string" },
+				"title": { "type": "string" }
+			}
+		},
+		"GetAttributesRequest": {
+			"required": [ "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"attributes": {
+					"description": "List of attributes which values to read.",
+					"type": "array",
+					"items": { "type": "string" }
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"GetAttributesResponse": {
+			"type": "object",
+			"properties": {
+				"attributeValues": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/AttributeValue" }
+				}
+			}
+		},
+		"AttributeValue": {
+			"type": "object",
+			"properties": {
+				"attribute": {
+					"description": "Attribute",
+					"type": "string"
+				},
+				"isOk": {
+					"description": "Could attribute value be read.",
+					"type": "boolean"
+				},
+				"errorDescription": {
+					"description": "The reason for not be able to read (if IsOk == false).",
+					"type": "string"
+				},
+				"value": {
+					"description": "Value of the attribute",
+					"type": "object"
+				}
+			}
+		},
+		"SetAttributesRequest": {
+			"required": [ "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"attributeValues": {
+					"description": "List of attributes which values to read.",
+					"type": "array",
+					"items": { "$ref": "#/definitions/SetAttributeValue" }
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"SetAttributeValue": {
+			"type": "object",
+			"properties": {
+				"attribute": {
+					"description": "Attribute",
+					"type": "string"
+				},
+				"value": {
+					"description": "Value of the attribute",
+					"type": "object"
+				}
+			}
+		},
+		"SetAttributesResponse": {
+			"type": "object",
+			"properties": {
+				"attributeValues": {
+					"description": "List of current values.",
+					"type": "array",
+					"items": { "$ref": "#/definitions/AttributeValue" }
+				}
+			}
+		},
+		"CreateLocalThingRequest": {
+			"description": "Query my roles request",
+			"required": [ "newThingId", "thingType", "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"newThingId": {
+					"description": "Thing ID of the new Thing: CreatorFQDN/UniqueString",
+					"type": "string"
+				},
+				"title": { "type": "string" },
+				"thingType": {
+					"enum": [ "RegularThing", "AliasThing", "ArchetypeThing", "AuthenticationThing", "IoTThing", "WalletThing" ],
+					"type": "string"
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"SetRoleAccessRightsRequest": {
+			"description": "Set Role Access Rights.\r\nTo remove Rights, set empty Rights to the AttributeRole.",
+			"required": [ "roleForRights", "attributeRoleRights", "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"roleForRights": {
+					"description": "The role for which access rights are set.",
+					"type": "string"
+				},
+				"attributeRoleRights": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/AttributeRoleRight" }
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"AttributeRoleRight": {
+			"required": [ "attribute" ],
+			"type": "object",
+			"properties": {
+				"attribute": {
+					"description": "Attribute (enum type Attribute).",
+					"type": "string"
+				},
+				"roleAccessRights": {
+					"description": "Array of rights (enum type Right)",
+					"type": "array",
+					"items": { "type": "string" }
+				}
+			}
+		},
+		"GetRoleAccessRightsRequest": {
+			"description": "Get Role Access Rights.",
+			"required": [ "roleForRights", "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"roleForRights": {
+					"description": "The role for which access rights are got.",
+					"type": "string"
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"GetRoleAccessRightsResponse": {
+			"description": "Get Role Access Rights.",
+			"type": "object",
+			"properties": {
+				"attributeRoleRights": {
+					"description": "All attributes that have Role Rights.",
+					"type": "array",
+					"items": { "$ref": "#/definitions/AttributeRoleRight" }
+				}
+			}
+		},
+		"SetRoleMemberListRequest": {
+			"description": "Set Role MemberList.",
+			"required": [ "roleForMemberList", "memberThingIds", "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"roleForMemberList": {
+					"description": "The role to which Memberlist will be set.",
+					"type": "string"
+				},
+				"memberThingIds": {
+					"description": "ThingIds that are Rolemembers.",
+					"type": "array",
+					"items": { "type": "string" }
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"GetRoleMemberListRequest": {
+			"description": "Get Role MemberList.",
+			"required": [ "roleForMemberList", "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"roleForMemberList": {
+					"description": "The role for which access rights are got.",
+					"type": "string"
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"GetRoleMemberListResponse": {
+			"description": "Get Role Access Rights.",
+			"type": "object",
+			"properties": {
+				"thingIds": {
+					"description": "All ThingIds that are in requested role.",
+					"type": "array",
+					"items": { "type": "string" }
+				}
+			}
+		},
+		"ModelEnum": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"format": "int32",
+					"type": "integer"
+				},
+				"name": { "type": "string" }
+			}
+		},
+		"CreateServiceTypeRequest": {
+			"required": [ "title", "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"title": {
+					"description": "Title of Service.",
+					"type": "string"
+				},
+				"mandatoryActions": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/ActionDefinition" }
+				},
+				"optionalActions": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/ActionDefinition" }
+				},
+				"selectedActions": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/ActionDefinition" }
+				},
+				"pendingActions": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/ActionDefinition" }
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"ActionDefinition": {
+			"required": [ "title", "objectThingId", "operatorThingId" ],
+			"type": "object",
+			"properties": {
+				"actionType": {
+					"description": "Type of the Action. Enum value.",
+					"enum": [ "GenericAction" ],
+					"type": "string"
+				},
+				"title": {
+					"description": "The title of Action.",
+					"type": "string"
+				},
+				"alarmThingId": {
+					"description": "The thing that will be send an alarm if action is overtime.",
+					"type": "string"
+				},
+				"objectThingId": {
+					"description": "The thing to which this action should be done.",
+					"type": "string"
+				},
+				"operatorThingId": {
+					"description": "The thing that should execute this Action.",
+					"type": "string"
+				},
+				"timespan": {
+					"description": "In which time this Action should be done.",
+					"type": "string"
+				}
+			}
+		},
+		"GetServicesRequest": {
+			"required": [ "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"GetServicesResponse": {
+			"type": "object",
+			"properties": {
+				"services": {
+					"description": "Titles of Services this Thing has.",
+					"type": "array",
+					"items": { "type": "string" }
+				}
+			}
+		},
+		"ServiceRequestRequest": {
+			"required": [ "service", "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"service": {
+					"description": "Title of the Service that will be activated",
+					"type": "string"
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"GetServiceStatusRequest": {
+			"required": [ "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"serviceId": {
+					"format": "uuid",
+					"description": "Service ID (Guid). If null, returns last 10 Service Request statuses",
+					"type": "string"
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"GetServiceStatusResponse": {
+			"type": "object",
+			"properties": {
+				"statuses": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/ServiceStatusResponse" }
+				}
+			}
+		},
+		"ServiceStatusResponse": {
+			"type": "object",
+			"properties": {
+				"serviceId": {
+					"format": "uuid",
+					"type": "string"
+				},
+				"title": { "type": "string" },
+				"requestedAt": {
+					"format": "date-time",
+					"type": "string"
+				},
+				"state": { "type": "string" }
+			}
+		},
+		"GetActionStatusesRequest": {
+			"required": [ "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"GetActionStatusesResponse": {
+			"type": "object",
+			"properties": {
+				"statuses": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/ActionStatusResponse" }
+				}
+			}
+		},
+		"ActionStatusResponse": {
+			"type": "object",
+			"properties": {
+				"actionId": {
+					"format": "uuid",
+					"type": "string"
+				},
+				"title": { "type": "string" },
+				"addedAt": {
+					"format": "date-time",
+					"type": "string"
+				},
+				"state": { "type": "string" },
+				"actionType": { "type": "string" },
+				"actionClass": { "type": "string" }
+			}
+		},
+		"GetActionStatusRequest": {
+			"required": [ "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"actionId": {
+					"format": "uuid",
+					"type": "string"
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"GetActionStatusResponse": {
+			"type": "object",
+			"properties": { "action": { "$ref": "#/definitions/Action" } }
+		},
+		"Action": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"format": "uuid",
+					"description": "Action ID (Guid)",
+					"type": "string"
+				},
+				"service": { "$ref": "#/definitions/Service" },
+				"title": { "type": "string" },
+				"actionType": { "type": "string" },
+				"thingId": {
+					"description": "The Thing who should do this action",
+					"type": "string"
+				},
+				"alarm_ThingId": {
+					"description": "THe thing that will get an alarm if this action is overdue",
+					"type": "string"
+				},
+				"deadLine": {
+					"format": "date-time",
+					"type": "string"
+				},
+				"actionClass": { "type": "string" },
+				"state": { "type": "string" }
+			}
+		},
+		"Service": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"format": "uuid",
+					"type": "string"
+				},
+				"title": { "type": "string" },
+				"thingId": {
+					"description": "The thing which Service this is",
+					"type": "string"
+				},
+				"requestorThingId": {
+					"description": "Requestor Thing",
+					"type": "string"
+				},
+				"state": { "type": "string" },
+				"sessionId": {
+					"format": "uuid",
+					"type": "string"
+				},
+				"addedAt": {
+					"format": "date-time",
+					"type": "string"
+				}
+			}
+		},
+		"UpdateActionStatusRequest": {
+			"required": [ "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"actionId": {
+					"format": "uuid",
+					"type": "string"
+				},
+				"state": { "type": "string" },
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		}
+	},
+	"securityDefinitions": {}
+}
