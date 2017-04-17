@@ -12,6 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Properties\PublishProfiles\ThingToData - Web Deploy.pubxml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\T2D.Entities\T2D.Entities.csproj" />
     <ProjectReference Include="..\T2D.Infra\T2D.Infra.csproj" />
     <ProjectReference Include="..\T2D.Model\T2D.Model.csproj" />
