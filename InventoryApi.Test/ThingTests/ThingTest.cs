@@ -245,6 +245,60 @@ namespace InventoryApi.Test
 			Assert.True(result.AttributeValues.Any(av => av.Attribute == "Title" && av.IsOk == true));
 
 		}
-		
+		[Fact]
+		public async void SetExtension_AndReadValue()
+		{
+			string thingId = await CreateATestThing();
+			var setAttributeRequest = new SetAttributesRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = thingId,
+				Role = "Owner",
+				AttributeValues = new List<SetAttributeValue>
+				{
+					new SetAttributeValue
+					{
+						Attribute=$"{_cfqdn}/TestExtension{Guid.NewGuid()}",
+						Value = "Testing data",
+					},
+					
+				}
+			};
+			var jsonContent = new JsonContent(setAttributeRequest);
+			var response = await _client.PostAsync($"{_url}/SetAttributes", jsonContent);
+			response.EnsureSuccessStatusCode();
+
+			var result = await response.Content.ReadAsJsonAsync<SetAttributesResponse>();
+
+			Assert.NotNull(result);
+			Assert.NotNull(result.AttributeValues);
+			Assert.True(result.AttributeValues.Count() == setAttributeRequest.AttributeValues.Count());
+			Assert.True(result.AttributeValues.Any(av => av.Attribute == setAttributeRequest.AttributeValues[0].Attribute && av.IsOk == true));
+
+			//read the value
+			var getAttributeRequest = new GetAttributesRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = thingId,
+				Role = "Owner",
+				Attributes = new List<string>
+				{
+					setAttributeRequest.AttributeValues[0].Attribute,
+				}
+			};
+			var jsonContent2 = new JsonContent(getAttributeRequest);
+			response = await _client.PostAsync($"{_url}/GetAttributes", jsonContent2);
+			response.EnsureSuccessStatusCode();
+
+			var result2 = await response.Content.ReadAsJsonAsync<GetAttributesResponse>();
+
+			Assert.NotNull(result2);
+			Assert.NotNull(result2.AttributeValues);
+			Assert.True(result2.AttributeValues.Count() == getAttributeRequest.Attributes.Count());
+			Assert.True(result2.AttributeValues.Any(av => av.Attribute == setAttributeRequest.AttributeValues[0].Attribute && av.IsOk == true));
+			Assert.True(string.Compare((string)result2.AttributeValues[0].Value,(string)setAttributeRequest.AttributeValues[0].Value)==0 );
+
+		}
+
 	}
 }

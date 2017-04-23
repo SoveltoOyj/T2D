@@ -5,11 +5,13 @@ Pikaohje - kannan tekeminen:
 
 
 
+declare @g1 geography, @g2 geography 
+set @g1 = (select Location_Gps  from Things where US='T1')
+set @g2 = (select  Location_Gps  from Things where US='T2')
+select @g1.STDistance(@g2)/1000 as Km
 
-
-http://localhost:27122/api/test/thing
-
-// just one thing
-http://localhost:27122/api/test/thing/id?cu=sovelto.fi/inventory&us=ThingNb2
-
+declare @km int = 1000
+select US from things
+ where Location_Gps is not null
+ AND @g1.STDistance(Location_Gps)/1000 < @km
 

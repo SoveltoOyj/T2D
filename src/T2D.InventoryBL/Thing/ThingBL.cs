@@ -158,12 +158,22 @@ namespace T2D.InventoryBL.Thing
 			{
 				Attribute = attributeName,
 			};
+
 			if (thing == null)
 			{
 				ret.IsOk=false;
 				ret.ErrorDescription =  $"Thing '{thingId}' do not exists.";
 				return ret;
 			}
+			//is it an Extension.
+			if (ThingIdHelper.IsValidThingId(attributeName))
+			{
+				GetExtensionValue(thing, attributeName, ret);
+				return ret;
+			}
+
+			// not an extension,
+
 
 			var enumBL = new EnumBL();
 			int? attributeId = enumBL.EnumIdFromApiString<AttributeEnum>(attributeName);
@@ -199,6 +209,16 @@ namespace T2D.InventoryBL.Thing
 				return ret;
 			}
 
+			// if attribute is Extension
+			if (ThingIdHelper.IsValidThingId(attributeName))
+			{
+				SetExtensionValue(thing, attributeName, (string)value);
+				ret.IsOk = true;
+				ret.Value = value;
+				return ret;
+			}
+
+			// not an extension,
 			var enumBL = new EnumBL();
 			int? attributeId = enumBL.EnumIdFromApiString<AttributeEnum>(attributeName);
 			if (attributeId == null)
@@ -479,7 +499,61 @@ namespace T2D.InventoryBL.Thing
 			}
 		}
 
+		private void SetExtensionValue(IThing thing, string extensionName, string value)
+		{
+			string fqdn = ThingIdHelper.GetFQDN(extensionName);
+			string us = ThingIdHelper.GetUniqueString(extensionName);
+			var extension = _dbc.Extensions.SingleOrDefault(et => et.Fqdn == fqdn && et.US == us);
+			//is it a new Extensiontype
+			if (extension == null)
+			{
+				extension = new Extension
+				{
+					Fqdn = fqdn,
+					US = us,
+				};
+				_dbc.Extensions.Add(extension);
+				_dbc.SaveChanges();
+			}
 
+			var data = _dbc.ExtensionDatas.SingleOrDefault(ed => ed.ThingId == thing.Id && ed.ExtensionId == extension.Id);
+			if (data == null)
+			{
+				data = new ExtensionData
+				{
+					ThingId = thing.Id,
+					ExtensionId = extension.Id,
+				};
+				_dbc.ExtensionDatas.Add(data);
+			}
+			data.Data = value;
+			_dbc.SaveChanges();
+			return;
+		}
+
+		private void GetExtensionValue(IThing thing, string extensionName, AttributeValue attributeValue)
+		{
+			string fqdn = ThingIdHelper.GetFQDN(extensionName);
+			string us = ThingIdHelper.GetUniqueString(extensionName);
+			var extension = _dbc.Extensions.SingleOrDefault(et => et.Fqdn == fqdn && et.US == us);
+			if (extension == null)
+			{
+				attributeValue.IsOk = false;
+				attributeValue.ErrorDescription = "No such extension type.";
+				return;
+			}
+
+			var data = _dbc.ExtensionDatas.SingleOrDefault(ed => ed.ThingId == thing.Id && ed.ExtensionId == extension.Id);
+			if (data == null)
+			{
+				attributeValue.IsOk = false;
+				attributeValue.ErrorDescription = "No value.";
+				return;
+			}
+			attributeValue.IsOk = true;
+			attributeValue.Value =  data.Data ;
+			return;
+		}
 		public bool SetRoleMemberList(out string errMsg, int roleId, int roleToSetId, string thingId, List<string> memberThingIds)
 		{
 			//todo: security Check

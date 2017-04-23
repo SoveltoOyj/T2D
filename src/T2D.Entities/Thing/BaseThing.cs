@@ -30,7 +30,7 @@ namespace T2D.Entities
 		public List<ThingRole> ThingRoles { get; set; }
 		public List<ThingAttribute> ThingAttributes { get; set; }
 		public List<SessionAccess> SessionAccesses { get; set; }
-		public List<Extension> Extensions { get; set; }
+		public List<ExtensionData> Extensions { get; set; }
 
 		#endregion
 
@@ -44,7 +44,7 @@ namespace T2D.Entities
 			ThingRoles = new List<ThingRole>();
 			ThingAttributes = new List<ThingAttribute>();
 			SessionAccesses = new List<SessionAccess>();
-			Extensions = new List<Extension>();
+			Extensions = new List<ExtensionData>();
 		}
 
 		public override string ToString()

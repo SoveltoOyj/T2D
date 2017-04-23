@@ -11,7 +11,7 @@ namespace T2D.Model.Helpers
 	{
 
 		// http://stackoverflow.com/questions/11809631/fully-qualified-domain-name-validation
-		public static bool CheckFQDN(string fqdn, bool allowNull= false)
+		public static bool CheckFQDN(string fqdn, bool allowNull = false)
 		{
 			if (string.IsNullOrWhiteSpace(fqdn))
 				return allowNull;
@@ -24,10 +24,10 @@ namespace T2D.Model.Helpers
 			if (string.IsNullOrWhiteSpace(uniqueString))
 				return allowNull;
 
-			return uniqueString.Length < 1024;	//ToDo: configuration, Entity will use it also
+			return uniqueString.Length < 1024;  //ToDo: configuration, Entity will use it also
 		}
 
-		public static string Create(string creatorFQDN, string uniqueString, bool allowNull=false)
+		public static string Create(string creatorFQDN, string uniqueString, bool allowNull = false)
 		{
 			if (!ThingIdHelper.CheckFQDN(creatorFQDN, allowNull))
 				throw new ArgumentException("Argument is not FQDN.", "creatorFQDN");
@@ -66,13 +66,26 @@ namespace T2D.Model.Helpers
 			if (thingId.Length < (index + 1))
 				throw new ArgumentException("Argument does not contain uniqueString.", "thingId");
 
-			string uniqueString = thingId.Substring(index+1);
+			string uniqueString = thingId.Substring(index + 1);
 			if (!ThingIdHelper.CheckUniqueString(uniqueString))
 				throw new ArgumentException("Argument does not contain uniqueString.", "thingId");
 
 			return uniqueString;
 		}
+		public static bool IsValidThingId(string thingId)
+		{
+			try
+			{
+				string fqdn = GetFQDN(thingId);
+				string us = GetUniqueString(thingId);
+				return !string.IsNullOrWhiteSpace(fqdn) && !string.IsNullOrWhiteSpace(us);
+			}
+			catch
+			{
+				return false;
+			}
 
+		}
 	}
 }
 

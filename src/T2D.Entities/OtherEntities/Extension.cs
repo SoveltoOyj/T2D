@@ -1,29 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using T2D.Helpers;
 
 namespace T2D.Entities
 {
 	/// <summary>
-	/// This Inventory metadata and all trusted Inventories
-	/// Inventory Metadata
+	/// Extension 'definitions'.
+	/// Implements IThing.
 	/// </summary>
-	public class Extension : IEntity
+	public class Extension: IThing
 	{
 		public Guid Id { get; set; }
 
-		public Guid ThingId { get; set; }
+		[StringLength(256), Required]
+		public string Fqdn { get; set; }
 
-		public string Data { get; set; }
+		[StringLength(512), Required]
+		public string US { get; set; }
 
-		#region Navigation Properties
-		public BaseThing Thing { get; set; }
-		#endregion
-		public Extension()
+		public override string ToString()
 		{
+			return this.ToJson();
 		}
 	}
 }

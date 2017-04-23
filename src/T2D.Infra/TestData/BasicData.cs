@@ -80,6 +80,8 @@ namespace T2D.Infra.TestData
 				StatusId = 1,
 				LocationTypeId = 1,
 				Logging = true,
+				Location_Gps = "Point(23.062592 62.560452)",  //Peräseinäjoki
+				IsGpsPublic = true,
 				Preferred_LocationTypeId = 1,
 				Modified = new DateTime(2016, 3, 23),
 				Published = new DateTime(2016, 4, 13),
@@ -100,7 +102,8 @@ namespace T2D.Infra.TestData
 				IsLocalOnly = true,
 				StatusId = 1,
 				LocationTypeId = 2,
-				Location_Gps = "(123.8, 56.9)",
+				Location_Gps = "Point(22.836914 62.783632)",  //Seinäjoki
+				IsGpsPublic = true,
 				Logging = true,
 				Preferred_LocationTypeId = 1,
 				Modified = new DateTime(2014, 3, 3),
@@ -109,6 +112,7 @@ namespace T2D.Infra.TestData
 			_dbc.RegularThings.Add(T2);
 			_dbc.SaveChanges();
 			CommonTestData.Entities["T2"] = T2;
+
 
 			_dbc.RegularThings.Add(new RegularThing
 			{
@@ -119,7 +123,8 @@ namespace T2D.Infra.TestData
 				IsLocalOnly = true,
 				StatusId = 1,
 				LocationTypeId = 1,
-				Location_Gps = "(12.0, 43.9)",
+				Location_Gps = "Point(24.938379 60.169856)", //Helsigin koordinaatit
+				IsGpsPublic = true,
 				Logging = true,
 				Preferred_LocationTypeId = 1,
 				Modified = new DateTime(2016, 3, 23),
