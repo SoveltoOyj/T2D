@@ -15,20 +15,21 @@ namespace InventoryApi.Test
 	{
 		private string _url = "api/inventory/core";
 
-		public ThingTest(ITestOutputHelper output) : base(output){ }
+		public ThingTest(ITestOutputHelper output) : base(output) { }
 
 		[Fact]
 		public async void CreateLocalThing_ShouldBeOK()
 		{
-			var jsonContent = new JsonContent(new CreateLocalThingRequest {
+			var jsonContent = new JsonContent(new CreateLocalThingRequest
+			{
 				Session = "00000000-0000-0000-0000-000000000001",
 				ThingId = $"{_cfqdn}/M100",
-				Role="Omnipotent",
-				NewThingId =  $"{_cfqdn}/Test@{DateTime.Now.ToString()}",
+				Role = "Omnipotent",
+				NewThingId = $"{_cfqdn}/Test@{DateTime.Now.ToString()}",
 				Title = "joku title",
 				ThingType = T2D.Model.Enums.ThingType.RegularThing,
 			});
-			var response = await _client.PostAsync($"{_url}/CreateLocalThing", jsonContent );
+			var response = await _client.PostAsync($"{_url}/CreateLocalThing", jsonContent);
 
 			response.EnsureSuccessStatusCode();
 		}
@@ -86,7 +87,7 @@ namespace InventoryApi.Test
 			foreach (var item in setRoleAccessRightsRequest.AttributeRoleRights)
 			{
 				var arr = result.AttributeRoleRights.SingleOrDefault(r => r.Attribute == item.Attribute);
-				Assert.True( arr != null);
+				Assert.True(arr != null);
 				Assert.True(arr.RoleAccessRights.Count() == item.RoleAccessRights.Count());
 				foreach (var rar in arr.RoleAccessRights)
 				{
@@ -201,7 +202,7 @@ namespace InventoryApi.Test
 			Assert.NotNull(result);
 			Assert.NotNull(result.AttributeValues);
 			Assert.True(result.AttributeValues.Count() == getAttributeRequest.Attributes.Count());
-			Assert.True(result.AttributeValues.Any(av=>av.Attribute == "Title" && av.IsOk==true));
+			Assert.True(result.AttributeValues.Any(av => av.Attribute == "Title" && av.IsOk == true));
 
 		}
 
@@ -245,6 +246,90 @@ namespace InventoryApi.Test
 			Assert.True(result.AttributeValues.Any(av => av.Attribute == "Title" && av.IsOk == true));
 
 		}
+
+		[Fact]
+		public async void SetGPSAttributes_NewThing_ShouldReturnOK()
+		{
+			string thingId = await CreateATestThing();
+			var setAttributeRequest = new SetAttributesRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = thingId,
+				Role = "Owner",
+				AttributeValues = new List<SetAttributeValue>
+				{
+					new SetAttributeValue
+					{
+						Attribute="Location_Gps",
+						Value = new GpsLocation{Longitude = 24.938379M, Latitude=60.169856M },
+					},
+					new SetAttributeValue
+					{
+						Attribute="IsGpsPublic",
+						Value = true,
+					},
+				}
+			};
+			var jsonContent = new JsonContent(setAttributeRequest);
+			var response = await _client.PostAsync($"{_url}/SetAttributes", jsonContent);
+			response.EnsureSuccessStatusCode();
+
+			var result = await response.Content.ReadAsJsonAsync<SetAttributesResponse>();
+
+			Assert.NotNull(result);
+			Assert.NotNull(result.AttributeValues);
+			Assert.True(result.AttributeValues.Count() == setAttributeRequest.AttributeValues.Count());
+			Assert.True(result.AttributeValues.Any(av => av.Attribute == "Location_Gps" && av.IsOk == true));
+
+
+			var getAttributeRequest = new GetAttributesRequest
+			{
+				Session = "00000000-0000-0000-0000-000000000001",
+				ThingId = thingId,
+				Role = "Owner",
+				Attributes = new List<string> {
+						"Location_Gps",
+						"IsGpsPublic",
+					},
+			};
+			var jsonContent2 = new JsonContent(getAttributeRequest);
+			var response2 = await _client.PostAsync($"{_url}/GetAttributes", jsonContent2);
+			response.EnsureSuccessStatusCode();
+
+			var result2 = await response.Content.ReadAsJsonAsync<GetAttributesResponse>();
+
+			Assert.NotNull(result2);
+			Assert.NotNull(result2.AttributeValues);
+			Assert.True(result2.AttributeValues.Count() == setAttributeRequest.AttributeValues.Count());
+			Assert.True(result2.AttributeValues.Any(av => av.Attribute == "Location_Gps" && av.IsOk == true));
+
+		}
+
+		[Fact]
+		public async void GetNearbyThings()
+		{
+			var getRequest = new GetNearbyPublicLocationThingsRequest
+			{
+				Distance = 1000000,
+				GpsLocation = new GpsLocation
+				{
+					Longitude = 22.836914M,
+					Latitude = 62.783632M
+				},
+			};
+			var jsonContent = new JsonContent(getRequest);
+			var response = await _client.PostAsync($"{_url}/GetNearbyPublicLocationThings", jsonContent);
+			response.EnsureSuccessStatusCode();
+
+			var result = await response.Content.ReadAsJsonAsync<GetNearbyPublicLocationThingsResponse>();
+
+			Assert.NotNull(result);
+
+		}
+
+
+
+
 		[Fact]
 		public async void SetExtension_AndReadValue()
 		{
@@ -261,7 +346,7 @@ namespace InventoryApi.Test
 						Attribute=$"{_cfqdn}/TestExtension{Guid.NewGuid()}",
 						Value = "Testing data",
 					},
-					
+
 				}
 			};
 			var jsonContent = new JsonContent(setAttributeRequest);
@@ -296,7 +381,7 @@ namespace InventoryApi.Test
 			Assert.NotNull(result2.AttributeValues);
 			Assert.True(result2.AttributeValues.Count() == getAttributeRequest.Attributes.Count());
 			Assert.True(result2.AttributeValues.Any(av => av.Attribute == setAttributeRequest.AttributeValues[0].Attribute && av.IsOk == true));
-			Assert.True(string.Compare((string)result2.AttributeValues[0].Value,(string)setAttributeRequest.AttributeValues[0].Value)==0 );
+			Assert.True(string.Compare((string)result2.AttributeValues[0].Value, (string)setAttributeRequest.AttributeValues[0].Value) == 0);
 
 		}
 

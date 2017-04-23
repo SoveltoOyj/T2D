@@ -30,7 +30,7 @@ namespace T2D.Entities
 		public int? Preferred_LocationTypeId { get; set; }
 		public DateTime? PreferredLocation_Timestamp { get; set; }
 		[StringLength(1024)]
-		public string PreferredLocation_GPS { get; set; }
+		public string PreferredLocation_Gps { get; set; }
 		[StringLength(256)]
 		public string PreferredLocation_StreetAddress { get; set; }
 		[StringLength(256)]

@@ -11,6 +11,7 @@ using T2D.Model.Enums;
 using T2D.Model.Helpers;
 using T2D.Model.InventoryApi;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace T2D.InventoryBL.Thing
 {
@@ -184,7 +185,7 @@ namespace T2D.InventoryBL.Thing
 				return ret;
 			}
 
-			ret.Value = GetAttributeValue(thing, attributeName);
+			ret.Value = GetAttributeValue(thing, attributeName, (AttributeEnum)attributeId.Value);
 			ret.IsOk = true;
 			return ret;
 
@@ -228,9 +229,9 @@ namespace T2D.InventoryBL.Thing
 				return ret;
 			}
 
-			ret.ErrorDescription = SetAttributeValue(thing, attributeName, value);
+			ret.ErrorDescription = SetAttributeValue(thing, attributeName, value, (AttributeEnum)attributeId.Value);
 			ret.IsOk = (ret.ErrorDescription == null);
-			ret.Value = GetAttributeValue(thing, attributeName);
+			ret.Value = GetAttributeValue(thing, attributeName, (AttributeEnum)attributeId.Value);
 			return ret;
 		}
 
@@ -464,18 +465,37 @@ namespace T2D.InventoryBL.Thing
 		}
 
 
-		private object GetAttributeValue(IThing thing, string attributeName)
+		private object GetAttributeValue(IThing thing, string attributeName, AttributeEnum attEnum)
 		{
 			BindingFlags bf = BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance;
 			var typeInfo = thing.GetType().GetTypeInfo();
 			if (typeInfo.GetProperties(bf).Any(p=>p.Name==attributeName))
 			{
-				return typeInfo.GetProperty(attributeName, bf).GetValue(thing);
-			}				
+				var ret =  typeInfo.GetProperty(attributeName, bf).GetValue(thing);
+				if (ret == null) return ret;
+				switch (attEnum)
+				{
+					case AttributeEnum.Location_Gps:
+					case AttributeEnum.PreferredLocation_Gps:
+						string[] str = ret.ToString().Split(new char[] { '(', ' ', ')' }, StringSplitOptions.RemoveEmptyEntries);
+						if (str.Length != 3)
+						{
+							return null;
+						}
+						GpsLocation location = new GpsLocation
+						{
+							Longitude = decimal.Parse(str[1], System.Globalization.CultureInfo.InvariantCulture),
+							Latitude = decimal.Parse(str[2], System.Globalization.CultureInfo.InvariantCulture)
+						};
+						return location;
+				}
+				return ret;
+
+			}
 			return null;
 		}
 
-		private string SetAttributeValue(IThing thing, string attributeName, object value)
+		private string SetAttributeValue(IThing thing, string attributeName, object value, AttributeEnum attEnum)
 		{
 			try
 			{
@@ -483,6 +503,18 @@ namespace T2D.InventoryBL.Thing
 				var typeInfo = thing.GetType().GetTypeInfo();
 				if (typeInfo.GetProperties(bf).Any(p => p.Name == attributeName))
 				{
+
+					switch (attEnum)
+					{
+						case AttributeEnum.Location_Gps:
+						case AttributeEnum.PreferredLocation_Gps:
+							GpsLocation location =JsonConvert.DeserializeObject<GpsLocation>(value.ToString());
+							value = $"Point({location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)} {location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
+							break;
+						default:
+							break;
+					}
+
 					var propertyInfo = typeInfo.GetProperty(attributeName, bf);
 					object changedType = propertyInfo.PropertyType == typeof(DateTime) || propertyInfo.PropertyType == typeof(DateTime?)
 					? DateTime.Parse(value.ToString())

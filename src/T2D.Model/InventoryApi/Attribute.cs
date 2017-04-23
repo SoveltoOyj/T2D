@@ -71,4 +71,23 @@ namespace T2D.Model.InventoryApi
 		public object Value { get; set; }
 	}
 
+	/// <summary>
+	/// Attribute value. Simple attributes are just objects
+	/// Some Attributes (like GPS Location) are stringly typed.
+	/// </summary>
+	public interface IAttributeValue
+	{
+
+	}
+	
+	/// <summary>
+	/// GpsLocation Attributes
+	/// </summary>
+	public class GpsLocation : IAttributeValue
+	{
+		public decimal Latitude { get; set; }
+		public decimal Longitude { get; set; }
+	}
+
+
 }

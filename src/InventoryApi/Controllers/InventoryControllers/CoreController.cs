@@ -264,6 +264,49 @@ namespace InventoryApi.Controllers.InventoryControllers
 			return Ok(ret);
 		}
 
+		/// <summary>
+		/// Get thing ID:s that are near some location.
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <response code="200">Get arguments were OK.</response>
+		/// <response code="400">Bad request.</response>
+		[HttpPost, ActionName("GetNearbyPublicLocationThings")]
+		[Produces(typeof(GetNearbyPublicLocationThingsResponse))]
+		public IActionResult GetNearbyPublicLocationThings([FromBody]GetNearbyPublicLocationThingsRequest value)
+		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
+			GetNearbyPublicLocationThingsResponse ret = new GetNearbyPublicLocationThingsResponse();
+			ret.Things = new List<IdTitleDistance>();
+
+			using (var command = _dbc.Database.GetDbConnection().CreateCommand())
+			{
+				string sql = $"declare @p geography;" +
+					$" set @p = geography::Parse('POINT({value.GpsLocation.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)} {value.GpsLocation.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)})');" +
+						$" select fqdn, US, Title, @p.STDistance(Location_Gps) as 'Distance' from things " +
+						$" WHERE  @p.STDistance(Location_Gps) < {value.Distance.ToString(System.Globalization.CultureInfo.InvariantCulture)} " +
+						$" AND IsGpsPublic=1;";
+
+				command.CommandText = sql;
+				_dbc.Database.OpenConnection();
+				using (var result = command.ExecuteReader())
+				{
+					while (result.Read())
+					{
+						ret.Things.Add(new IdTitleDistance
+						{
+							Distance = decimal.Parse(result["Distance"].ToString(), System.Globalization.CultureInfo.InvariantCulture),
+							IdTitle = new GetRelationsResponse.RelationsThings.IdTitle
+							{
+								ThingId = ThingIdHelper.Create(result["fqdn"].ToString(), result["US"].ToString()),
+								Title = result["title"].ToString()
+							}
+						});
+					}
+				}
+			}
+			return Ok(ret);
+		}
+
 
 
 		[NonAction]
