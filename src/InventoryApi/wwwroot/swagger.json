@@ -273,6 +273,31 @@
 				}
 			}
 		},
+		"/api/inventory/Core/GetNearbyPublicLocationThings": {
+			"post": {
+				"tags": [ "Core" ],
+				"summary": "Get thing ID:s that are near some location.",
+				"operationId": "ApiInventoryCoreGetNearbyPublicLocationThingsPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/GetNearbyPublicLocationThingsRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Get arguments were OK.",
+						"schema": { "$ref": "#/definitions/GetNearbyPublicLocationThingsResponse" }
+					},
+					"400": { "description": "Bad request." }
+				}
+			}
+		},
 		"/api/Metadata/ApiVersion": {
 			"get": {
 				"tags": [ "Metadata" ],
@@ -886,6 +911,53 @@
 					"description": "All ThingIds that are in requested role.",
 					"type": "array",
 					"items": { "type": "string" }
+				}
+			}
+		},
+		"GetNearbyPublicLocationThingsRequest": {
+			"type": "object",
+			"properties": {
+				"gpsLocation": {
+					"$ref": "#/definitions/GpsLocation",
+					"description": "Location from where query is done."
+				},
+				"distance": {
+					"format": "double",
+					"description": "Maximun distance in meters.",
+					"type": "number"
+				}
+			}
+		},
+		"GpsLocation": {
+			"description": "GpsLocation Attributes",
+			"type": "object",
+			"properties": {
+				"latitude": {
+					"format": "double",
+					"type": "number"
+				},
+				"longitude": {
+					"format": "double",
+					"type": "number"
+				}
+			}
+		},
+		"GetNearbyPublicLocationThingsResponse": {
+			"type": "object",
+			"properties": {
+				"things": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/IdTitleDistance" }
+				}
+			}
+		},
+		"IdTitleDistance": {
+			"type": "object",
+			"properties": {
+				"idTitle": { "$ref": "#/definitions/IdTitle" },
+				"distance": {
+					"format": "double",
+					"type": "number"
 				}
 			}
 		},
