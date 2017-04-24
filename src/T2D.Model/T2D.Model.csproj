@@ -13,13 +13,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
+    <Compile Remove="MetadataEnums\**" />
+    <Compile Remove="Thing\**" />
+    <EmbeddedResource Remove="MetadataEnums\**" />
+    <EmbeddedResource Remove="Thing\**" />
+    <None Remove="MetadataEnums\**" />
+    <None Remove="Thing\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MetadataEnums\" />
-    <Folder Include="Thing\" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

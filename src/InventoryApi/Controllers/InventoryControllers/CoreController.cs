@@ -278,34 +278,51 @@ namespace InventoryApi.Controllers.InventoryControllers
 			GetNearbyPublicLocationThingsResponse ret = new GetNearbyPublicLocationThingsResponse();
 			ret.Things = new List<IdTitleDistance>();
 
+			if (value.PageSize < 1) value.PageSize = 50;
+			T2D.Model.PaginationHeader ph = new T2D.Model.PaginationHeader();
+			
 			using (var command = _dbc.Database.GetDbConnection().CreateCommand())
 			{
 				string sql = $"declare @p geography;" +
+					$" declare @currentPage int = {value.CurrentPage};" +
+					$" declare @pageSize int = {value.PageSize};" +
+					$" declare @maxDistance float = {value.Distance.ToString(System.Globalization.CultureInfo.InvariantCulture)};" +
 					$" set @p = geography::Parse('POINT({value.GpsLocation.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)} {value.GpsLocation.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)})');" +
-						$" select fqdn, US, Title, @p.STDistance(Location_Gps) as 'Distance' from things " +
-						$" WHERE  @p.STDistance(Location_Gps) < {value.Distance.ToString(System.Globalization.CultureInfo.InvariantCulture)} " +
-						$" AND IsGpsPublic=1" +
-						$" ORDER BY Distance, Id;" 
-						;
+					$" SELECT count(*) as 'TotalCount' from things WHERE @p.STDistance(Location_Gps) < @maxDistance AND IsGpsPublic = 1;" +
+					$" select fqdn, US, Title, @p.STDistance(Location_Gps) as 'Distance' from things " +
+					$" WHERE  @p.STDistance(Location_Gps) < @maxDistance " +
+					$" AND IsGpsPublic=1" +
+					$" ORDER BY Distance " +
+				 $" OFFSET @currentPage * @pageSize ROWS" +
+				 $" FETCH NEXT @pageSize ROWS ONLY;"
+					;
 
+			
 				command.CommandText = sql;
 				_dbc.Database.OpenConnection();
 				using (var result = command.ExecuteReader())
 				{
+					//totalcount
+					result.Read();
+					ph.TotalCount = (int)result["TotalCount"];
+
+					//things
+					result.NextResult();
 					while (result.Read())
 					{
 						ret.Things.Add(new IdTitleDistance
 						{
-							Distance = decimal.Parse(result["Distance"].ToString(), System.Globalization.CultureInfo.InvariantCulture),
-							IdTitle = new GetRelationsResponse.RelationsThings.IdTitle
-							{
-								ThingId = ThingIdHelper.Create(result["fqdn"].ToString(), result["US"].ToString()),
-								Title = result["title"].ToString()
-							}
+							Distance = (double)result["Distance"],
+							ThingId = ThingIdHelper.Create((string)result["fqdn"], (string)result["US"]),
+							Title = (string)result["title"]
 						});
 					}
 				}
 			}
+			ph.PageSize = value.PageSize;
+			ph.CurrentPage = value.CurrentPage;
+			ph.MorePages = ((ph.CurrentPage + 1) * ph.PageSize) < ph.TotalCount;
+			Response.Headers.Add("X-Pagination", ph.ToString());
 			return Ok(ret);
 		}
 

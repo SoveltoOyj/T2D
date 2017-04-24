@@ -316,6 +316,8 @@ namespace InventoryApi.Test
 					Longitude = 22.836914M,
 					Latitude = 62.783632M
 				},
+				CurrentPage=0,
+				PageSize=2,
 			};
 			var jsonContent = new JsonContent(getRequest);
 			var response = await _client.PostAsync($"{_url}/GetNearbyPublicLocationThings", jsonContent);

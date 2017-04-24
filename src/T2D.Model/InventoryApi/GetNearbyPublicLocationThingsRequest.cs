@@ -8,14 +8,24 @@ namespace T2D.Model.InventoryApi
     public class GetNearbyPublicLocationThingsRequest
     {
 		/// <summary>
-		/// Location from where query is done.
+		/// Location from where nearby Things are searched.
 		/// </summary>
 			public GpsLocation GpsLocation { get; set; }
 
 		/// <summary>
 		/// Maximun distance in meters.
 		/// </summary>
-		public decimal Distance { get; set; }
+		public double Distance { get; set; }
+
+		/// <summary>
+		/// Which page, first page is 0.
+		/// </summary>
+		public int CurrentPage { get; set; }
+
+		/// <summary>
+		/// PageSize. If missing (or 0) then first 50 things are returned.
+		/// </summary>
+		public int PageSize { get; set; }
 	}
 
 	public class GetNearbyPublicLocationThingsResponse
@@ -25,8 +35,10 @@ namespace T2D.Model.InventoryApi
 	}
 	public class IdTitleDistance
 	{
-		public IdTitle IdTitle { get; set; }
-		public decimal Distance{ get; set; }
+		public string ThingId { get; set; }
+		public string Title { get; set; }
+
+		public double Distance{ get; set; }
 	}
 
 
