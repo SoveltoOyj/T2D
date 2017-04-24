@@ -284,7 +284,9 @@ namespace InventoryApi.Controllers.InventoryControllers
 					$" set @p = geography::Parse('POINT({value.GpsLocation.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)} {value.GpsLocation.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)})');" +
 						$" select fqdn, US, Title, @p.STDistance(Location_Gps) as 'Distance' from things " +
 						$" WHERE  @p.STDistance(Location_Gps) < {value.Distance.ToString(System.Globalization.CultureInfo.InvariantCulture)} " +
-						$" AND IsGpsPublic=1;";
+						$" AND IsGpsPublic=1" +
+						$" ORDER BY Distance, Id;" 
+						;
 
 				command.CommandText = sql;
 				_dbc.Database.OpenConnection();

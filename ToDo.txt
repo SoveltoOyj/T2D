@@ -8,3 +8,19 @@ Pikaohje - kannan tekeminen:
 
  paikat saadaan vaikka t‰‰lt‰: http://mapszoom.com/fi/gps-coordinates.php
 
+ -- eka sivu on sivu nro 0
+declare @currentPage int = 0, @pageSize int = 2 ;
+declare @maxDistance decimal = 1000000;
+declare @p geography; 
+set @p = geography::Parse('POINT(22.836914 62.783632)'); 
+
+SELECT count(*) as 'totalCount' from things WHERE @p.STDistance(Location_Gps) < 1000000  AND IsGpsPublic=1;
+
+SELECT  fqdn, US, Title, @p.STDistance(Location_Gps) as 'Distance' 
+FROM    ( SELECT    ROW_NUMBER() OVER ( ORDER BY @p.STDistance(Location_Gps) ) AS RowNum, *
+          FROM      Things
+          WHERE     @p.STDistance(Location_Gps) < @maxDistance  AND IsGpsPublic=1 
+        ) AS RowConstrainedResult
+WHERE   RowNum > @currentPage*@pageSize
+    AND RowNum <= (@currentPage+1)* @pageSize 
+ORDER BY RowNum
