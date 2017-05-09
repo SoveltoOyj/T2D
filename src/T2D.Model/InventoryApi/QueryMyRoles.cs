@@ -21,6 +21,7 @@ namespace T2D.Model.InventoryApi
 		/// ThingID that which roles are got.
 		/// </summary>
 		[Required]
+		[ThingId]
 		public string ThingId { get; set; }
 
 	}

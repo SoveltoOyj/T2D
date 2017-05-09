@@ -16,6 +16,7 @@ namespace T2D.Model.InventoryApi
 		/// The authenticated thing that will be the Session Thing.
 		/// </summary>
 		[Required]
+		[ThingId]
 		public string ThingId { get; set; }
 
 		/// <summary>

@@ -79,6 +79,8 @@ namespace T2D.Infra
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			optionsBuilder.UseSqlServer(@"Server=(local);Database=T2D;Trusted_Connection=True;");
+			//optionsBuilder.UseSqlServer(@"Server=10.0.75.2,1433;Database=T2D;Uid=sa;pwd=Salainen1!;Trusted_Connection=False;");
+
 			//optionsBuilder.UseSqlServer(@"Server=.;Database=T2D;Uid=t2d;pwd=Salainen;Trusted_Connection=False;");
 			//optionsBuilder.UseSqlServer(
 			//	@"Server=tcp:t2dahti.database.windows.net,1433;Database=t2d;Uid=ahti;pwd=Salainen1!;Persist Security Info = False;; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = False; Connection Timeout = 60;",

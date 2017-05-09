@@ -155,6 +155,7 @@ namespace T2D.InventoryBL.ServiceRequest
 			if (thing == null)
 			{
 				errMsg = $"Thing '{thingId}' do not exists or do not have service {service}.";
+				return false;
 			}
 			//have to read again, navigation properties did not work as exptected
 			ServiceDefinition serviceDefinition = thing.ServiceDefinitions
@@ -176,7 +177,7 @@ namespace T2D.InventoryBL.ServiceRequest
 			_dbc.ServiceStatuses.Add(ss);
 
 			//create ActionStatuses
-			foreach (var item in thing.ServiceDefinitions.First().Actions)
+			foreach (var item in serviceDefinition.Actions)
 			{
 				var actionStatus = new ActionStatus
 				{

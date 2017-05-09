@@ -13,9 +13,6 @@
 
   <ItemGroup>
     <None Remove="Properties\PublishProfiles\Thing2Data - Web Deploy.pubxml" />
-    <None Remove="Properties\PublishProfiles\Thing3Data - Web Deploy.pubxml" />
-    <None Remove="Properties\PublishProfiles\thing4data - Web Deploy.pubxml" />
-    <None Remove="Properties\PublishProfiles\ThingToData - Web Deploy.pubxml" />
   </ItemGroup>
 
   <ItemGroup>

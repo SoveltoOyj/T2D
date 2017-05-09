@@ -16,6 +16,7 @@ namespace T2D.Model.InventoryApi
 		/// The ThingID to which this request is exuecuted.
 		/// </summary>
 		[Required]
+		[ThingId]
 		public string ThingId { get; set; }
 
 		/// <summary>

@@ -13,6 +13,7 @@ namespace T2D.Model
 		/// <summary>
 		/// The thing which Service this is
 		/// </summary>
+		[ThingId]
 		public string ThingId { get; set; }
 
 		/// <summary>

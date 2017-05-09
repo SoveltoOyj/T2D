@@ -24,6 +24,7 @@ namespace InventoryApi
 	{
 		public Startup(IHostingEnvironment env)
 		{
+			Console.WriteLine("Käynnistyy");
 			var builder = new ConfigurationBuilder()
 					.SetBasePath(env.ContentRootPath)
 					.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)

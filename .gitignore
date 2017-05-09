@@ -243,3 +243,12 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/src/InventoryApi/Dockerfile
+/src/InventoryApi/.dockerignore
+/src/InventoryApi
+/docker-compose.yml
+/docker-compose.vs.release.yml
+/docker-compose.vs.debug.yml
+/docker-compose.override.yml
+/docker-compose.dcproj
+/docker-compose.ci.build.yml
