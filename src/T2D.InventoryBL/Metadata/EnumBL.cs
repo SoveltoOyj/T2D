@@ -72,7 +72,7 @@ namespace T2D.InventoryBL.Metadata
 			}
 
 			TEnum value;
-			if (!Enum.TryParse<TEnum>(enumStr, out value))
+			if (!Enum.TryParse<TEnum>(enumStr, true, out value))
 			{
 				return null;
 			}
