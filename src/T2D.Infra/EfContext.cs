@@ -9,8 +9,15 @@ using T2D.Entities;
 
 namespace T2D.Infra
 {
+	
 	public class EfContext : DbContext
 	{
+		private readonly string connectionString;
+		public EfContext(string connectionString)
+		{
+			this.connectionString = connectionString;
+		}
+
 		#region Things
 		public DbSet<BaseThing> Things { get; set; }
 		public DbSet<AliasThing> AliasThings { get; set; }
@@ -18,7 +25,7 @@ namespace T2D.Infra
 		public DbSet<AuthenticationThing> AuthenticationThings { get; set; }
 		public DbSet<RegularThing> RegularThings { get; set; }
 		public DbSet<ArchetypeThing> ArchetypeThings { get; set; }
-		public DbSet<IoThing>IoTThings { get; set; }
+		public DbSet<IoThing> IoTThings { get; set; }
 		public DbSet<WalletThing> WalletThings { get; set; }
 		#endregion
 
@@ -78,14 +85,10 @@ namespace T2D.Infra
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlServer(@"Server=(local);Database=T2D;Trusted_Connection=True;");
-			//optionsBuilder.UseSqlServer(@"Server=10.0.75.2,1433;Database=T2D;Uid=sa;pwd=Salainen1!;Trusted_Connection=False;");
-
-			//optionsBuilder.UseSqlServer(@"Server=.;Database=T2D;Uid=t2d;pwd=Salainen;Trusted_Connection=False;");
-			//optionsBuilder.UseSqlServer(
-			//	@"Server=tcp:t2dahti.database.windows.net,1433;Database=t2d;Uid=ahti;pwd=Salainen1!;Persist Security Info = False;; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = False; Connection Timeout = 60;",
-			//	options => options.EnableRetryOnFailure()
-			//	);
+			optionsBuilder.UseSqlServer(
+				this.connectionString,
+				options => options.EnableRetryOnFailure()
+				);
 		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

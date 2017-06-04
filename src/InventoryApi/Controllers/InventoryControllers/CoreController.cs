@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using T2D.Entities;
 using T2D.Helpers;
+using T2D.Infra;
 using T2D.InventoryBL;
 using T2D.InventoryBL.Thing;
 using T2D.Model;
@@ -22,6 +23,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 	[Route("api/inventory/[controller]/[action]")]
 	public class CoreController : ApiBaseController
 	{
+		public CoreController(EfContext dbc) : base(dbc)	{	}
 
 		//these are got from BaseRequest
 		protected SessionBL _sessionBl;

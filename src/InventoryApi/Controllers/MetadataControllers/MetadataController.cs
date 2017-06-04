@@ -10,6 +10,7 @@ using System.Reflection;
 using T2D.InventoryBL.Metadata;
 using T2D.Model;
 using System.ComponentModel.DataAnnotations;
+using T2D.Infra;
 
 namespace InventoryApi.Controllers.MetadataControllers
 {
@@ -19,7 +20,7 @@ namespace InventoryApi.Controllers.MetadataControllers
 
 		private readonly IHostingEnvironment _env;
 
-		public MetadataController(IHostingEnvironment env)
+		public MetadataController(IHostingEnvironment env, EfContext dbc): base(dbc)
 		{
 			_env = env;
 		}

@@ -9,6 +9,7 @@ using T2D.Model.Helpers;
 using T2D.Entities;
 using T2D.InventoryBL;
 using Microsoft.AspNetCore.Authorization;
+using T2D.Infra;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,9 +19,8 @@ namespace InventoryApi.Controllers.InventoryControllers
 	[Route("api/inventory/[controller]/[action]")]
 	public class AuthenticationController : ApiBaseController
 	{
-		public AuthenticationController() : base()
-		{
-		}
+		public AuthenticationController(EfContext dbc): base(dbc) { }
+
 
 		[Authorize]
 		[HttpGet]

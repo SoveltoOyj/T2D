@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using T2D.Entities;
 using T2D.Helpers;
+using T2D.Infra;
 using T2D.InventoryBL;
 using T2D.InventoryBL.ServiceRequest;
 using T2D.InventoryBL.Thing;
@@ -29,13 +30,15 @@ namespace InventoryApi.Controllers.InventoryControllers
 		protected int _roleId;
 		protected ServiceBL _serviceBl;
 
-		/// <summary>
-		/// Create a new Service.
-		/// </summary>
-		/// <param name="value">Request argument</param>
-		/// <response code="200">if Service was created..</response>
-		/// <response code="400">Bad request, like Thing do not exists or not enough priviledges.</response>
-		[HttpPost, ActionName("CreateService")]
+		public ServiceController(EfContext dbc) : base(dbc)	{	}
+
+	/// <summary>
+	/// Create a new Service.
+	/// </summary>
+	/// <param name="value">Request argument</param>
+	/// <response code="200">if Service was created..</response>
+	/// <response code="400">Bad request, like Thing do not exists or not enough priviledges.</response>
+	[HttpPost, ActionName("CreateService")]
 		[Produces(typeof(bool))]
 		public IActionResult CreateService([FromBody]CreateServiceTypeRequest value)
 		{
