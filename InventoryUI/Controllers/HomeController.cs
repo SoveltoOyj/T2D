@@ -10,12 +10,19 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net;
 using System.Security.Claims;
+using Microsoft.Extensions.Options;
 
 namespace InventoryUI.Controllers
 {
 	public class HomeController : Controller
 	{
 		AzureAdB2COptions AzureAdB2COptions;
+
+		public HomeController(IOptions<AzureAdB2COptions> azureAdB2COptions)
+		{
+			AzureAdB2COptions = azureAdB2COptions.Value;
+		}
+
 		public IActionResult Index()
 		{
 			return View();

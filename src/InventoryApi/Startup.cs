@@ -17,6 +17,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 
 namespace InventoryApi
 {
@@ -30,6 +32,15 @@ namespace InventoryApi
 					.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
 					.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
 					.AddEnvironmentVariables();
+
+			if (env.IsDevelopment())
+			{
+				// For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
+				builder.AddUserSecrets<Startup>();
+			}
+
+			builder.AddEnvironmentVariables();
+
 			Configuration = builder.Build();
 		}
 
@@ -70,6 +81,19 @@ namespace InventoryApi
 			{
 				app.UseDeveloperExceptionPage();
 			}
+
+			app.UseJwtBearerAuthentication(new JwtBearerOptions
+			{
+				Authority = string.Format("https://login.microsoftonline.com/tfp/{0}/{1}/v2.0/",
+									 Configuration["Authentication:AzureAd:Tenant"], Configuration["Authentication:AzureAd:Policy"]),
+				Audience = Configuration["Authentication:AzureAd:ClientId"],
+				Events = new JwtBearerEvents
+				{
+					OnAuthenticationFailed = AuthenticationFailed
+				}
+			});
+
+
 			app.UseMvc();
 			app.UseSwagger();
 			app.UseSwaggerUI
@@ -84,6 +108,15 @@ namespace InventoryApi
 
 			app.UseDefaultFiles();
 			app.UseStaticFiles();
+		}
+
+		private Task AuthenticationFailed(AuthenticationFailedContext arg)
+		{
+			// For debugging purposes only!
+			var s = $"AuthenticationFailed: {arg.Exception.Message}";
+			arg.Response.ContentLength = s.Length;
+			arg.Response.Body.Write(Encoding.UTF8.GetBytes(s), 0, s.Length);
+			return Task.FromResult(0);
 		}
 	}
 }

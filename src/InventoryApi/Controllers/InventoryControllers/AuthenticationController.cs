@@ -8,6 +8,7 @@ using T2D.Model.InventoryApi;
 using T2D.Model.Helpers;
 using T2D.Entities;
 using T2D.InventoryBL;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,6 +21,19 @@ namespace InventoryApi.Controllers.InventoryControllers
 		public AuthenticationController() : base()
 		{
 		}
+
+		[Authorize]
+		[HttpGet]
+		public IEnumerable<string> Get()
+		{
+			List<string> claims = new List<string>();
+			foreach (var item in User.Claims)
+			{
+				claims.Add(item.ToString());
+			}
+			return claims;
+		}
+
 
 		/// <summary>
 		/// Enter authenticated session.
