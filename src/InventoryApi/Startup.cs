@@ -27,6 +27,7 @@ namespace InventoryApi
 	{
 		public Startup(IHostingEnvironment env)
 		{
+			Env = env;
 			Console.WriteLine("Käynnistyy");
 			var builder = new ConfigurationBuilder()
 					.SetBasePath(env.ContentRootPath)
@@ -46,6 +47,8 @@ namespace InventoryApi
 		}
 
 		public IConfigurationRoot Configuration { get; }
+		public IHostingEnvironment Env;
+
 
 		public void ConfigureServices(IServiceCollection services)
 		{
@@ -67,10 +70,16 @@ namespace InventoryApi
 				});
 				c.DescribeAllParametersInCamelCase();
 				c.DescribeAllEnumsAsStrings();
+
+				if (Env.IsDevelopment())
+				{
+					c.IncludeXmlComments(System.IO.Path.Combine(basePath, "InventoryApi.xml"));
+					c.IncludeXmlComments(System.IO.Path.Combine(basePath, "T2D.Model.xml"));
+				}
 #if AZURE
 #else
-				c.IncludeXmlComments(System.IO.Path.Combine(basePath, "InventoryApi.xml"));
-				c.IncludeXmlComments(System.IO.Path.Combine(basePath, "T2D.Model.xml"));
+				//	c.IncludeXmlComments(System.IO.Path.Combine(basePath, "InventoryApi.xml"));
+				//c.IncludeXmlComments(System.IO.Path.Combine(basePath, "T2D.Model.xml"));
 #endif
 			});
 		}
