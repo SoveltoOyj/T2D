@@ -919,12 +919,22 @@
 			"properties": {
 				"gpsLocation": {
 					"$ref": "#/definitions/GpsLocation",
-					"description": "Location from where query is done."
+					"description": "Location from where nearby Things are searched."
 				},
 				"distance": {
 					"format": "double",
 					"description": "Maximun distance in meters.",
 					"type": "number"
+				},
+				"currentPage": {
+					"format": "int32",
+					"description": "Which page, first page is 0.",
+					"type": "integer"
+				},
+				"pageSize": {
+					"format": "int32",
+					"description": "PageSize. If missing (or 0) then first 50 things are returned.",
+					"type": "integer"
 				}
 			}
 		},
@@ -954,7 +964,8 @@
 		"IdTitleDistance": {
 			"type": "object",
 			"properties": {
-				"idTitle": { "$ref": "#/definitions/IdTitle" },
+				"thingId": { "type": "string" },
+				"title": { "type": "string" },
 				"distance": {
 					"format": "double",
 					"type": "number"
