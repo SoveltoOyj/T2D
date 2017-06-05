@@ -244,6 +244,7 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 		/// <summary>
 		/// Set the thing role memberlist.
+		/// RoleMemberList will override existing list.
 		/// </summary>
 		/// <param name="value">Request argument</param>
 		/// <response code="200">Memberlist is set, there can be errors (look at return body).</response>

@@ -97,45 +97,82 @@ namespace InventoryApi.Test
 		}
 
 		[Fact]
-		public async void SetAndGetRoleMemberList_NewThing_ShouldBeOK()
+		public async void Set_Get_Modify_RoleMemberList_NewThing_ShouldBeOK()
 		{
 			string thingId = await CreateATestThing();
-			var setRoleMemberListRequest = new SetRoleMemberListRequest
-			{
-				Session = "00000000-0000-0000-0000-000000000001",
-				ThingId = thingId,
-				Role = "Omnipotent",
-				RoleForMemberList = "Owner",
-				MemberThingIds = new List<string>
+			
+				var setRoleMemberListRequest = new SetRoleMemberListRequest
+				{
+					Session = "00000000-0000-0000-0000-000000000001",
+					ThingId = thingId,
+					Role = "Omnipotent",
+					RoleForMemberList = "Owner",
+					MemberThingIds = new List<string>
 				{
 					$"{_cfqdn}/M100",
 					$"{_cfqdn}/AnonymousUser",
 				}
-			};
-			var jsonContent = new JsonContent(setRoleMemberListRequest);
-			var response = await _client.PostAsync($"{_url}/SetRoleMemberList", jsonContent);
-			response.EnsureSuccessStatusCode();
+				};
+			{
+				var jsonContent = new JsonContent(setRoleMemberListRequest);
+				var response = await _client.PostAsync($"{_url}/SetRoleMemberList", jsonContent);
+				response.EnsureSuccessStatusCode();
+			}
 
 			//get
-			jsonContent = new JsonContent(new GetRoleMemberListRequest
-			{
-				Session = setRoleMemberListRequest.Session,
-				ThingId = setRoleMemberListRequest.ThingId,
-				Role = setRoleMemberListRequest.Role,
-				RoleForMemberList = setRoleMemberListRequest.RoleForMemberList,
-			});
-			response = await _client.PostAsync($"{_url}/GetRoleMemberList", jsonContent);
-			response.EnsureSuccessStatusCode();
-			var result = await response.Content.ReadAsJsonAsync<GetRoleMemberListResponse>();
+			{ 
+				var jsonContent = new JsonContent(new GetRoleMemberListRequest
+				{
+					Session = setRoleMemberListRequest.Session,
+					ThingId = setRoleMemberListRequest.ThingId,
+					Role = setRoleMemberListRequest.Role,
+					RoleForMemberList = setRoleMemberListRequest.RoleForMemberList,
+				});
+				var response = await _client.PostAsync($"{_url}/GetRoleMemberList", jsonContent);
+				response.EnsureSuccessStatusCode();
+				var result = await response.Content.ReadAsJsonAsync<GetRoleMemberListResponse>();
 
-			Assert.NotNull(result);
-			Assert.NotNull(result.ThingIds);
-			Assert.NotEmpty(result.ThingIds);
-			Assert.True(result.ThingIds.Count() == setRoleMemberListRequest.MemberThingIds.Count());
-			foreach (var item in setRoleMemberListRequest.MemberThingIds)
+				Assert.NotNull(result);
+				Assert.NotNull(result.ThingIds);
+				Assert.NotEmpty(result.ThingIds);
+				Assert.True(result.ThingIds.Count() == setRoleMemberListRequest.MemberThingIds.Count());
+				foreach (var item in setRoleMemberListRequest.MemberThingIds)
+				{
+					var arr = result.ThingIds.SingleOrDefault(r => r == item);
+					Assert.True(arr != null);
+				}
+			}
+
+			//modify
 			{
-				var arr = result.ThingIds.SingleOrDefault(r => r == item);
-				Assert.True(arr != null);
+				setRoleMemberListRequest.MemberThingIds.Remove($"{_cfqdn}/AnonymousUser");
+				setRoleMemberListRequest.MemberThingIds.Add($"{_cfqdn}/T1");
+				var jsonContent = new JsonContent(setRoleMemberListRequest);
+				var response = await _client.PostAsync($"{_url}/SetRoleMemberList", jsonContent);
+				response.EnsureSuccessStatusCode();
+			}
+			//get modified
+			{
+				var jsonContent = new JsonContent(new GetRoleMemberListRequest
+				{
+					Session = setRoleMemberListRequest.Session,
+					ThingId = setRoleMemberListRequest.ThingId,
+					Role = setRoleMemberListRequest.Role,
+					RoleForMemberList = setRoleMemberListRequest.RoleForMemberList,
+				});
+				var response = await _client.PostAsync($"{_url}/GetRoleMemberList", jsonContent);
+				response.EnsureSuccessStatusCode();
+				var result = await response.Content.ReadAsJsonAsync<GetRoleMemberListResponse>();
+
+				Assert.NotNull(result);
+				Assert.NotNull(result.ThingIds);
+				Assert.NotEmpty(result.ThingIds);
+				Assert.True(result.ThingIds.Count() == setRoleMemberListRequest.MemberThingIds.Count());
+				foreach (var item in setRoleMemberListRequest.MemberThingIds)
+				{
+					var arr = result.ThingIds.SingleOrDefault(r => r == item);
+					Assert.True(arr != null);
+				}
 			}
 		}
 

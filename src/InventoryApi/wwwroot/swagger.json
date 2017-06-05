@@ -11,20 +11,49 @@
 	},
 	"basePath": "/",
 	"paths": {
-		"/api/inventory/Authentication/EnterAuthenticatedSession": {
-			"post": {
+		"/api/inventory/Authentication/Get": {
+			"get": {
 				"tags": [ "Authentication" ],
-				"summary": "Enter authenticated session.\r\nNote: this is MOCK version, enter will allways succeed. New Authenticated user will be created if it does not exists.",
-				"operationId": "ApiInventoryAuthenticationEnterAuthenticatedSessionPost",
-				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"summary": "Authenticates user using Authorization Bearer JWT",
+				"operationId": "ApiInventoryAuthenticationGetGet",
+				"consumes": [],
 				"produces": [ "text/plain", "application/json", "text/json" ],
 				"parameters": [
 					{
-						"name": "value",
-						"in": "body",
-						"description": "Request argument",
-						"required": false,
-						"schema": { "$ref": "#/definitions/AuthenticationRequest" }
+						"name": "Authorization",
+						"in": "header",
+						"description": "Bearer JWT access token",
+						"required": true,
+						"type": "string",
+						"default": "Bearer {add JWT token here}"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"schema": {
+							"type": "array",
+							"items": { "type": "string" }
+						}
+					}
+				}
+			}
+		},
+		"/api/inventory/Authentication/EnterAuthenticatedSession": {
+			"post": {
+				"tags": [ "Authentication" ],
+				"summary": "Enter authenticated session.\r\nRequires Authorization Bearer JWT -header.\r\nNote: this is MOCK version, New Authenticated user will be created if it do not exist.",
+				"operationId": "ApiInventoryAuthenticationEnterAuthenticatedSessionPost",
+				"consumes": [],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "Authorization",
+						"in": "header",
+						"description": "Bearer JWT access token",
+						"required": true,
+						"type": "string",
+						"default": "Bearer {add JWT token here}"
 					}
 				],
 				"responses": {
@@ -32,7 +61,7 @@
 						"description": "A new Session was created and its id is returned.",
 						"schema": { "$ref": "#/definitions/AuthenticationResponse" }
 					},
-					"400": { "description": "Bad request, like Thing Id is not OK." }
+					"400": { "description": "Bad request." }
 				}
 			}
 		},
@@ -96,6 +125,31 @@
 					"200": {
 						"description": "Returns Relations.",
 						"schema": { "$ref": "#/definitions/GetRelationsResponse" }
+					},
+					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/inventory/Core/SetRelations": {
+			"post": {
+				"tags": [ "Core" ],
+				"summary": "Set Relations.",
+				"operationId": "ApiInventoryCoreSetRelationsPost",
+				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"parameters": [
+					{
+						"name": "value",
+						"in": "body",
+						"description": "Request argument",
+						"required": false,
+						"schema": { "$ref": "#/definitions/SetRelationsRequest" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK.",
+						"schema": { "type": "string" }
 					},
 					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
 				}
@@ -558,22 +612,6 @@
 		}
 	},
 	"definitions": {
-		"AuthenticationRequest": {
-			"description": "Authentication request",
-			"required": [ "thingId", "authenticationType" ],
-			"type": "object",
-			"properties": {
-				"thingId": {
-					"description": "The authenticated thing that will be the Session Thing.",
-					"type": "string"
-				},
-				"authenticationType": {
-					"description": "Authentication type, enum value.",
-					"enum": [ "Facebook", "Google" ],
-					"type": "string"
-				}
-			}
-		},
 		"AuthenticationResponse": {
 			"description": "Returns Session Id.\r\nNote. Session secret will be added, not implemented yet.",
 			"type": "object",
@@ -638,15 +676,49 @@
 				"relation": { "type": "string" },
 				"things": {
 					"type": "array",
-					"items": { "$ref": "#/definitions/IdTitle" }
+					"items": { "$ref": "#/definitions/ThingIdTitle" }
 				}
 			}
 		},
-		"IdTitle": {
+		"ThingIdTitle": {
 			"type": "object",
 			"properties": {
 				"thingId": { "type": "string" },
 				"title": { "type": "string" }
+			}
+		},
+		"SetRelationsRequest": {
+			"description": "These relations will override all existing relations.",
+			"required": [ "session", "thingId", "role" ],
+			"type": "object",
+			"properties": {
+				"relationThings": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/RelationsThingIds" }
+				},
+				"session": {
+					"description": "Session that will be used in this request",
+					"type": "string"
+				},
+				"thingId": {
+					"description": "The ThingID to which this request is exuecuted.",
+					"type": "string"
+				},
+				"role": {
+					"description": "This request will be done under this role.",
+					"type": "string"
+				}
+			}
+		},
+		"RelationsThingIds": {
+			"description": "Relations and ThingIds in this relation.",
+			"type": "object",
+			"properties": {
+				"relation": { "type": "string" },
+				"things": {
+					"type": "array",
+					"items": { "type": "string" }
+				}
 			}
 		},
 		"GetAttributesRequest": {

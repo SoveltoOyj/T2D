@@ -689,9 +689,8 @@ namespace T2D.InventoryBL.Thing
 			//create new ThingRole if not exists
 			var thingRole = RetrieveThingRole(roleToSetId, thing.Id);
 
-			// remove existing ThingRoleMembers
-			_dbc.ThingRoleMembers.RemoveRange(_dbc.ThingRoleMembers.Where(trm => trm.ThingRoleId == thingRole.Id));
-			_dbc.SaveChanges();
+			// read existing ThingRoleMembers
+			List<ThingRoleMember> existingThingRoleMembers = _dbc.ThingRoleMembers.Where(trm => trm.ThingRoleId == thingRole.Id).ToList();
 
 			foreach (var item in memberThingIds)
 			{
@@ -699,17 +698,30 @@ namespace T2D.InventoryBL.Thing
 				BaseThing memberThing = _dbc.FindThing<BaseThing>(item);
 				if (memberThing == null)
 				{
-					errMsg = $"Can't find memberThing '{item}', continueing to add members. ";
+					errMsg = $"Can't find memberThing '{item}'. ";
 					return false;
 				}
-				// add ThingRoleMembers
-				var thingRoleMember = new ThingRoleMember
+				// check if ThingRoleMember exists already
+				var existingTRM = existingThingRoleMembers.FirstOrDefault(trm => trm.ThingId == memberThing.Id && trm.ThingRoleId == thingRole.Id);
+				if (existingTRM == null)
 				{
-					ThingId = memberThing.Id,
-					ThingRoleId = thingRole.Id,
-				};
-				_dbc.ThingRoleMembers.Add(thingRoleMember);
+					// add ThingRoleMembers
+					var thingRoleMember = new ThingRoleMember
+					{
+						ThingId = memberThing.Id,
+						ThingRoleId = thingRole.Id,
+					};
+					_dbc.ThingRoleMembers.Add(thingRoleMember);
+				}
+				else
+				{
+					//remove TRM so that it will not be removed at the end.
+					existingThingRoleMembers.Remove(existingTRM);
+				}
 			}
+
+			//remove the rest
+			_dbc.ThingRoleMembers.RemoveRange(existingThingRoleMembers);
 			_dbc.SaveChanges();
 			return true;
 
