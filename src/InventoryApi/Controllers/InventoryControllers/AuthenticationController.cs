@@ -21,7 +21,11 @@ namespace InventoryApi.Controllers.InventoryControllers
 	{
 		public AuthenticationController(EfContext dbc): base(dbc) { }
 
-
+		/// <summary>
+		/// Authenticates user using Authorization Bearer JWT
+		/// </summary>
+		/// <returns>All claims from the JWT</returns>
+		[Produces(typeof(IEnumerable<string>))]
 		[Authorize]
 		[HttpGet]
 		public IEnumerable<string> Get()
@@ -37,19 +41,26 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 		/// <summary>
 		/// Enter authenticated session.
-		/// Note: this is MOCK version, enter will allways succeed. New Authenticated user will be created if it does not exists.
+		/// Requires Authorization Bearer JWT -header.
+		/// Note: this is MOCK version, New Authenticated user will be created if it do not exist.
 		/// </summary>
 		/// <param name="value">Request argument</param>
 		/// <response code="200">A new Session was created and its id is returned.</response>
-		/// <response code="400">Bad request, like Thing Id is not OK.</response>
+		/// <response code="400">Bad request.</response>
+		[Authorize]
 		[HttpPost, ActionName("EnterAuthenticatedSession")]
 		[Produces(typeof(AuthenticationResponse))]
-		public IActionResult EnterAuthenticatedSession([FromBody]AuthenticationRequest value)
+		public IActionResult EnterAuthenticatedSession()
 		{
-			if (!ModelState.IsValid) return BadRequest(ModelState);
+			//if (!ModelState.IsValid) return BadRequest(ModelState);
 			string errMsg = null;
 			AuthenticationBL authenticationBL = AuthenticationBL.CreateAuthenticationBL(_dbc);
-			var sessionBL = authenticationBL.EnterAuthenticatedSession(out errMsg, value.ThingId, value.AuthenticationType);
+			var sessionBL = authenticationBL.EnterAuthenticatedSession(
+				out errMsg,
+				thingId: User.Claims.FirstOrDefault(c => c.Type == "extension_ThingId")?.Value,
+				title: User.Claims.FirstOrDefault(c => c.Type == "name")?.Value,
+				email: User.Claims.FirstOrDefault(c => c.Type == "emails")?.Value
+			);
 			if (sessionBL == null) return BadRequest(errMsg);
 
 			var ret = new AuthenticationResponse

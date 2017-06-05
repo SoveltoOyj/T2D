@@ -24,7 +24,7 @@ namespace T2D.InventoryBL
 		}
 
 
-		public SessionBL EnterAuthenticatedSession(out string errMsg, string thingId, AuthenticationType autenticationType)
+		public SessionBL EnterAuthenticatedSession(out string errMsg, string thingId, string title, string email)
 		{
 			errMsg = "";
 
@@ -36,7 +36,8 @@ namespace T2D.InventoryBL
 				{
 					Fqdn = ThingIdHelper.GetFQDN(thingId),
 					US = ThingIdHelper.GetUniqueString(thingId),
-					Title = $"Automatically created User {ThingIdHelper.GetUniqueString(thingId)}",
+					Title = title,
+					EMail= email,
 				};
 				_dbc.AuthenticationThings.Add(T0 as AuthenticationThing);
 				_dbc.SaveChanges();

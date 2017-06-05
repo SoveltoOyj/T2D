@@ -14,10 +14,13 @@ namespace T2D.Entities
 		[StringLength(1024)]
 		public string Title { get; set; }
 
+		public string EMail { get; set; }
+
 		/// <summary>
 		/// This relation is done using "Timpan tapa", not by using relations.
 		/// </summary>
 		public Guid? PersonThingId { get; set; }
+
 
 		#region Navigation Properties
 		public AuthenticationThing PersonThing { get; set; }
