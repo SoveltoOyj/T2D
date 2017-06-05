@@ -179,6 +179,118 @@ namespace InventoryApi.Test
 			Assert.True(result.RelationThings.Count() >= 2);
 		}
 
+
+		[Fact]
+		public async void SetRelations_and_ModifyThem_newThing()
+		{
+			string thingId = await CreateATestThing();
+			
+			//set relations
+			{
+				var setRelationsRequest = new SetRelationsRequest
+				{
+					Session = "00000000-0000-0000-0000-000000000001",
+					ThingId = thingId,
+					Role = "Owner",
+					RelationThings = new List<RelationsThingIds>
+				{
+					new RelationsThingIds
+					{
+						Relation = "ContainedBy",
+						Things = new List<string>
+						{
+							$"{_cfqdn}/T1",
+							$"{_cfqdn}/T2"
+						}
+					},
+					new RelationsThingIds
+					{
+						Relation = "Belongings",
+						Things = new List<string>
+						{
+							$"{_cfqdn}/T2"
+						}
+					}
+				}
+				};
+				var jsonContent = new JsonContent(setRelationsRequest);
+				var response = await _client.PostAsync($"{_url}/SetRelations", jsonContent);
+				response.EnsureSuccessStatusCode();
+			}
+
+			//test initial relations
+			{
+				var getRelationsRequest = new GetRelationsRequest
+				{
+					Session = "00000000-0000-0000-0000-000000000001",
+					ThingId = thingId,
+					Role = "Owner",
+				};
+				var jsonContentGet = new JsonContent(getRelationsRequest);
+				var response = await _client.PostAsync($"{_url}/GetRelations", jsonContentGet);
+				response.EnsureSuccessStatusCode();
+
+				var result = await response.Content.ReadAsJsonAsync<GetRelationsResponse>();
+
+				Assert.NotNull(result);
+				Assert.NotNull(result.RelationThings);
+				Assert.True(result.RelationThings.Count() >= 2);
+			}
+
+			//modify
+			{
+				var modifyRelationsRequest = new SetRelationsRequest
+				{
+					Session = "00000000-0000-0000-0000-000000000001",
+					ThingId = thingId,
+					Role = "Owner",
+					RelationThings = new List<RelationsThingIds>
+				{
+					new RelationsThingIds
+					{
+						Relation = "ContainedBy",
+						Things = new List<string>
+						{
+							$"{_cfqdn}/T1",
+						}
+					},
+					new RelationsThingIds
+					{
+						Relation = "RoleIn",
+						Things = new List<string>
+						{
+							$"{_cfqdn}/T2"
+						}
+					}
+				}
+				};
+				var jsonContentModify = new JsonContent(modifyRelationsRequest);
+				var response = await _client.PostAsync($"{_url}/SetRelations", jsonContentModify);
+				response.EnsureSuccessStatusCode();
+			}
+
+			//test modified relations
+			{
+				var getModifiedRelationsRequest = new GetRelationsRequest
+				{
+					Session = "00000000-0000-0000-0000-000000000001",
+					ThingId = thingId,
+					Role = "Owner",
+				};
+				var jsonContentGetModified = new JsonContent(getModifiedRelationsRequest);
+				var response = await _client.PostAsync($"{_url}/GetRelations", jsonContentGetModified);
+				response.EnsureSuccessStatusCode();
+
+				var result = await response.Content.ReadAsJsonAsync<GetRelationsResponse>();
+
+				Assert.NotNull(result);
+				Assert.NotNull(result.RelationThings);
+				Assert.True(result.RelationThings.Count() >= 2);
+			}
+		}
+
+
+
 		[Fact]
 		public async void GetAttributes_T1_ShouldReturn()
 		{

@@ -99,6 +99,93 @@ namespace T2D.InventoryBL.Thing
 			return true;
 		}
 
+		public bool SetRelations(out string errMsg, int roleId, string thingId, List<RelationsThingIds> relationThings)
+		{
+			errMsg = null;
+
+			BaseThing thing =
+			_dbc.ThingQuery(thingId)
+				.Include(t => t.ThingAttributes)
+				.Include(t => t.FromThingRelations)
+				.FirstOrDefault()
+				;
+
+			if (thing == null)
+			{
+				errMsg = $"Thing '{thingId}' do not exists.";
+				return false;
+			}
+
+			_session.AddSessionAccess(roleId, thing.Id);
+
+			var enumBL = new EnumBL();
+
+			// read all existing relations
+			// To Dictionary, key: RelationId (int), value: List<ThingRelation>
+			Dictionary<int, List<ThingRelation>> existingRelations = new Dictionary<int, List<ThingRelation>>();
+			foreach (var group in thing.FromThingRelations.GroupBy(tr => tr.RelationId))
+			{
+				existingRelations.Add(group.Key, new List<ThingRelation>());
+				var item = existingRelations[group.Key];
+				foreach (var tr in group)
+				{
+					item.Add(tr);
+				}
+			}
+
+			//compare relations to Set to existing relations
+			//TODO: setList can not have same relation/thingid several times!
+			foreach (var setGroup in relationThings)
+			{
+				var relationId = enumBL.EnumIdFromApiString<RelationEnum>(setGroup.Relation);
+				if (!relationId.HasValue)
+				{
+					errMsg = $"Relation'{setGroup.Relation}' is on correct.";
+					return false;
+				}
+				foreach (var toThing in setGroup.Things)
+				{
+					var thing2 = _dbc.FindThing<BaseThing>(toThing);
+					if (thing2 == null)
+					{
+						errMsg = $"Thing '{toThing}' do not exists.";
+						return false;
+					}
+
+					//find out if it already exists
+					if (existingRelations.ContainsKey(relationId.Value))
+					{
+						var existingToThingGuid = existingRelations[relationId.Value].FirstOrDefault(tr => tr.ToThingId== thing2.Id);
+						if (existingToThingGuid != null)
+						{
+							//it already exists, so remove it from existing list so that it will not be deleted at the end
+							existingRelations[relationId.Value].Remove(existingToThingGuid);
+							continue;
+						}
+					}
+					//it's a new relationship, let's add it
+					_dbc.ThingRelations.Add(new ThingRelation
+									{
+										FromThingId = thing.Id,
+										ToThingId = thing2.Id,
+										RelationId = relationId.Value,
+									}
+							);
+					}
+//				_dbc.SaveChanges();
+			}
+			//remove rest of relations
+			foreach (var item in existingRelations)
+			{
+				foreach (var tr in item.Value)
+				{
+					_dbc.ThingRelations.Remove(tr);
+				}
+			}
+			_dbc.SaveChanges();
+			return true;
+		}
+
 		public GetRelationsResponse GetRelations(out string errMsg, int roleId, string thingId)
 		{
 			errMsg = null;
@@ -106,7 +193,7 @@ namespace T2D.InventoryBL.Thing
 			BaseThing thing =
 			_dbc.ThingQuery(thingId)
 				.Include(t => t.ThingAttributes)
-				.Include(t => t.ToThingRelations)
+				.Include(t => t.FromThingRelations)
 				.FirstOrDefault()
 				;
 
@@ -119,20 +206,20 @@ namespace T2D.InventoryBL.Thing
 			_session.AddSessionAccess(roleId, thing.Id);
 
 			var ret = new GetRelationsResponse();
-			ret.RelationThings = new List<GetRelationsResponse.RelationsThings>();
+			ret.RelationThings = new List<RelationsThings>();
 			var enumBL = new EnumBL();
 
-			foreach (var group in thing.ToThingRelations.GroupBy(tr => tr.RelationId))
+			foreach (var group in thing.FromThingRelations.GroupBy(tr => tr.RelationId))
 			{
-				var rt = new GetRelationsResponse.RelationsThings
+				var rt = new RelationsThings
 				{
 					Relation = enumBL.EnumNameFromInt<RelationEnum>(group.Key),
-					Things = new List<GetRelationsResponse.RelationsThings.IdTitle>(),
+					Things = new List<RelationsThings.ThingIdTitle>(),
 				};
 				foreach (var th in group)
 				{
 					var thing2 = _dbc.FindThing<BaseThing>(th.ToThingId);
-					var thingIdTitle = new GetRelationsResponse.RelationsThings.IdTitle
+					var thingIdTitle = new RelationsThings.ThingIdTitle
 					{
 						ThingId = ThingIdHelper.Create(thing2.Fqdn, thing2.US)
 					};
@@ -162,8 +249,8 @@ namespace T2D.InventoryBL.Thing
 
 			if (thing == null)
 			{
-				ret.IsOk=false;
-				ret.ErrorDescription =  $"Thing '{thingId}' do not exists.";
+				ret.IsOk = false;
+				ret.ErrorDescription = $"Thing '{thingId}' do not exists.";
 				return ret;
 			}
 			//is it an Extension.
@@ -178,7 +265,7 @@ namespace T2D.InventoryBL.Thing
 
 			var enumBL = new EnumBL();
 			int? attributeId = enumBL.EnumIdFromApiString<AttributeEnum>(attributeName);
-			if (attributeId==null)
+			if (attributeId == null)
 			{
 				ret.IsOk = false;
 				ret.ErrorDescription = $"Attribute do not exists.";
@@ -469,9 +556,9 @@ namespace T2D.InventoryBL.Thing
 		{
 			BindingFlags bf = BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance;
 			var typeInfo = thing.GetType().GetTypeInfo();
-			if (typeInfo.GetProperties(bf).Any(p=>p.Name==attributeName))
+			if (typeInfo.GetProperties(bf).Any(p => p.Name == attributeName))
 			{
-				var ret =  typeInfo.GetProperty(attributeName, bf).GetValue(thing);
+				var ret = typeInfo.GetProperty(attributeName, bf).GetValue(thing);
 				if (ret == null) return ret;
 				switch (attEnum)
 				{
@@ -508,7 +595,7 @@ namespace T2D.InventoryBL.Thing
 					{
 						case AttributeEnum.Location_Gps:
 						case AttributeEnum.PreferredLocation_Gps:
-							GpsLocation location =JsonConvert.DeserializeObject<GpsLocation>(value.ToString());
+							GpsLocation location = JsonConvert.DeserializeObject<GpsLocation>(value.ToString());
 							value = $"Point({location.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)} {location.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
 							break;
 						default:
@@ -583,7 +670,7 @@ namespace T2D.InventoryBL.Thing
 				return;
 			}
 			attributeValue.IsOk = true;
-			attributeValue.Value =  data.Data ;
+			attributeValue.Value = data.Data;
 			return;
 		}
 		public bool SetRoleMemberList(out string errMsg, int roleId, int roleToSetId, string thingId, List<string> memberThingIds)

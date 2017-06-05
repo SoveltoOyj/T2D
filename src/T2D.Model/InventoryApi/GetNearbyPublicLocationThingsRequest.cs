@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static T2D.Model.InventoryApi.GetRelationsResponse.RelationsThings;
+using static T2D.Model.InventoryApi.RelationsThings;
 
 namespace T2D.Model.InventoryApi
 {

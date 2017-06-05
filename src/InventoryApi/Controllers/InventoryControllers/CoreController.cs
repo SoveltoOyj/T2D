@@ -78,8 +78,32 @@ namespace InventoryApi.Controllers.InventoryControllers
 
 			if (ret != null) return Ok(ret);
 			return BadRequest(errMsg);
+		}
+
+
+		/// <summary>
+		/// Set Relations.
+		/// </summary>
+		/// <param name="value">Request argument</param>
+		/// <returns>Reset relations to this thing.</returns>
+		/// <response code="200">OK.</response>
+		/// <response code="400">Bad request, like Thing do not exists or not enough priviledges.</response>
+		[HttpPost, ActionName("SetRelations")]
+		[Produces(typeof(string))]
+		public IActionResult SetRelations([FromBody]SetRelationsRequest value)
+		{
+			ProcessBaseRequest(value);
+			var baseResponse = ProcessBaseRequest(value);
+			if (baseResponse != null) return baseResponse;
+
+			string errMsg = null;
+			var ret = _thingBl.SetRelations(out errMsg, _roleId, value.ThingId, value.RelationThings);
+
+			if (ret) return Ok(ret);
+			return BadRequest(errMsg);
 
 		}
+
 
 		/// <summary>
 		/// Get Attributes.
