@@ -18,6 +18,7 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using T2D.Infra;
+using Hangfire;
 
 namespace InventoryApi
 {
@@ -52,6 +53,10 @@ namespace InventoryApi
 			var basePath = PlatformServices.Default.Application.ApplicationBasePath;
 
 			services.AddScoped<EfContext>(provider => new EfContext(Configuration.GetConnectionString("T2DConnection"))) ;
+
+			// Add Hangfire services.  
+			services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("T2DConnection")));
+
 
 			// Add framework services.
 			services.AddMvc();
@@ -113,6 +118,9 @@ namespace InventoryApi
 						c.SwaggerEndpoint("/swagger.json", "ThingToData API V1");
 					}
 				});
+
+			app.UseHangfireDashboard();
+			app.UseHangfireServer();
 
 			app.UseDefaultFiles();
 			app.UseStaticFiles();

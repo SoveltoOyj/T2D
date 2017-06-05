@@ -41,12 +41,24 @@ namespace T2D.InventoryBL.ServiceRequest
 				errMsg = $"The thing '{request.ThingId}'to which ServiceType was created do not exists.";
 				return false;
 			}
+			BaseThing alarmThing = null;
+			if (!string.IsNullOrWhiteSpace(request.AlarmThingId))
+			{
+				alarmThing = _dbc.FindThing<BaseThing>(request.AlarmThingId);
+				if (alarmThing == null)
+				{
+					errMsg = $"The alarm thing '{request.AlarmThingId}' do not exists.";
+					return false;
+				}
+			}
 
 			//create ServiceDefinition
 			var sd = new ServiceDefinition
 			{
 				ThingId = toThing.Id,
 				Title = request.Title,
+				TimeSpan = request.Timespan,
+				Alarm_ThingId = alarmThing?.Id,
 			};
 			_dbc.ServiceDefinitions.Add(sd);
 
@@ -99,16 +111,6 @@ namespace T2D.InventoryBL.ServiceRequest
 		private bool CreateNewActionDefinition(out string errMsg, ServiceDefinition sd, Model.ServiceApi.ActionDefinition item, ActionListType actionListType)
 		{
 			errMsg = null;
-			BaseThing alarmThing = null;
-			if (!string.IsNullOrWhiteSpace(item.AlarmThingId))
-			{
-				alarmThing = _dbc.FindThing<BaseThing>(item.AlarmThingId);
-				if (alarmThing == null)
-				{
-					errMsg = $"The alarm thing '{item.AlarmThingId}' do not exists.";
-					return false;
-				}
-			}
 
 				BaseThing objectThing = _dbc.FindThing<BaseThing>(item.ObjectThingId);
 				if (objectThing == null)
@@ -130,10 +132,8 @@ namespace T2D.InventoryBL.ServiceRequest
 					Title = item.Title,
 					ServiceDefinitionId = sd.Id,
 					ActionListType = actionListType,
-					Alarm_ThingId = alarmThing?.Id,
 					Object_ThingId = objectThing.Id,
 					Operator_ThingId = operatorThing.Id,
-					TimeSpan = item.Timespan,
 
 				});
 			return true;
@@ -157,7 +157,7 @@ namespace T2D.InventoryBL.ServiceRequest
 				errMsg = $"Thing '{thingId}' do not exists or do not have service {service}.";
 				return false;
 			}
-			//have to read again, navigation properties did not work as exptected
+			//have to read again, navigation properties did not work as excpected
 			ServiceDefinition serviceDefinition = thing.ServiceDefinitions
 					.Where(sd => sd.Title == service)
 					.SingleOrDefault()
@@ -173,6 +173,8 @@ namespace T2D.InventoryBL.ServiceRequest
 				State = ServiceAndActitivityState.NotStarted,
 				ThingId = _session.Session.EntryPoint_ThingId,
 				CompletedAt = null,
+				DeadLine = serviceDefinition.TimeSpan != null ? DateTime.UtcNow.Add(serviceDefinition.TimeSpan.Value) : (DateTime?)null,
+				AlarmThingId = serviceDefinition.Alarm_ThingId,
 			};
 			_dbc.ServiceStatuses.Add(ss);
 
@@ -182,7 +184,6 @@ namespace T2D.InventoryBL.ServiceRequest
 				var actionStatus = new ActionStatus
 				{
 					ActionDefinitionId = item.Id,
-					DeadLine = item.TimeSpan!=null? ss.StartedAt.Add(item.TimeSpan.Value):(DateTime?) null,
 					ServiceStatus = ss,
 					State = ServiceAndActitivityState.NotStarted,
 					AddedAt = DateTime.UtcNow,
@@ -192,6 +193,14 @@ namespace T2D.InventoryBL.ServiceRequest
 			}
 
 			_dbc.SaveChanges();
+
+			//start watch job if timespan
+			if (ss.DeadLine != null)
+			{
+				double minutes = ss.DeadLine.Value.Subtract(DateTime.UtcNow).TotalMinutes ;
+				string connStr = _dbc.Database.GetDbConnection().ConnectionString;
+				Hangfire.BackgroundJob.Schedule(() => ServiceBL.ScheduleUpdateServiceStatus(connStr, ss.Id) , TimeSpan.FromMinutes(minutes));
+			}
 			return true;
 
 		}
@@ -216,9 +225,8 @@ namespace T2D.InventoryBL.ServiceRequest
 			var query = _dbc.ActionStatuses
 				.Include(acs => acs.ServiceStatus)
 				.Include(acs => acs.ActionDefinition)
-				.Where(acs => acs.ActionDefinition.Operator_ThingId == thing.Id)  //action is assignt to this thing
+				.Where(acs => acs.ActionDefinition.Operator_ThingId == thing.Id)  //action is assigned to this thing
 				.OrderBy(acs => acs.State)
-				.ThenByDescending(acs => acs.DeadLine)
 				;
 
 			foreach (var item in query)
@@ -226,7 +234,7 @@ namespace T2D.InventoryBL.ServiceRequest
 				ret.Add(new ActionStatusResponse
 				{
 					ActionId = item.Id,
-					Title = item.ActionDefinition.Title,
+					Title = item.ActionDefinition != null? item.ActionDefinition.Title: "Alarm!",
 					AddedAt = item.AddedAt,
 					State = item.State.ToString(),
 					ActionClass = item.ActionDefinition.GetType().Name,
@@ -236,6 +244,7 @@ namespace T2D.InventoryBL.ServiceRequest
 			return ret;
 		}
 
+	
 		public Model.Action GetActionStatus(out string errMsg, string thingId, int roleId, Guid actionId)
 		{
 
@@ -256,7 +265,6 @@ namespace T2D.InventoryBL.ServiceRequest
 			
 			var actionStatus = _dbc.ActionStatuses
 				.Include(acs => acs.ActionDefinition)
-					.ThenInclude(ad => ad.Alarm_Thing)
 				.SingleOrDefault(acs => acs.Id == actionId);
 
 			if (actionStatus == null)
@@ -266,18 +274,16 @@ namespace T2D.InventoryBL.ServiceRequest
 			}
 
 			//get Status and update status if needed
-			var serviceStatus = UpdateServiceRequestState(actionStatus, null);
+			var serviceStatus = UpdateServiceRequestState(actionStatus.ServiceStatusId);
 
 			Model.Action ret = new Model.Action
 			{
 					Id = actionId,
 					Title = actionStatus.ActionDefinition.Title,
-					ActionClass = actionStatus.ActionDefinition.GetType().Name,
-					ActionType = actionStatus.ActionDefinition.ActionListType.ToString(),
-					Alarm_ThingId =  _dbc.GetThingStrId(actionStatus.ActionDefinition.Alarm_Thing),
-					DeadLine = actionStatus.DeadLine,
+					ActionClass = actionStatus.ActionDefinition != null? actionStatus.ActionDefinition.GetType().Name: "Alarm",
+					ActionType = actionStatus.ActionDefinition != null ? actionStatus.ActionDefinition.ActionListType.ToString(): "Alarm",
 					State = actionStatus.State.ToString(),
-					ThingId = _dbc.GetThingStrId(actionStatus.ActionDefinition.Operator_Thing),
+					ThingId = actionStatus.ActionDefinition!=null? _dbc.GetThingStrId(actionStatus.ActionDefinition.Operator_Thing): _dbc.GetThingStrId(serviceStatus.AlarmThing),
 					Service = new Service
 					{
 						ThingId = _dbc.GetThingStrId(serviceStatus.ServiceDefinition.Thing),
@@ -287,6 +293,8 @@ namespace T2D.InventoryBL.ServiceRequest
 						SessionId = serviceStatus.SessionId,
 						State = serviceStatus.State.ToString(),
 						Title = serviceStatus.ServiceDefinition.Title,
+						DeadLine = serviceStatus.DeadLine,
+						Alarm_ThingId = _dbc.GetThingStrId(serviceStatus.AlarmThing)
 					}
 			};
 
@@ -311,7 +319,6 @@ namespace T2D.InventoryBL.ServiceRequest
 
 			var actionStatus = _dbc.ActionStatuses
 				.Include(acs => acs.ActionDefinition)
-					.ThenInclude(ad => ad.Alarm_Thing)
 				.SingleOrDefault(acs => acs.Id == actionId);
 
 
@@ -328,7 +335,10 @@ namespace T2D.InventoryBL.ServiceRequest
 				errMsg = $"Unknown state {state}.";
 				return false;
 			}
-				UpdateServiceRequestState(actionStatus, enumBl.EnumFromApiString<ServiceAndActitivityState>(state).Value);
+				actionStatus.State = enumBl.EnumFromApiString<ServiceAndActitivityState>(state).Value ;
+			_dbc.SaveChanges();
+
+			UpdateServiceRequestState(actionStatus.ServiceStatusId);
 			return true;
 
 		}
@@ -371,6 +381,7 @@ namespace T2D.InventoryBL.ServiceRequest
 						Title = item.ServiceDefinition.Title,
 						RequestedAt = item.StartedAt,
 						State = item.State.ToString(),
+						DeadLine = item.DeadLine,
 					});
 				}
 			}
@@ -389,6 +400,7 @@ namespace T2D.InventoryBL.ServiceRequest
 						Title = serviceStatus.ServiceDefinition.Title,
 						RequestedAt = serviceStatus.StartedAt,
 						State = serviceStatus.State.ToString(),
+						DeadLine = serviceStatus.DeadLine,
 					});
 				}
 			}
@@ -418,7 +430,12 @@ namespace T2D.InventoryBL.ServiceRequest
 		}
 
 
-		private ServiceStatus UpdateServiceRequestState(ActionStatus actionStatus, ServiceAndActitivityState? newActionState)
+		/// <summary>
+		/// This method is called also from Scheduled jobs. Session is then null.
+		/// </summary>
+		/// <param name="serviceStatusId"></param>
+		/// <returns></returns>
+		public ServiceStatus UpdateServiceRequestState(Guid serviceStatusId)
 		{
 
 			var thisServiceStatus = _dbc.ServiceStatuses
@@ -427,30 +444,11 @@ namespace T2D.InventoryBL.ServiceRequest
 					.ThenInclude(acs => acs.ActionDefinition)
 				.Include(ss => ss.ServiceDefinition)
 					.ThenInclude(sd => sd.Thing)
-				.Single(ss => ss.Id == actionStatus.ServiceStatusId)
+				.Include(ss=>ss.AlarmThing)
+				.Single(ss => ss.Id == serviceStatusId)
 				;
 
-			if (newActionState != null)
-			{
-				actionStatus.State = newActionState.Value;
-			}
-			if (IsStateNotFinneshed(thisServiceStatus.State))
-			{
-				//check if any mandatory action is over deadline
-				var q = thisServiceStatus.ActionStatuses
-					.Where(acs => acs.DeadLine < DateTime.UtcNow)
-					.Where(acs => IsStateNotFinneshed(acs.State))
-					;
 
-				foreach (var item in q)
-				{
-					item.State = ServiceAndActitivityState.NotDoneInTime;
-				}
-				if (q.Count() > 0)
-				{
-					thisServiceStatus.State = ServiceAndActitivityState.NotDoneInTime;
-				}
-			}
 
 			List<ServiceAndActitivityState> states;
 			// check if it service has been started
@@ -469,29 +467,88 @@ namespace T2D.InventoryBL.ServiceRequest
 				}
 			}
 
-			// check if done, all mandatory done in time
+			// if started, check if done in time
 			if (thisServiceStatus.State == ServiceAndActitivityState.Started)
 			{
+				// check if all mandatory are done
+				bool allMandatoryAreDone = true;
 				var q = thisServiceStatus.ActionStatuses
 					.Where(acs => acs.State != ServiceAndActitivityState.Done)
 					.Where(acs => acs.ActionDefinition.ActionListType == ActionListType.Mandatory)
 					;
+				allMandatoryAreDone = q.Count() < 1;
+
+				//exactly one of selected is done
+				bool oneOfSelectedIsDone = true;
+				q = thisServiceStatus.ActionStatuses
+					.Where(acs => acs.ActionDefinition.ActionListType == ActionListType.Selected)
+					;
+				var count = q.Count(acs => acs.State != ServiceAndActitivityState.Done);
 				if (q.Count() < 1)
+				{
+					oneOfSelectedIsDone = true;
+				}
+				else if (count > 1)
+				{
+					thisServiceStatus.State = ServiceAndActitivityState.Failed;
+					_dbc.SaveChanges();
+					return thisServiceStatus;
+				}
+				else {
+					oneOfSelectedIsDone = true;
+				}
+
+				if (thisServiceStatus.DeadLine != null && thisServiceStatus.DeadLine.Value < DateTime.UtcNow)
+				{
+					SetNotDoneInTime(thisServiceStatus);
+				}
+				else if (allMandatoryAreDone && oneOfSelectedIsDone)
 				{
 					thisServiceStatus.State = ServiceAndActitivityState.Done;
 				}
 			}
-
+			if (thisServiceStatus.State == ServiceAndActitivityState.NotStarted && thisServiceStatus.DeadLine != null && thisServiceStatus.DeadLine.Value < DateTime.UtcNow)
+			{
+				SetNotDoneInTime(thisServiceStatus);
+			}
 
 			_dbc.SaveChanges();
 			return thisServiceStatus;
 		}
 
-		private bool IsStateNotFinneshed(ServiceAndActitivityState state)
+		private bool IsStateNotFinnished(ServiceAndActitivityState state)
 		{
 			return state == ServiceAndActitivityState.NotStarted || state == ServiceAndActitivityState.Started;
 		}
 
+		private void SetNotDoneInTime(ServiceStatus serviceStatus)
+		{
+			serviceStatus.State = ServiceAndActitivityState.NotDoneInTime;
+			if (serviceStatus.AlarmThingId != null)
+			{
+				var actionStatus = new ActionStatus
+				{
+					ActionDefinitionId = null,
+					ServiceStatus = serviceStatus,
+					State = ServiceAndActitivityState.NotStarted,
+					AddedAt = DateTime.UtcNow,
+					CompletedAt = null,
+					ServiceStatusId = serviceStatus.Id,
+				};
+				 _dbc.ActionStatuses.Add(actionStatus);
+				_dbc.SaveChanges();
+			}
+		}
+
+		public static bool ScheduleUpdateServiceStatus(string connectionStr, Guid serviceStatusId)
+		{
+			EfContext ctx = new EfContext(connectionStr);
+			ServiceBL serviceBl = new ServiceBL(ctx,null);
+
+			serviceBl.UpdateServiceRequestState(serviceStatusId);
+			return true;
+		}
 
 	}
+
 }

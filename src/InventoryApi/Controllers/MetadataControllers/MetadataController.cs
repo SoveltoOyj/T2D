@@ -11,6 +11,7 @@ using T2D.InventoryBL.Metadata;
 using T2D.Model;
 using System.ComponentModel.DataAnnotations;
 using T2D.Infra;
+using Hangfire;
 
 namespace InventoryApi.Controllers.MetadataControllers
 {
@@ -50,6 +51,12 @@ namespace InventoryApi.Controllers.MetadataControllers
 		{
 			if (!ModelState.IsValid) return BadRequest(ModelState);
 			if (string.IsNullOrWhiteSpace(version)) return BadRequest("version is empty or null.");
+
+			//just testing hangfire
+			//int delay = 0;
+			//int.TryParse(version, out delay);
+			//if (delay < 1) delay = 1;
+			//BackgroundJob.Schedule(() => Console.WriteLine("Delayed job executed"), TimeSpan.FromMinutes(delay));
 
 			List<string> ret = new List<string>
 			{

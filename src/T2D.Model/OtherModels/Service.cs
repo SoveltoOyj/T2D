@@ -17,6 +17,14 @@ namespace T2D.Model
 		public string ThingId { get; set; }
 
 		/// <summary>
+		/// The thing that will get an alarm if this action is overdue
+		/// </summary>
+		[ThingId]
+		public string Alarm_ThingId { get; set; }
+
+		public DateTime? DeadLine { get; set; }
+
+		/// <summary>
 		/// Requestor Thing
 		/// </summary>
 		public string RequestorThingId { get; set; }

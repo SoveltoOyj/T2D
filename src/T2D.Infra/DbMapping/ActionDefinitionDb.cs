@@ -27,10 +27,6 @@ namespace T2D.Infra
 				.WithMany()
 				.OnDelete(DeleteBehavior.Restrict)
 				;
-			tbl.HasOne(e => e.Alarm_Thing)
-				.WithMany()
-				.OnDelete(DeleteBehavior.Restrict)
-				;
 			tbl.HasOne(e => e.Operator_Thing)
 				.WithMany()
 				.OnDelete(DeleteBehavior.Restrict)

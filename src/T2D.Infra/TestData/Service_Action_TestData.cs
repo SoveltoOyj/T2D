@@ -47,7 +47,9 @@ namespace T2D.Infra.TestData
 			{
 				Id = CommonTestData.Next(),
 				ThingId = _streetlight.Id,
-				Title = "Huollettava, lamppu sammunut"
+				Title = "Huollettava, lamppu sammunut",
+				TimeSpan = new TimeSpan(0, 1, 0),
+				Alarm_ThingId = CommonTestData.Entities["M100"].Id,
 			};
 			_dbc.ServiceDefinitions.Add(sd);
 
@@ -58,17 +60,18 @@ namespace T2D.Infra.TestData
 					Title = "Change bulb",
 					ServiceDefinitionId = sd.Id,
 					ActionListType = ActionListType.Mandatory,
-					Alarm_ThingId = CommonTestData.Entities["M100"].Id,
 					Object_ThingId = _streetlight.Id,
 					Operator_ThingId = CommonTestData.Entities["M100"].Id,
-					TimeSpan = new TimeSpan(0, 1, 0),
+					
 				});
 
 			sd = new ServiceDefinition
 			{
 				Id = CommonTestData.Next(),
 				ThingId = _streetlight.Id,
-				Title = "Hämäräkytkin/ajastusongelma"
+				Title = "Hämäräkytkin/ajastusongelma",
+				TimeSpan = new TimeSpan(0, 1, 0),
+				Alarm_ThingId = CommonTestData.Entities["M100"].Id,
 			};
 			_dbc.ServiceDefinitions.Add(sd);
 
@@ -79,10 +82,8 @@ namespace T2D.Infra.TestData
 					Title = "Check darkness switch",
 					ServiceDefinitionId = sd.Id,
 					ActionListType = ActionListType.Mandatory,
-					Alarm_ThingId = CommonTestData.Entities["M100"].Id,
 					Object_ThingId = _streetlight.Id,
 					Operator_ThingId = CommonTestData.Entities["M100"].Id,
-					TimeSpan = new TimeSpan(0, 1, 0),
 				});
 			_dbc.SaveChanges();
 
@@ -91,7 +92,9 @@ namespace T2D.Infra.TestData
 			{
 				Id = CommonTestData.Next(),
 				ThingId = _streetlight.Id,
-				Title = "Remove StreetLight"
+				Title = "Remove StreetLight",
+				TimeSpan = new TimeSpan(0, 1, 0),
+				Alarm_ThingId = CommonTestData.Entities["M100"].Id,
 			};
 			_dbc.ServiceDefinitions.Add(sd);
 
@@ -102,10 +105,8 @@ namespace T2D.Infra.TestData
 					Title = "Switch SL Off",
 					ServiceDefinitionId = sd.Id,
 					ActionListType = ActionListType.Mandatory,
-					Alarm_ThingId = CommonTestData.Entities["M100"].Id,
 					Object_ThingId = _streetlight.Id,
 					Operator_ThingId = CommonTestData.Entities["M100"].Id,
-					TimeSpan = new TimeSpan(0, 1, 0),
 				});
 
 			_dbc.ActionDefinitions.Add(
@@ -115,10 +116,8 @@ namespace T2D.Infra.TestData
 					Title = "Remove SL totally",
 					ServiceDefinitionId = sd.Id,
 					ActionListType = ActionListType.Mandatory,
-					Alarm_ThingId = CommonTestData.Entities["M100"].Id,
 					Object_ThingId = _streetlight.Id,
 					Operator_ThingId = CommonTestData.Entities["M100"].Id,
-					TimeSpan = new TimeSpan(0, 1, 0),
 				});
 
 			_dbc.SaveChanges();

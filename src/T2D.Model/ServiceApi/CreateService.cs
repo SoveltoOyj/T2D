@@ -15,6 +15,16 @@ namespace T2D.Model.ServiceApi
 		[Required]
 		public string Title { get; set; }
 
+		/// <summary>
+		/// In which time this Service should be done.
+		/// </summary>
+		public TimeSpan? Timespan { get; set; }
+
+		/// <summary>
+		/// The thing that will be send an alarm if service is overtime.
+		/// </summary>
+		public string AlarmThingId { get; set; }
+
 		public List<ActionDefinition> MandatoryActions { get; set; }
 		public List<ActionDefinition> OptionalActions { get; set; }
 		public List<ActionDefinition> SelectedActions { get; set; }
@@ -35,11 +45,6 @@ namespace T2D.Model.ServiceApi
 		public string Title { get; set; }
 
 		/// <summary>
-		/// The thing that will be send an alarm if action is overtime.
-		/// </summary>
-		public string AlarmThingId { get; set; }
-
-		/// <summary>
 		/// The thing to which this action should be done.
 		/// </summary>
 		[Required]
@@ -51,10 +56,7 @@ namespace T2D.Model.ServiceApi
 		[Required]
 		public string OperatorThingId { get; set; }
 
-		/// <summary>
-		/// In which time this Action should be done.
-		/// </summary>
-		public TimeSpan? Timespan { get; set; }
+		
 	}
 
 

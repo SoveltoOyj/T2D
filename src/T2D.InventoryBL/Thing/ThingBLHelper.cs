@@ -41,6 +41,7 @@ namespace T2D.InventoryBL
 
 		public static string GetThingStrId(this EfContext dbc, IThing thing)
 		{
+			if (thing == null) return null;
 			return ThingIdHelper.Create(thing.Fqdn, thing.US);
 		}
 

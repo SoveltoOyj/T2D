@@ -23,5 +23,6 @@ namespace T2D.Model.ServiceApi
 		public string Title { get; set; }
 		public DateTime RequestedAt { get; set; }
 		public string State { get; set; }
+		public DateTime? DeadLine { get; set; }
 	}
 }

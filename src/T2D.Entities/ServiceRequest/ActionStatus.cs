@@ -15,10 +15,10 @@ namespace T2D.Entities
 		public Guid ServiceStatusId { get; set; }
 		public ServiceStatus ServiceStatus { get; set; }
 
-		public Guid ActionDefinitionId { get; set; }
+		//if null, this is an Alarm
+		public Guid? ActionDefinitionId { get; set; }
 		public ActionDefinition ActionDefinition { get; set; }
 
-		public DateTime?	DeadLine { get; set; }
 
 		public DateTime AddedAt { get; set; }
 		public DateTime? CompletedAt { get; set; }

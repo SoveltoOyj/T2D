@@ -26,6 +26,12 @@ namespace T2D.Entities
 		public DateTime StartedAt { get; set; }
 		public DateTime? CompletedAt { get; set; }
 
+		public DateTime? DeadLine { get; set; }
+
+		public Guid? AlarmThingId { get; set; }
+		public BaseThing AlarmThing { get; set; }
+
+
 		public List<ActionStatus> ActionStatuses { get; set; }
 
 		public ServiceStatus()

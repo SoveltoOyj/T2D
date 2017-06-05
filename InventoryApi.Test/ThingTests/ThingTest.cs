@@ -22,7 +22,7 @@ namespace InventoryApi.Test
 		{
 			var jsonContent = new JsonContent(new CreateLocalThingRequest
 			{
-				Session = "00000000-0000-0000-0000-000000000001",
+				Session =  _authenticatedSession,
 				ThingId = $"{_cfqdn}/M100",
 				Role = "Omnipotent",
 				NewThingId = $"{_cfqdn}/Test@{DateTime.Now.ToString()}",
@@ -41,7 +41,7 @@ namespace InventoryApi.Test
 			string thingId = await CreateATestThing();
 			var setRoleAccessRightsRequest = new SetRoleAccessRightsRequest
 			{
-				Session = "00000000-0000-0000-0000-000000000001",
+				Session = _authenticatedSession,
 				ThingId = thingId,
 				Role = "Omnipotent",
 				RoleForRights = "Owner",
@@ -103,7 +103,7 @@ namespace InventoryApi.Test
 			
 				var setRoleMemberListRequest = new SetRoleMemberListRequest
 				{
-					Session = "00000000-0000-0000-0000-000000000001",
+					Session = _authenticatedSession,
 					ThingId = thingId,
 					Role = "Omnipotent",
 					RoleForMemberList = "Owner",
@@ -182,7 +182,7 @@ namespace InventoryApi.Test
 		{
 			var queryMyRolesRequest = new QueryMyRolesRequest
 			{
-				Session = "00000000-0000-0000-0000-000000000001",
+				Session = _authenticatedSession,
 				ThingId = $"{_cfqdn}/M100",
 			};
 			var jsonContent = new JsonContent(queryMyRolesRequest);
@@ -201,7 +201,7 @@ namespace InventoryApi.Test
 		{
 			var getRelationsRequest = new GetRelationsRequest
 			{
-				Session = "00000000-0000-0000-0000-000000000001",
+				Session = _authenticatedSession,
 				ThingId = $"{_cfqdn}/T1",
 				Role = "Owner",
 			};
@@ -226,7 +226,7 @@ namespace InventoryApi.Test
 			{
 				var setRelationsRequest = new SetRelationsRequest
 				{
-					Session = "00000000-0000-0000-0000-000000000001",
+					Session = _authenticatedSession,
 					ThingId = thingId,
 					Role = "Owner",
 					RelationThings = new List<RelationsThingIds>
@@ -259,7 +259,7 @@ namespace InventoryApi.Test
 			{
 				var getRelationsRequest = new GetRelationsRequest
 				{
-					Session = "00000000-0000-0000-0000-000000000001",
+					Session = _authenticatedSession,
 					ThingId = thingId,
 					Role = "Owner",
 				};
@@ -278,7 +278,7 @@ namespace InventoryApi.Test
 			{
 				var modifyRelationsRequest = new SetRelationsRequest
 				{
-					Session = "00000000-0000-0000-0000-000000000001",
+					Session = _authenticatedSession,
 					ThingId = thingId,
 					Role = "Owner",
 					RelationThings = new List<RelationsThingIds>
@@ -310,7 +310,7 @@ namespace InventoryApi.Test
 			{
 				var getModifiedRelationsRequest = new GetRelationsRequest
 				{
-					Session = "00000000-0000-0000-0000-000000000001",
+					Session = _authenticatedSession,
 					ThingId = thingId,
 					Role = "Owner",
 				};
@@ -333,7 +333,7 @@ namespace InventoryApi.Test
 		{
 			var getAttributeRequest = new GetAttributesRequest
 			{
-				Session = "00000000-0000-0000-0000-000000000001",
+				Session = _authenticatedSession,
 				ThingId = $"{_cfqdn}/T1",
 				Role = "Owner",
 				Attributes = new List<string>
@@ -361,7 +361,7 @@ namespace InventoryApi.Test
 			string thingId = await CreateATestThing();
 			var setAttributeRequest = new SetAttributesRequest
 			{
-				Session = "00000000-0000-0000-0000-000000000001",
+				Session = _authenticatedSession,
 				ThingId = thingId,
 				Role = "Owner",
 				AttributeValues = new List<SetAttributeValue>
@@ -402,7 +402,7 @@ namespace InventoryApi.Test
 			string thingId = await CreateATestThing();
 			var setAttributeRequest = new SetAttributesRequest
 			{
-				Session = "00000000-0000-0000-0000-000000000001",
+				Session = _authenticatedSession,
 				ThingId = thingId,
 				Role = "Owner",
 				AttributeValues = new List<SetAttributeValue>
@@ -433,7 +433,7 @@ namespace InventoryApi.Test
 
 			var getAttributeRequest = new GetAttributesRequest
 			{
-				Session = "00000000-0000-0000-0000-000000000001",
+				Session = _authenticatedSession,
 				ThingId = thingId,
 				Role = "Owner",
 				Attributes = new List<string> {
@@ -487,7 +487,7 @@ namespace InventoryApi.Test
 			string thingId = await CreateATestThing();
 			var setAttributeRequest = new SetAttributesRequest
 			{
-				Session = "00000000-0000-0000-0000-000000000001",
+				Session = _authenticatedSession,
 				ThingId = thingId,
 				Role = "Owner",
 				AttributeValues = new List<SetAttributeValue>
@@ -514,7 +514,7 @@ namespace InventoryApi.Test
 			//read the value
 			var getAttributeRequest = new GetAttributesRequest
 			{
-				Session = "00000000-0000-0000-0000-000000000001",
+				Session = _authenticatedSession,
 				ThingId = thingId,
 				Role = "Owner",
 				Attributes = new List<string>

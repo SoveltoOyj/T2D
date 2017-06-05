@@ -25,11 +25,6 @@ namespace T2D.Entities
 		public Guid Operator_ThingId { get; set; }
 		public BaseThing Operator_Thing { get; set; }
 
-		public Guid? Alarm_ThingId { get; set; }
-		public BaseThing Alarm_Thing { get; set; }
-
-		public TimeSpan? TimeSpan { get; set; }
-
 		public ActionListType ActionListType { get; set; }
 	}
 

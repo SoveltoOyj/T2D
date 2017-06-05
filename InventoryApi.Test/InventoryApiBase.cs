@@ -21,6 +21,8 @@ namespace InventoryApi.Test
 		protected readonly ITestOutputHelper _output;
 
 		protected string _cfqdn = "inv1.sovelto.fi";
+		protected string _authenticatedSession = "00000000-0000-0000-0000-000000000001";
+		protected string _anonymousSession = "00000000-0000-0000-0000-000000000002";
 
 
 		public InventoryApiBase(ITestOutputHelper output)

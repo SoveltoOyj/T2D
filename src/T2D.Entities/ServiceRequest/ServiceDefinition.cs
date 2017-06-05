@@ -16,6 +16,11 @@ namespace T2D.Entities
 		public Guid ThingId { get; set; }
 		public GenericThing Thing { get; set; }
 
+		public TimeSpan? TimeSpan { get; set; }
+
+		public Guid? Alarm_ThingId { get; set; }
+		public BaseThing Alarm_Thing { get; set; }
+
 		public List<ActionDefinition> Actions { get; set; }
 
 		public ServiceDefinition()
