@@ -14,7 +14,7 @@ namespace InventoryApi.Test.ThingTests
 
 		public AuthenticationTests(ITestOutputHelper output) : base(output) { }
 
-		[Fact]
+		[Fact(DisplayName ="Requires JWT", Skip ="Requires Authorization")]
 		public async void EnterAuthenticatedSession_whenKnownUserM100()
 		{
 			var jsonContent = new JsonContent(new AuthenticationRequest
@@ -30,7 +30,7 @@ namespace InventoryApi.Test.ThingTests
 			Assert.False(string.IsNullOrWhiteSpace(result.Session));
 		}
 
-		[Fact]
+		[Fact(DisplayName = "Requires JWT", Skip = "Requires Authorization")]
 		public async void EnterAuthenticatedSession_OK_whenNewUser_MOCK()
 		{
 			var jsonContent = new JsonContent(new AuthenticationRequest
@@ -46,7 +46,7 @@ namespace InventoryApi.Test.ThingTests
 			Assert.False(string.IsNullOrWhiteSpace(result.Session));
 		}
 
-		[Fact]
+		[Fact(DisplayName = "Requires JWT", Skip = "Requires Authorization")]
 		public async void EnterAuthenticatedSession_400_whenNewUserIsNotAuthenticatedUser()
 		{
 			var jsonContent = new JsonContent(new AuthenticationRequest
