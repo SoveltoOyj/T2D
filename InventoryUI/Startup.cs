@@ -59,7 +59,7 @@ namespace InventoryUI
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
-				app.UseBrowserLink();
+			//	app.UseBrowserLink();  //browser link did not work for some reason or another
 			}
 			else
 			{

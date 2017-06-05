@@ -1,11 +1,9 @@
-﻿//#define AZURE
-//problems in Swagger Azure deployment.
+﻿//problems in Swagger Azure deployment.
 // You have to do the following
-// 1. Build locally (comment out #define AZURE and check EFContect.OnConfiguring)
+// 1. Build locally, use env.Development and check that T2DConnectionString is correct
 // 2. Start InventoryAPI and copy (using browser) /swagger/v1/swagger.json --> wwwroot/swagger.json
-// 3. uncomment  #define AZURE and change database in EFContect.OnConfiguring
-// 4. deploy to Azure
-// 5. comment out #define AZURE and change database in EFContect.OnConfiguring
+// 3. deploy to Azure
+// 4. Check that environment is either Staging or Production (not Development) and T2DConnectionString is correct
 
 using System;
 using System.Collections.Generic;
@@ -70,17 +68,13 @@ namespace InventoryApi
 				});
 				c.DescribeAllParametersInCamelCase();
 				c.DescribeAllEnumsAsStrings();
+				c.OperationFilter<Extensions.AuthorizationHeaderParameterOperationFilter>();
 
 				if (Env.IsDevelopment())
 				{
 					c.IncludeXmlComments(System.IO.Path.Combine(basePath, "InventoryApi.xml"));
 					c.IncludeXmlComments(System.IO.Path.Combine(basePath, "T2D.Model.xml"));
 				}
-#if AZURE
-#else
-				//	c.IncludeXmlComments(System.IO.Path.Combine(basePath, "InventoryApi.xml"));
-				//c.IncludeXmlComments(System.IO.Path.Combine(basePath, "T2D.Model.xml"));
-#endif
 			});
 		}
 
@@ -111,11 +105,14 @@ namespace InventoryApi
 			app.UseSwaggerUI
 				(c =>
 				{
-#if AZURE
-					c.SwaggerEndpoint("/swagger.json", "ThingToData API V1");
-#else
-					c.SwaggerEndpoint("/swagger/v1/swagger.json", "ThingToData API V1");
-#endif
+					if (env.IsDevelopment())
+					{
+						c.SwaggerEndpoint("/swagger/v1/swagger.json", "ThingToData API V1");
+					}
+					else
+					{
+						c.SwaggerEndpoint("/swagger.json", "ThingToData API V1");
+					}
 				});
 
 			app.UseDefaultFiles();
