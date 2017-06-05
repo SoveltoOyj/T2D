@@ -92,8 +92,9 @@ namespace InventoryUI
 			{
 				AuthenticationResult result = await cca.AcquireTokenByAuthorizationCodeAsync(code, AzureAdB2COptions.ApiScopes.Split(' '));
 				context.HandleCodeRedemption(result.AccessToken, result.IdToken);
-				//set result.AccessToken to the UI
 
+				//set result.AccessToken to the UI
+				AzureAdB2COptions.Access_Token = result.AccessToken;
 			}
 			catch (Exception ex)
 			{

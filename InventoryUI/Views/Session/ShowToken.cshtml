@@ -1,0 +1,27 @@
+﻿@model InventoryUI. AzureAdB2COptions
+@{
+    ViewData["Title"] = "Access Token";
+}
+<h2>@ViewData["Title"]</h2>
+<p>Copy this token to clipboard:</p>
+@ViewData["AccessToken"]
+
+
+<h2>Claims of this JWT token</h2>
+<table border="1">
+	<thead>
+		<tr>
+			<th>Type</th>
+			<th>Value</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach( System.Security.Claims.Claim claim in ViewData["Claims"] as IEnumerable<System.Security.Claims.Claim>)
+		{
+			<tr>
+				<td>@claim.Type?.ToString()</td>
+				<td>@claim.Value?.ToString()</td>
+			</tr>
+		}
+	</tbody>
+</table>
