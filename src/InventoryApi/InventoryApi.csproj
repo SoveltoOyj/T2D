@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\Functional Product Data for T2D demo.csv" />
     <Content Include="wwwroot\swagger.json" />
     <Content Include="wwwroot\test.html" />
   </ItemGroup>

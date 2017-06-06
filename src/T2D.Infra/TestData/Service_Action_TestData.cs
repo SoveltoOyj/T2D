@@ -5,7 +5,7 @@ using T2D.Entities;
 
 namespace T2D.Infra.TestData
 {
-	class Service_Action_TestData
+	public class Service_Action_TestData
 	{
 		private EfContext _dbc { get; set; }
 

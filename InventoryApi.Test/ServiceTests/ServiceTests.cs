@@ -23,7 +23,7 @@ namespace InventoryApi.Test
 		[Fact]
 		public async void TestWholeServicePipeline_OK()
 		{
-			var newServiceDef = await CreateUserAndServiceDefinition(new TimeSpan(0, 10, 0));
+			var newServiceDef = await CreateUserAndServiceDefinition(null);
 
 			//activate 2 times
 			for (int i = 0; i < 2; i++)

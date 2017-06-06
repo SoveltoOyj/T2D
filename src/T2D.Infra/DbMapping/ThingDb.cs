@@ -56,6 +56,11 @@ namespace T2D.Infra
 				.HasForeignKey(e => e.PartedThingId)
 				.OnDelete(DeleteBehavior.Restrict)
 				;
+
+			modelBuilder.Entity<BaseThing>()
+				.Property("US")
+				.ForSqlServerHasColumnType("nvarchar(512) COLLATE Finnish_Swedish_CS_AI")
+				;
 		}
 
 	}

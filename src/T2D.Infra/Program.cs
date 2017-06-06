@@ -46,10 +46,6 @@ namespace T2D.Infra
 					case 0:
 						Console.WriteLine("");
 						Console.WriteLine(dbc.Database.GetDbConnection().ConnectionString);
-
-
-
-
 						break;
 					case 1:
 						CreateDB(dbc);
@@ -77,11 +73,14 @@ namespace T2D.Infra
 			return;
 		}
 
+		// can't reuse connection, have to run separatly Create and Add Data
+		// tried to use separate connectionstring, close connection and so on
 		private static void CreateDB(EfContext dbc)
 		{
-			Console.WriteLine("\nCreating database ...");
-			dbc.Database.EnsureDeleted();
-			dbc.Database.EnsureCreated();
+				Console.WriteLine("\nCreating database ...");
+				dbc.Database.EnsureDeleted();
+				dbc.Database.EnsureCreated();
+	//			dbc.Database.ExecuteSqlCommand($"ALTER DATABASE [{dbc.Database.GetDbConnection().Database}] COLLATE Finnish_Swedish_CS_AI");
 		}
 
 		private static void InsertExtraData(EfContext dbc)

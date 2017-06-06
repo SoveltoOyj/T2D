@@ -213,7 +213,7 @@ namespace InventoryApi.Test
 
 			Assert.NotNull(result);
 			Assert.NotNull(result.RelationThings);
-			Assert.True(result.RelationThings.Count() >= 2);
+			Assert.True(result.RelationThings.Count() >= 1);
 		}
 
 
