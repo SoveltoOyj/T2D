@@ -42,6 +42,8 @@ namespace T2D.Entities
 		Optional,
 		Selected,
 		Pending,
+		Alarm,
+		Failed,
 	}
 
 

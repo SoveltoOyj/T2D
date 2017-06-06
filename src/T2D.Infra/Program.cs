@@ -46,6 +46,10 @@ namespace T2D.Infra
 					case 0:
 						Console.WriteLine("");
 						Console.WriteLine(dbc.Database.GetDbConnection().ConnectionString);
+
+
+
+
 						break;
 					case 1:
 						CreateDB(dbc);

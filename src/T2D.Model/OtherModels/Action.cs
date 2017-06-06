@@ -16,6 +16,8 @@ namespace T2D.Model
 		public string	Title { get; set; }
 		public string  ActionType { get; set; }
 
+		public string Description { get; set; }
+
 		/// <summary>
 		/// The Thing who should do this action
 		/// </summary>

@@ -188,6 +188,7 @@ namespace T2D.InventoryBL.ServiceRequest
 					State = ServiceAndActitivityState.NotStarted,
 					AddedAt = DateTime.UtcNow,
 					CompletedAt = null,
+					ActionType = item.ActionListType,
 				};
 				ss.ActionStatuses.Add(actionStatus);
 			}
@@ -222,23 +223,34 @@ namespace T2D.InventoryBL.ServiceRequest
 
 			List<ActionStatusResponse> ret = new List<ActionStatusResponse>();
 
-			var query = _dbc.ActionStatuses
+
+			var actionStatuses = _dbc.ActionStatuses
 				.Include(acs => acs.ServiceStatus)
 				.Include(acs => acs.ActionDefinition)
 				.Where(acs => acs.ActionDefinition.Operator_ThingId == thing.Id)  //action is assigned to this thing
-				.OrderBy(acs => acs.State)
+				.ToList()
 				;
 
-			foreach (var item in query)
+			//add alarm and failed statuses
+			actionStatuses.AddRange(_dbc.ActionStatuses
+				.Include(acs => acs.ServiceStatus)
+				.Include(acs => acs.ActionDefinition)
+				.Where(acs => acs.ActionType == ActionListType.Alarm || acs.ActionType == ActionListType.Failed)
+				.Where(acs => acs.ServiceStatus.AlarmThingId == thing.Id)  //action is assigned to this thing
+				.ToList()
+				);
+
+
+			foreach (var item in actionStatuses.OrderBy(ass=>ass.State))
 			{
 				ret.Add(new ActionStatusResponse
 				{
 					ActionId = item.Id,
-					Title = item.ActionDefinition != null? item.ActionDefinition.Title: "Alarm!",
+					Title = item.ActionDefinition != null? item.ActionDefinition.Title: item.Description,
 					AddedAt = item.AddedAt,
 					State = item.State.ToString(),
-					ActionClass = item.ActionDefinition.GetType().Name,
-					ActionType = item.ActionDefinition.ActionListType.ToString(),
+					ActionClass = item.ActionDefinition != null ? item.ActionDefinition.GetType().Name: "",
+					ActionType = item.ActionType.ToString(),
 				});
 			}
 			return ret;
@@ -279,9 +291,10 @@ namespace T2D.InventoryBL.ServiceRequest
 			Model.Action ret = new Model.Action
 			{
 					Id = actionId,
-					Title = actionStatus.ActionDefinition.Title,
+					Title = actionStatus.ActionDefinition!=null? actionStatus.ActionDefinition.Title: "",
 					ActionClass = actionStatus.ActionDefinition != null? actionStatus.ActionDefinition.GetType().Name: "Alarm",
-					ActionType = actionStatus.ActionDefinition != null ? actionStatus.ActionDefinition.ActionListType.ToString(): "Alarm",
+					ActionType = actionStatus.ActionType.ToString(),
+					Description = actionStatus.Description,
 					State = actionStatus.State.ToString(),
 					ThingId = actionStatus.ActionDefinition!=null? _dbc.GetThingStrId(actionStatus.ActionDefinition.Operator_Thing): _dbc.GetThingStrId(serviceStatus.AlarmThing),
 					Service = new Service
@@ -479,23 +492,22 @@ namespace T2D.InventoryBL.ServiceRequest
 				allMandatoryAreDone = q.Count() < 1;
 
 				//exactly one of selected is done
-				bool oneOfSelectedIsDone = true;
+				bool oneOfSelectedIsDone = false;
 				q = thisServiceStatus.ActionStatuses
 					.Where(acs => acs.ActionDefinition.ActionListType == ActionListType.Selected)
 					;
-				var count = q.Count(acs => acs.State != ServiceAndActitivityState.Done);
-				if (q.Count() < 1)
+				var count = q.Count(acs => acs.State == ServiceAndActitivityState.Done);
+				if ((q.Count() > 0 &&  count == 1) || q.Count() < 1)
 				{
 					oneOfSelectedIsDone = true;
 				}
 				else if (count > 1)
 				{
-					thisServiceStatus.State = ServiceAndActitivityState.Failed;
-					_dbc.SaveChanges();
+					SetFailed(thisServiceStatus, "More than one of selected actions are done.");
 					return thisServiceStatus;
 				}
 				else {
-					oneOfSelectedIsDone = true;
+					oneOfSelectedIsDone = false;
 				}
 
 				if (thisServiceStatus.DeadLine != null && thisServiceStatus.DeadLine.Value < DateTime.UtcNow)
@@ -534,8 +546,30 @@ namespace T2D.InventoryBL.ServiceRequest
 					AddedAt = DateTime.UtcNow,
 					CompletedAt = null,
 					ServiceStatusId = serviceStatus.Id,
+					ActionType = ActionListType.Alarm,
+					Description = "ServiceRequest is not done in time."
 				};
 				 _dbc.ActionStatuses.Add(actionStatus);
+				_dbc.SaveChanges();
+			}
+		}
+		private void SetFailed(ServiceStatus serviceStatus, string msg)
+		{
+			serviceStatus.State = ServiceAndActitivityState.NotDoneInTime;
+			if (serviceStatus.AlarmThingId != null)
+			{
+				var actionStatus = new ActionStatus
+				{
+					ActionDefinitionId = null,
+					ServiceStatus = serviceStatus,
+					State = ServiceAndActitivityState.NotStarted,
+					AddedAt = DateTime.UtcNow,
+					CompletedAt = null,
+					ServiceStatusId = serviceStatus.Id,
+					ActionType = ActionListType.Failed,
+					Description = msg,
+				};
+				_dbc.ActionStatuses.Add(actionStatus);
 				_dbc.SaveChanges();
 			}
 		}
