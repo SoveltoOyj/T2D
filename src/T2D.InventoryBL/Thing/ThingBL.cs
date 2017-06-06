@@ -22,7 +22,7 @@ namespace T2D.InventoryBL.Thing
 
 		public static ThingBL CreateThingBL(EfContext dbc, SessionBL session)
 		{
-			if (session == null) return null;
+			//if (session == null) return null;
 			ThingBL ret = new ThingBL(dbc, session);
 
 			return ret;
@@ -618,7 +618,10 @@ namespace T2D.InventoryBL.Thing
 			}
 		}
 
-		private void SetExtensionValue(IThing thing, string extensionName, string value)
+		/// <summary>
+		/// Should not be called directly - public only for adding test data
+		/// </summary>
+		public void SetExtensionValue(IThing thing, string extensionName, string value)
 		{
 			string fqdn = ThingIdHelper.GetFQDN(extensionName);
 			string us = ThingIdHelper.GetUniqueString(extensionName);

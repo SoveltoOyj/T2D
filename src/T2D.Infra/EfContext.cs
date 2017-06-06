@@ -106,6 +106,7 @@ namespace T2D.Infra
 			ThingRoleDb.SetDbMapping(modelBuilder);
 			ThingAttributeDb.SetDbMapping(modelBuilder);
 			ThingAttributeRoleRightDb.SetDbMapping(modelBuilder);
+			ExtensionDb.SetDbMapping(modelBuilder);
 
 			ActionDefinitionDb.SetDbMapping(modelBuilder);
 			ServiceDb.SetDbMapping(modelBuilder);

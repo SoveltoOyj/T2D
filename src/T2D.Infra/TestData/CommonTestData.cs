@@ -9,10 +9,15 @@ namespace T2D.Infra.TestData
 {
 	public static class CommonTestData
 	{
-		private static int _next = 1;  //id 1 is reserved for anonymous user
+		private static long _next = 1;  //id 1 is reserved for anonymous user
 		public static string Fqdn = "inv1.sovelto.fi";
 
 		public static Dictionary<string, IEntity> Entities = new Dictionary<string, IEntity>();
+
+		public static void SetNextGuid(long nextGuidAsLong)
+		{
+			_next = nextGuidAsLong;
+		}
 
 		public static Guid Next()
 		{
@@ -20,13 +25,18 @@ namespace T2D.Infra.TestData
 			return GetGuid(_next);
 		}
 
-		public static Guid GetGuid(int i)
+		public static Guid GetGuid(long i)
 		{
 			var bytes = BitConverter.GetBytes(i);
 			return new Guid(0, 0, 0, 0, 0, 0, 0, bytes[3], bytes[2], bytes[1], bytes[0]);
 		}
 
-
+		public static long ConvertGuidToLong(Guid guid)
+		{
+			int pos = guid.ToString().LastIndexOf('-');
+			string part = guid.ToString().Substring(pos + 1);
+			return Convert.ToInt64(part, 16);
+		}
 
 		public static BaseThing FindByThingId(EfContext dbc, string fqdn, string uniqueString)
 		{
