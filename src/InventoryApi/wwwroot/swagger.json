@@ -280,7 +280,7 @@
 		"/api/inventory/Core/SetRoleMemberList": {
 			"post": {
 				"tags": [ "Core" ],
-				"summary": "Set the thing role memberlist.",
+				"summary": "Set the thing role memberlist.\r\nRoleMemberList will override existing list.",
 				"operationId": "ApiInventoryCoreSetRoleMemberListPost",
 				"consumes": [ "application/json", "text/json", "application/json-patch+json" ],
 				"produces": [ "text/plain", "application/json", "text/json" ],
@@ -607,6 +607,66 @@
 				"responses": {
 					"200": { "description": "Action status updated." },
 					"400": { "description": "Bad request, like Thing do not exists or not enough priviledges." }
+				}
+			}
+		},
+		"/api/Testdata/CreateNewDb": {
+			"get": {
+				"tags": [ "Testdata" ],
+				"summary": "Creates a new empty db. All existing data will be deleted.",
+				"operationId": "ApiTestdataCreateNewDbGet",
+				"consumes": [],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"responses": {
+					"200": {
+						"description": "Returns version number.",
+						"schema": { "type": "string" }
+					}
+				}
+			}
+		},
+		"/api/Testdata/AddServiceRequestData": {
+			"get": {
+				"tags": [ "Testdata" ],
+				"summary": "Add some Service Definitions. This should run only once.",
+				"operationId": "ApiTestdataAddServiceRequestDataGet",
+				"consumes": [],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"responses": {
+					"200": {
+						"description": "Returns version number.",
+						"schema": { "type": "string" }
+					}
+				}
+			}
+		},
+		"/api/Testdata/AddFiskarsData": {
+			"get": {
+				"tags": [ "Testdata" ],
+				"summary": "Add Fiskars test data (should run only once).",
+				"operationId": "ApiTestdataAddFiskarsDataGet",
+				"consumes": [],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"responses": {
+					"200": {
+						"description": "Returns version number.",
+						"schema": { "type": "string" }
+					}
+				}
+			}
+		},
+		"/api/Testdata/GetTestData": {
+			"get": {
+				"tags": [ "Testdata" ],
+				"summary": "Returns all Things in DB for test purposes.",
+				"operationId": "ApiTestdataGetTestDataGet",
+				"consumes": [],
+				"produces": [ "text/plain", "application/json", "text/json" ],
+				"responses": {
+					"200": {
+						"description": "All things.",
+						"schema": { "type": "string" }
+					}
 				}
 			}
 		}
@@ -1062,6 +1122,14 @@
 					"description": "Title of Service.",
 					"type": "string"
 				},
+				"timespan": {
+					"description": "In which time this Service should be done.",
+					"type": "string"
+				},
+				"alarmThingId": {
+					"description": "The thing that will be send an alarm if service is overtime.",
+					"type": "string"
+				},
 				"mandatoryActions": {
 					"type": "array",
 					"items": { "$ref": "#/definitions/ActionDefinition" }
@@ -1105,20 +1173,12 @@
 					"description": "The title of Action.",
 					"type": "string"
 				},
-				"alarmThingId": {
-					"description": "The thing that will be send an alarm if action is overtime.",
-					"type": "string"
-				},
 				"objectThingId": {
 					"description": "The thing to which this action should be done.",
 					"type": "string"
 				},
 				"operatorThingId": {
 					"description": "The thing that should execute this Action.",
-					"type": "string"
-				},
-				"timespan": {
-					"description": "In which time this Action should be done.",
 					"type": "string"
 				}
 			}
@@ -1217,7 +1277,11 @@
 					"format": "date-time",
 					"type": "string"
 				},
-				"state": { "type": "string" }
+				"state": { "type": "string" },
+				"deadLine": {
+					"format": "date-time",
+					"type": "string"
+				}
 			}
 		},
 		"GetActionStatusesRequest": {
@@ -1301,16 +1365,9 @@
 				"service": { "$ref": "#/definitions/Service" },
 				"title": { "type": "string" },
 				"actionType": { "type": "string" },
+				"description": { "type": "string" },
 				"thingId": {
 					"description": "The Thing who should do this action",
-					"type": "string"
-				},
-				"alarm_ThingId": {
-					"description": "THe thing that will get an alarm if this action is overdue",
-					"type": "string"
-				},
-				"deadLine": {
-					"format": "date-time",
 					"type": "string"
 				},
 				"actionClass": { "type": "string" },
@@ -1327,6 +1384,14 @@
 				"title": { "type": "string" },
 				"thingId": {
 					"description": "The thing which Service this is",
+					"type": "string"
+				},
+				"alarm_ThingId": {
+					"description": "The thing that will get an alarm if this action is overdue",
+					"type": "string"
+				},
+				"deadLine": {
+					"format": "date-time",
 					"type": "string"
 				},
 				"requestorThingId": {
