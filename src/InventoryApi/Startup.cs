@@ -119,7 +119,12 @@ namespace InventoryApi
 					}
 				});
 
-			app.UseHangfireDashboard();
+			//app.UseHangfireDashboard();
+			app.UseHangfireDashboard("/hangfire", new DashboardOptions
+			{
+				Authorization = new[] { new Extensions.MyHangfireAuthorizationFilter() }
+			});
+
 			app.UseHangfireServer();
 
 			app.UseDefaultFiles();
