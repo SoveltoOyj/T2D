@@ -554,6 +554,19 @@ namespace T2D.InventoryBL.Thing
 
 		private object GetAttributeValue(IThing thing, string attributeName, AttributeEnum attEnum)
 		{
+			//check first those attributes that are not exact properties
+			switch (attEnum)
+			{
+				case AttributeEnum.ArchetypeThingId:
+					var regThing = thing as RegularThing;
+					if (regThing == null)
+					{
+						return null;
+					}
+					ArchetypeThing archThing = _dbc.ArchetypeThings.SingleOrDefault(at => at.Id == regThing.ArchetypeThingId);
+					return _dbc.GetThingStrId(archThing);
+			}
+
 			BindingFlags bf = BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance;
 			var typeInfo = thing.GetType().GetTypeInfo();
 			if (typeInfo.GetProperties(bf).Any(p => p.Name == attributeName))
@@ -586,6 +599,28 @@ namespace T2D.InventoryBL.Thing
 		{
 			try
 			{
+				//check first those attributes that are not exact properties
+				switch (attEnum)
+				{
+					case AttributeEnum.ArchetypeThingId:
+						var regThing = thing as RegularThing;
+						if (regThing == null)
+						{
+							return $"Attribute {attributeName} can be set only to RegularThings.";
+						}
+						if (!(value is string)) return "ArchetypeId must be a string.";
+						if (!ThingIdHelper.IsValidThingId(value.ToString())) return $"ArchtypeId {value} is not valid";
+						ArchetypeThing archThing = _dbc.ThingQuery<ArchetypeThing>(value.ToString()).SingleOrDefault();
+						if (archThing == null)
+						{
+							return $"ArchtetypeThing {value} do not exists.";
+						}
+						regThing.ArchetypeThingId = archThing.Id;
+						return null;
+				}
+
+
+
 				BindingFlags bf = BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance;
 				var typeInfo = thing.GetType().GetTypeInfo();
 				if (typeInfo.GetProperties(bf).Any(p => p.Name == attributeName))

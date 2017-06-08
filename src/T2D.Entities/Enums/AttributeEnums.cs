@@ -24,6 +24,7 @@ namespace T2D.Entities
 		Created,
 		Published,
 		Modified,
+		ArchetypeThingId,
 		Creator_Fqdn,
 		Crator_US,
 		Parted_Fqdn,
