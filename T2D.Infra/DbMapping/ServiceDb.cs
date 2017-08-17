@@ -15,7 +15,8 @@ namespace T2D.Infra
 
 			tbl
 				.Property("Title")
-				.ForSqlServerHasColumnType("nvarchar(256) COLLATE Finnish_Swedish_CS_AI")
+				.HasColumnType("nvarchar(256) COLLATE Finnish_Swedish_CS_AI")
+			//				.ForSqlServerHasColumnType("nvarchar(256) COLLATE Finnish_Swedish_CS_AI")
 			;
 
 		}

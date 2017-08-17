@@ -57,8 +57,6 @@ namespace T2D.Infra.TestData
 		public static void SaveIdentityOnData<TEntity>(EfContext dbc)
 			where TEntity : class
 		{
-			//T2D.Infra.EfContext dbc = ((IInfrastructure<IServiceProvider>)dbSet).GetService<DbContext>() as T2D.Infra.EfContext;
-
 			var entityType = dbc.Model.FindEntityType(typeof(TEntity));
 			var table = entityType.SqlServer();
 			string tableName;
@@ -70,12 +68,14 @@ namespace T2D.Infra.TestData
 			dbc.Database.OpenConnection();
 			try
 			{
-				dbc.Database.ExecuteSqlCommand($"Set identity_insert {tableName} on;");
+				string cmd = $"Set identity_insert {tableName} on;";
+				dbc.Database.ExecuteSqlCommand(cmd);
 				dbc.SaveChanges();
 			}
 			finally
 			{
-				dbc.Database.ExecuteSqlCommand($"Set identity_insert {tableName} off;");
+				string cmd = $"Set identity_insert {tableName} off;";
+				dbc.Database.ExecuteSqlCommand(cmd);
 			}
 		}
 

@@ -59,7 +59,8 @@ namespace T2D.Infra
 
 			modelBuilder.Entity<BaseThing>()
 				.Property("US")
-				.ForSqlServerHasColumnType("nvarchar(512) COLLATE Finnish_Swedish_CS_AI")
+				.HasColumnType("nvarchar(512) COLLATE Finnish_Swedish_CS_AI")
+				//				.ForSqlServerHasColumnType("nvarchar(512) COLLATE Finnish_Swedish_CS_AI")
 				;
 		}
 
