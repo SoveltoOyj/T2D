@@ -34,17 +34,68 @@ namespace T2D.Entities
 		[StringLength(256)]
 		public string PreferredLocation_StreetAddress { get; set; }
 		[StringLength(256)]
-
 		public Guid? PreferredLocationThingId { get; set; }
+
+		#region Physical Properties
+		public int? EAN { get; set; }
+		public double? WeightKg { get; set; }
+		public double? VolumeLiters { get; set; }
+		public double? ContainerVolumeLiters { get; set; }
+		public double? MaxSurfaceDimensions_X { get; set; }
+		public double? MaxSurfaceDimensions_Y { get; set; }
+		public double? MaxSurfaceDimensions_Z { get; set; }
+		public double? FreeContainerDimensions_X { get; set; }
+		public double? FreeContainerDimensions_Y { get; set; }
+		public double? FreeContainerDimensions_Z { get; set; }
+		public double? MaxFluidLevel { get; set; }
+		public double? CurrentFluidLevel { get; set; }
+		public double? LoadabilityOnTopKg { get; set; }
+		public double? LoadabilityWithinKg { get; set; }
+		// Multivalue: easy/requires packaging/requires extra care/security considerations/hygienic considerations
+		public LuggabilityFlag? Luggability { get; set; }
+		public int? NumberLooseParts { get; set; }
+		public double? InsideTemperatureRangeMin { get; set; }
+		public double? InsideTemperatureRangeMax { get; set; }
+		public double? InsideTemperatureCurrent { get; set; }
+		public double? OutsideTemperatureRangeMin { get; set; }
+		public double? OutsideTemperatureRangeMax { get; set; }
+		public double? OutsideTemperatureCurrent { get; set; }
+		// Values: no/moderate/good/excellent
+		public Weatherproofness Weatherproofness { get; set; }
+		public double? MaxGForce { get; set; }
+		[StringLength(256)]
+		public string Color { get; set; }
+		public DateTime? AttentionDate { get; set; }
+		// Values: (biological, chemical, electromagnetic, robotic, alive, neutral
+		public ObjectActivityClass ObjectActivityClass { get; set; }
+		public bool HazardousCargo { get; set; }
+		public string SpecialConsideration { get; set; }
+		// Three IoT-fields:
+		[StringLength(256)]
+		public string IoTField1_Title { get; set; }
+		[StringLength(256)]
+		public string IoTField1_SIUnit { get; set; }
+		public double? IoTField1_Data { get; set; }
+		[StringLength(256)]
+		public string IoTField2_Title { get; set; }
+		[StringLength(256)]
+		public string IoTField2_SIUnit { get; set; }
+		public double? IoTField2_Data { get; set; }
+		[StringLength(256)]
+		public string IoTField3_Title { get; set; }
+		[StringLength(256)]
+		public string IoTField3_SIUnit { get; set; }
+		public double? IoTField3_Data { get; set; }
+		#endregion
 
 		#region Navigation Properties
 		public ArchetypeThing ArchetypeThing { get; set; }
 		public BaseThing LocationThing { get; set; }
-		public BaseThing PreferredLocationThing{ get; set; }
+		public BaseThing PreferredLocationThing { get; set; }
 		#endregion
 	}
 
-	
+
 
 
 
