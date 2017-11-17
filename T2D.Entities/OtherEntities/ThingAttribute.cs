@@ -9,6 +9,7 @@ namespace T2D.Entities
 	/// <summary>
 	/// Logging per Thing Attribute and navigation to RoleRights and SessionAccesses
 	/// </summary>
+	// ToDo: timespan, how long log should survive
 	public class ThingAttribute : IEntity
 	{
 		public Guid Id { get; set; }

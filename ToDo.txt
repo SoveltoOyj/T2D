@@ -7,3 +7,11 @@ Pikaohje - kannan tekeminen:
 
 
  paikat saadaan vaikka täältä: http://mapszoom.com/fi/gps-coordinates.php
+
+
+
+ pitäiskö vaihtaa listat tälläisiin
+ public class MyEntity
+{
+    public IEnumerable<MyChild> Children { get; } = new HashSet<MyChild>();
+}
