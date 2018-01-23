@@ -79,6 +79,19 @@ namespace InventoryApi
 					c.IncludeXmlComments(System.IO.Path.Combine(basePath, "T2D.Model.xml"));
 				}
 			});
+
+			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+				.AddJwtBearer(options =>
+				{
+					options.Authority = string.Format("https://login.microsoftonline.com/tfp/{0}/{1}/v2.0/",
+											 Configuration["Authentication:AzureAd:Tenant"], Configuration["Authentication:AzureAd:Policy"]);
+					options.Audience = Configuration["Authentication:AzureAd:ClientId"];
+					options.Events = new JwtBearerEvents
+					{
+						OnAuthenticationFailed = AuthenticationFailed
+					};
+
+				});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,17 +103,19 @@ namespace InventoryApi
 			{
 				app.UseDeveloperExceptionPage();
 			}
+			app.UseAuthentication();
 
-			app.UseJwtBearerAuthentication(new JwtBearerOptions
-			{
-				Authority = string.Format("https://login.microsoftonline.com/tfp/{0}/{1}/v2.0/",
-									 Configuration["Authentication:AzureAd:Tenant"], Configuration["Authentication:AzureAd:Policy"]),
-				Audience = Configuration["Authentication:AzureAd:ClientId"],
-				Events = new JwtBearerEvents
-				{
-					OnAuthenticationFailed = AuthenticationFailed
-				}
-			});
+
+			//app.UseJwtBearerAuthentication(new JwtBearerOptions
+			//{
+			//	Authority = string.Format("https://login.microsoftonline.com/tfp/{0}/{1}/v2.0/",
+			//						 Configuration["Authentication:AzureAd:Tenant"], Configuration["Authentication:AzureAd:Policy"]),
+			//	Audience = Configuration["Authentication:AzureAd:ClientId"],
+			//	Events = new JwtBearerEvents
+			//	{
+			//		OnAuthenticationFailed = AuthenticationFailed
+			//	}
+			//});
 
 
 			app.UseMvc();
