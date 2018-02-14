@@ -14,3 +14,6 @@ How to create a new Inventory
 * Update connection strings in appsettings.json -files (in each project)
 * Run T2D.Infra project, it will delete and create T2D database. It can also add seed data to it.
 * Run T2D.InventoryAPI project. It can be deployed to Azure Web App.
+
+
+License: Only for non-commercial use.
