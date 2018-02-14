@@ -7,7 +7,7 @@ Use this version (master2_0 is still in development).
 
 Usage guide: ThingToData CURL ThingStories.docx
 
-Swagger: http://thingtodata.azurewebsites.net/swagger.json
+Swagger: swagger.json
 
 How to create a new Inventory
 * Install SQL Server 2016 database instance for T2D (Azure Sql Database is also OK)
