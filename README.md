@@ -5,4 +5,4 @@ Source code
 
 Use this version (master2_0 is still in development).
 
-Usage guide:
+Usage guide: ThingToData CURL ThingStories.docx
