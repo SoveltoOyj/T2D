@@ -6,6 +6,7 @@ Source code
 Use this version (master2_0 is still in development).
 
 Usage guide: ThingToData CURL ThingStories.docx
+
 Swagger: http://thingtodata.azurewebsites.net/swagger.json
 
 How to create a new Inventory
