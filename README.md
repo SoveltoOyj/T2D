@@ -2,3 +2,4 @@
 ThingToData
 
 .NET 2.0
+This is still under development. Use branch master1_1.
